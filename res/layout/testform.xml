@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <TextView
+        android:id="@+id/textje"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Voer hieronder een tekst in:"
+        android:textColor="#009900"
+        android:textSize="30dp" />
+
+    <EditText
+        android:id="@+id/tekstVeldje"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <requestFocus />
+    </EditText>
+
+    <Button
+        android:id="@+id/Pointless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Zend toastje met text hierboven" />
+
+    <Button
+        android:id="@+id/hoi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hoi" />
+
+    <DigitalClock
+        android:id="@+id/digitalClock1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DigitalClock" />
+
+</LinearLayout>

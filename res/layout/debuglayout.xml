@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/tilesButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="debug Tiles" />
+
+        <Button
+            android:id="@+id/soundButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="play sound" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/objectsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="show Objects" />
+
+        <Button
+            android:id="@+id/timersButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="show Timers" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/pauseButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pause" />
+
+        <Button
+            android:id="@+id/FPSButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Log FPS" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/buttonDebugGameObject"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Debug clicked GameObject" />
+
+    <Button
+        android:id="@+id/backButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back" />
+
+</LinearLayout>
