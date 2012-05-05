@@ -1,0 +1,6 @@
+.*
+!/.gitignore
+/bin
+/bin/*
+/project.properties
+/AndroidManifest.xml
