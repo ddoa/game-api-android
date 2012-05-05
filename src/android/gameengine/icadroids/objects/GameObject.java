@@ -5,7 +5,6 @@ import android.gameengine.icadroids.objects.graphics.AnimatedSprite;
 import android.gameengine.icadroids.renderer.Viewport;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.graphics.RectF;
 
 /**
  * GameObject is a (not moving) object with a lot of useful methods in it. You
@@ -34,27 +33,13 @@ public class GameObject {
 	 */
 	protected double ylocation = 0;
 	/**
-	 * The source of the sprite. This string will be only used once for
-	 * Initializing the sprite, after that, the string will be empty.
-	 */
-	private String spriteSource;
-	/**
 	 * The sprite (image) of the object.
 	 */
 	private AnimatedSprite sprite = new AnimatedSprite();
 	/**
-	 * Delay for sprite animating to prevent loading the sprite before the
-	 * surface is created.
-	 */
-	private int[] intializeStartAnimate = { 0, 0 };
-	/**
 	 * The sprite position on the screen
 	 */
-	private Rect position = new Rect(0, 0, 0, 0);
-	/**
-	 * rectangle used for collision detection
-	 */
-	public RectF rectangle = new RectF();
+	public Rect position = new Rect(0, 0, 0, 0);
 	/**
 	 * Start position of the object
 	 */
@@ -67,9 +52,6 @@ public class GameObject {
 	 *            the GameEngine which the object is running on
 	 */
 	public final void intializeGameObject() {
-		rectangle.set((float) getFullX(), (float) getFullY(),
-				(float) getFrameWidth() + (float) getFullX(),
-				(float) getFrameHeight() + (float) getFullY());
 		intialize();
 	}
 
@@ -84,19 +66,6 @@ public class GameObject {
 	 * update is triggered every loop of the game
 	 */
 	public void update() {
-
-		// Testing collision...
-
-		if (spriteSource != null) {
-			sprite.loadSprite(spriteSource);
-			spriteSource = null;
-		}
-
-		if (intializeStartAnimate[0] == 1) {
-			sprite.startAnimate(intializeStartAnimate[1]);
-			intializeStartAnimate[0] = 0;
-		}
-
 		sprite.updateToNextFrame();
 		updatePlayerFramePosition();
 		calculateOutsideWorld();
@@ -117,9 +86,10 @@ public class GameObject {
 
 	/**
 	 * update position rectangle used for drawing the sprite on the right
-	 * position with the right size on the screen.
+	 * position with the right size on the screen. This rectangle is also used
+	 * for collision detection between GameObjects.
 	 */
-	private void updatePlayerFramePosition() {
+	protected void updatePlayerFramePosition() {
 		position.set(getX(), getY(), getX() + sprite.getFrameWidth(), getY()
 				+ getFrameHeight());
 	}
@@ -137,7 +107,7 @@ public class GameObject {
 	 *            'picture' .
 	 */
 	public final void setSprite(String resourceName) {
-		spriteSource = resourceName;
+		sprite.loadSprite(resourceName);
 	}
 
 	/**
@@ -147,8 +117,7 @@ public class GameObject {
 	 *            The width size of each frame
 	 */
 	public final void startAnimate(int frameWidth) {
-		intializeStartAnimate[0] = 1;
-		intializeStartAnimate[1] = frameWidth;
+		sprite.startAnimate(frameWidth);
 	}
 
 	/**
@@ -282,25 +251,31 @@ public class GameObject {
 	private void calculateOutsideWorld() {
 		Viewport vp = Viewport.getInstance();
 		if (Viewport.useViewport) {
-			if (xlocation > vp.getMaxX() || ylocation > vp.getMaxY()
-					|| xlocation < 0 - getFrameWidth()
+			if (xlocation > vp.getMaxX() || xlocation < 0 - getFrameWidth()) {
+				outsideWorld(true);
+			} else if (ylocation > vp.getMaxY()
 					|| ylocation < 0 - getFrameHeight()) {
-				outsideWorld();
+				outsideWorld(false);
 			}
 		} else {
 			if (xlocation > GameEngine.getScreenWidth()
-					|| ylocation > GameEngine.getScreenHeight()
-					|| xlocation < 0 - getFrameWidth()
+					|| xlocation < 0 - getFrameWidth()) {
+				outsideWorld(true);
+			} else if (ylocation > GameEngine.getScreenHeight()
 					|| ylocation < 0 - getFrameHeight()) {
-				outsideWorld();
+				outsideWorld(false);
 			}
 		}
 	}
 
 	/**
 	 * Triggered when the GameObject moves outside of the world.
+	 * 
+	 * @param horizontal
+	 *            is true when the object moves outside the left or right edge.
+	 *            False when it moves outside the top or bottom edge.
 	 */
-	public void outsideWorld() {
+	public void outsideWorld(boolean horizontal) {
 		// Override to use this method
 	}
 
@@ -361,7 +336,8 @@ public class GameObject {
 	 */
 	public final void setLayerPosition(float position) {
 		GameEngine.items.remove(GameEngine.items.indexOf(this));
-		GameEngine.items.add(Math.round(GameEngine.items.size() * position), this);
+		GameEngine.items.add(Math.round(GameEngine.items.size() * position),
+				this);
 	}
 
 	/**
@@ -387,7 +363,6 @@ public class GameObject {
 	public void setStartPosition(int x, int y) {
 		startposition[0] = x;
 		startposition[1] = y;
-		setPosition(x, y);
 	}
 
 	/**
@@ -399,5 +374,26 @@ public class GameObject {
 	 */
 	public boolean alarmsActiveForThisObject() {
 		return active;
+	}
+	
+	/**
+	 * Use this function to get the angle between you and another object. For
+	 * example: You can use this function to check if you approaching another
+	 * object from the left or right.
+	 * 
+	 * @param object
+	 *            an instance of another object to calculate the angle for.
+	 * @return the angle of the object or 0 if the object is null.
+	 */
+	public final double getAngle(GameObject object) {
+		
+		double deltaX = object.getFullX() - getFullX();
+		double deltaY = object.getFullY() - getFullY();
+		
+		if (deltaX >= 0 || deltaY >= 0) {
+			return Math.toDegrees(Math.atan2(deltaX, deltaX)) + 90;
+		} else {
+			return Math.toDegrees((Math.atan2(deltaY, deltaX))) + 450;
+		}
 	}
 }

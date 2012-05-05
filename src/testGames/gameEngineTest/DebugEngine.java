@@ -4,13 +4,14 @@ import android.gameengine.icadroids.alarms.Alarm;
 import android.gameengine.icadroids.alarms.IAlarm;
 import android.gameengine.icadroids.engine.GameEngine;
 import android.gameengine.icadroids.engine.GameFPSCounter;
-import android.gameengine.icadroids.engine.GameTiles;
 import android.gameengine.icadroids.forms.GameForm;
 import android.gameengine.icadroids.forms.IFormInput;
 import android.gameengine.icadroids.input.TouchInput;
 import android.gameengine.icadroids.objects.GameObject;
 import android.gameengine.icadroids.objects.MoveableGameObject;
 import android.gameengine.icadroids.sound.MusicPlayer;
+import android.gameengine.icadroids.tiles.GameTiles;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.View;
 import android.widget.Button;
@@ -30,7 +31,7 @@ public abstract class DebugEngine extends GameEngine implements IFormInput,
 	GameForm gf;
 	boolean paused = false;
 	boolean useGameObjectDebug = false;
-	RectF clickedPos = new RectF(0, 0, 0, 0);
+	Rect clickedPos = new Rect(0, 0, 0, 0);
 
 	public DebugEngine() {
 		addGameObject(DO, 0, 0);
@@ -55,7 +56,7 @@ public abstract class DebugEngine extends GameEngine implements IFormInput,
 			}
 		}
 		if (gf.getElementName(touchedElement).equals("tilesButton")) {
-			GameTiles.debugMode = !GameTiles.debugMode;
+	//		GameTiles.debugMode = !GameTiles.debugMode;
 		}
 		if (gf.getElementName(touchedElement).equals("soundButton")) {
 			MusicPlayer.play("lucas", false);
@@ -90,8 +91,8 @@ public abstract class DebugEngine extends GameEngine implements IFormInput,
 		super.update();
 		if (useGameObjectDebug) {
 			if (TouchInput.onPress) {
-				clickedPos.set(TouchInput.xPos - 15, TouchInput.yPos - 15,
-						TouchInput.xPos + 15, TouchInput.xPos + 15);
+				clickedPos.set((int)TouchInput.xPos - 15,(int) TouchInput.yPos - 15,
+						(int) TouchInput.xPos + 15,(int) TouchInput.xPos + 15);
 				if (!findItemAt(clickedPos).isEmpty()) {
 					GameObject GOjbect = findItemAt(clickedPos).get(0);
 					DO.gob = (MoveableGameObject) GOjbect;

@@ -21,7 +21,7 @@ public class testGameObjectBas extends MoveableGameObject implements IAlarm {
 	}
 
 	@Override
-	public void outsideWorld() {
+	public void outsideWorld(boolean horizontal) {
 		System.out.println("Hello outside world!");
 		// reverseHorizontalDirection();
 	}

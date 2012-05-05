@@ -36,6 +36,12 @@ public class GameView extends SurfaceView implements Callback {
 	private Thread gameThread;
 
 	/**
+	 * Surfaceloaded will be true when the surface
+	 * has been loaded
+	 */
+	public static boolean surfaceLoaded = false;
+
+	/**
 	 * The height of the map
 	 */
 	public static int MAP_HEIGHT = 2000;
@@ -64,7 +70,7 @@ public class GameView extends SurfaceView implements Callback {
 		gameEngine = ge;
 		holder = getHolder();
 		holder.addCallback(this);
-		setFocusable(true);	
+		setFocusable(true);
 	}
 
 	/**
@@ -81,33 +87,37 @@ public class GameView extends SurfaceView implements Callback {
 	 */
 	public void surfaceCreated(SurfaceHolder holder) {
 		System.out.println("surface created");
+
+		surfaceLoaded = true;
+
 		rectanglePaint.setARGB(255, 0, 0, 0);
 		rectanglePaint.setStrokeWidth(2);
 		rectanglePaint.setStrokeMiter(5);
 		rectanglePaint.setColor(Color.RED);
 		rectanglePaint.setStyle(Style.STROKE);
+
 		if (Viewport.useViewport) {
-			if(viewport == null)
-			{
+			if (viewport == null) {
 				viewport = Viewport.getInstance();
 			}
 			viewport.setPlayer(gameEngine.getPlayer());
 			matrix.reset();
 			matrix.postScale(viewport.getZoomFactor(), viewport.getZoomFactor());
 		}
+
 		if (gameThread.getState() == Thread.State.NEW) {
 			Log.d("GameThread", "Thread started");
 			gameThread.start();
 		}
-		if (Viewport.useViewport) {			
+
+		if (Viewport.useViewport) {
 			viewport.screenHeight = Math
-					.round((getHeight() / 
-							viewport.zoomFactor));
+					.round((getHeight() / viewport.zoomFactor));
 			viewport.screenWidth = Math
 					.round((getWidth() / viewport.zoomFactor));
 			if (tileBasedMap) {
-				viewport.setBounds(0, 0, gameEngine.getMapWidth(),
-						gameEngine.getMapHeight());
+				viewport.setBounds(0, 0, GameEngine.gameTiles.getMapHeigth(),
+						GameEngine.gameTiles.getMapWidth());
 			} else {
 				viewport.setBounds(0, 0, MAP_WIDTH, MAP_HEIGHT);
 			}
@@ -124,10 +134,6 @@ public class GameView extends SurfaceView implements Callback {
 			int height) {
 		System.out.println("surface changed");
 		// Empty method
-	}
-
-	public void drawTile(Canvas canvas, Sprite sprite, int x, int y) {
-		canvas.drawBitmap(sprite.getSprite(), x, y, null);
 	}
 
 	public void drawDebugTiles(Canvas canvas, float left, float top,
@@ -227,8 +233,7 @@ public class GameView extends SurfaceView implements Callback {
 	 *            The amount of zooming
 	 */
 	public void setZoomFactor(float zoomFactor) {
-		if(viewport == null)
-		{
+		if (viewport == null) {
 			viewport = Viewport.getInstance();
 			viewport.setPlayer(gameEngine.getPlayer());
 		}
@@ -266,36 +271,28 @@ public class GameView extends SurfaceView implements Callback {
 		canvas.drawColor(BACKGROUND_COLOR);
 		drawBackground(canvas);
 		if (Viewport.useViewport) {
-			if(viewport == null)
-			{
+			if (viewport == null) {
 				viewport = Viewport.getInstance();
 			}
 			canvas.setMatrix(matrix);
 			viewport.update();
+			checkZoomed(canvas);
+			canvas.translate(viewport.getMinX() - viewport.getViewportX(),
+					viewport.getMinY() - viewport.getViewportY());
 		}
-		for (int i = 0; i < GameEngine.items.size(); i++) {
-			GameObject item = GameEngine.items.get(i);
+		
+		GameEngine.gameTiles.drawTiles(canvas);
+		
+		for (GameObject item : GameEngine.items) {
 			if (Viewport.useViewport) {
 				if (viewport.isInViewport(item)) {
-					canvas.save();
-					checkZoomed(canvas);
-					canvas.translate(
-							viewport.getMinX() - viewport.getViewportX(),
-							viewport.getMinY() - viewport.getViewportY());
 					item.drawGameObject(canvas);
 					// View.isHardwareAccelerated();
-					canvas.restore();
 				}
-				canvas.setMatrix(null);
 			} else {
 				item.drawGameObject(canvas);
 			}
 		}
-		if (Viewport.useViewport) {
-			checkZoomed(canvas);
-			canvas.translate(-viewport.getViewportX(), -viewport.getViewportY());
-		}
-		gameEngine.drawTiles();
 		canvas.setMatrix(null);
 		gameEngine.drawInterface(canvas);
 	}

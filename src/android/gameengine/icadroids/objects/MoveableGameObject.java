@@ -1,10 +1,13 @@
 package android.gameengine.icadroids.objects;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import android.gameengine.icadroids.engine.GameEngine;
-import android.gameengine.icadroids.engine.GameTiles;
-import android.gameengine.icadroids.objects.collisions.CardinalDirections;
-import android.graphics.RectF;
+import android.gameengine.icadroids.objects.collisions.CollidingObject;
+import android.gameengine.icadroids.objects.collisions.ICollision;
+import android.gameengine.icadroids.tiles.Tile;
+import android.graphics.Rect;
 
 /**
  * MoveableGameObject represents a moveable object in the game. Make sure to add
@@ -13,10 +16,11 @@ import android.graphics.RectF;
  * time consuming, so make sure you only extend this class when the items are
  * really moving!
  * 
+ * <b> note: </b> Tile collision only works when the object is moving! </b>
+ * 
  * @author Edward van Raak,Bas van der Zandt, Roel van Bergen
  */
-public class MoveableGameObject extends GameObject implements
-		CardinalDirections {
+public class MoveableGameObject extends GameObject implements ICollision {
 
 	/** Holds the xspeed of this object */
 	private double xSpeed = 0;
@@ -36,59 +40,18 @@ public class MoveableGameObject extends GameObject implements
 	private double moveX = 0;
 	/** Holds the total y movement the object should perform, resets every loop */
 	private double moveY = 0;
-	/** Holds the tile number which this object should move up to */
-	private double moveUpToType = 0;
 	/** Holds the speed of this object */
 	private double speed;
 	/** Holds the friction of this object */
 	private double friction = 0;
-	/**
-	 * This variable will be true when horizontal collision is detected, false
-	 * on vertical.
-	 */
-	private boolean horizontal;
-	/**
-	 * This variable will be true for when 'move up to side' should be
-	 * performed.
-	 */
-	private boolean moveUpToSide;
-	/** This holds the degrees the collision calculates and requires */
-	private double degrees;
 
-	/**
-	 * Value that holds whenever collision should be skipped because 2
-	 * collisions were found in sucession.
-	 */
-	private boolean skipCollision = false;
-	/**
-	 * This list holds all the rectangles of the tiles this object collided
-	 * with, the collision updates this list.
-	 */
-	private ArrayList<RectF> collidedTiles = new ArrayList<RectF>();
-	/** This list holds all the tiletypes this object has collided with. */
-	private ArrayList<Integer> collidedTypes = new ArrayList<Integer>();
-	/** This array holds tiles which this object collided with */
-	private Boolean[] tileCollided = new Boolean[GameTiles.tileTypes.length];
-
-	/**
-	 * Constructor in which you can initialize most of your variables you need.
-	 */
-	public MoveableGameObject() {
-		for (int i = 0; i < tileCollided.length; i++) {
-			tileCollided[i] = false;
-		}
-	}
+	CollidingObject collidingObject = new CollidingObject();
 
 	@Override
 	public void update() {
 		super.update();
 		move();
-		updatePlayer();
 		speed = calculateSpeed(xSpeed, ySpeed);
-		rectangle.set((float) getFullX(), (float) getFullY(),
-				(float) getFrameWidth() + (float) getFullX(),
-				(float) getFrameHeight() + (float) getFullY());
-		calculateTileCollisions();
 	}
 
 	/**
@@ -102,8 +65,8 @@ public class MoveableGameObject extends GameObject implements
 	public final void moveTowardsAPoint(double x, double y) {
 		double deltaX = x - getFullX();
 		double deltaY = y - getFullY();
-		direction = calculateDirection(deltaX, deltaY);
-		setDirection(direction);
+		double pointDirection = calculateDirection(deltaX, deltaY);
+		setDirection(pointDirection);
 	}
 
 	/**
@@ -223,35 +186,28 @@ public class MoveableGameObject extends GameObject implements
 	 * works when this object has a speed.
 	 */
 	private void move() {
-		if (speed > 0) {
+		if (speed > 0 || moveX != 0 || moveY != 0) {
 			prevX = xlocation;
 			prevY = ylocation;
 			prevCenterX = getCenterX();
 			prevCenterY = getCenterY();
 			xSpeed = calculateFriction(xSpeed);
 			ySpeed = calculateFriction(ySpeed);
-			xlocation += xSpeed;
-			ylocation += ySpeed;
+
+			double movementX = xSpeed + moveX;
+			double movementY = ySpeed + moveY;
+
+			xlocation += movementX;
+			ylocation += movementY;
+
+			// Calculate collision
+			collidingObject.calculateCollision(xlocation, ylocation, xlocation
+					- movementX, ylocation - movementY, this.getSprite(),
+					GameEngine.gameTiles, this);
+
+			moveX = 0;
+			moveY = 0;
 		}
-	}
-
-	/**
-	 * Updates the player movement and sets the previous location this function
-	 * is called in the update loop and is mandatory for a moving object to
-	 * function correctly.
-	 */
-	private void updatePlayer() {
-
-		prevX = xlocation;
-		prevY = ylocation;
-		prevCenterX = getCenterX();
-		prevCenterY = getCenterY();
-
-		xlocation += moveX;
-		ylocation += moveY;
-		moveX = 0;
-		moveY = 0;
-
 	}
 
 	/**
@@ -391,468 +347,6 @@ public class MoveableGameObject extends GameObject implements
 	}
 
 	/**
-	 * Using the angle calculated by calculateTileCollision, handle the
-	 * collision.
-	 * 
-	 * @param tiletype
-	 * @param side
-	 * @return true if a collision was detected
-	 */
-	public final boolean handleTileCollision(int tiletype, int side) {
-		int tilenum = 0;
-		double tempCollidedTileX = collidedTiles.get(0).centerX();
-		double tempCollidedTileY = collidedTiles.get(0).centerY();
-		/**
-		 * Incase moveUpToSide was activated, find a tile of the correct type as
-		 * was specified by moveUpToTileSide()
-		 */
-		if (moveUpToSide) {
-			for (int i = 0; i < collidedTypes.size(); i++) {
-				if (collidedTypes.get(i) == moveUpToType) {
-					tilenum = i;
-				}
-			}
-		}
-		/***
-		 * Use the final angle to check if the there was an horizontal or
-		 * vertical collision
-		 */
-		if (degrees == SOUTH_EAST || degrees == SOUTH_WEST
-				|| degrees == NORTH_WEST || degrees == NORTH_EAST) {
-			skipCollision = true;
-			undoMove();
-			return true;
-		}
-		if ((degrees > NORTH_EAST && degrees <= FULL_EAST)
-				|| (degrees >= EAST && degrees < SOUTH_EAST)
-				&& (side == 4 || side == 5)) {
-			return handleRightSideCollision(tempCollidedTileX, tilenum);
-		}
-		if (degrees > 135 && degrees < 225 && (side == 1 || side == 5)) {
-			return handleLeftSideCollision(tempCollidedTileX, tilenum);
-		}
-		if (degrees > 225 && degrees < 315 && (side == 3 || side == 5)) {
-			return handleTopSideCollision(tempCollidedTileY, tilenum);
-		}
-		if (degrees > 45 && degrees < 135 && (side == 2 || side == 5)) {
-			return handleBottomSideCollision(tempCollidedTileY, tilenum);
-		}
-		return false;
-	}
-
-	/**
-	 * This function performs a sequence of actions in which it checks for
-	 * vertical only collision
-	 * 
-	 * @param tempCollidedTileY
-	 * @return <b>TRUE</b> if there has been a vertical <b>only </b> collision.
-	 *         Otherwise it will return <b>FALSE</b>
-	 */
-	private boolean handleVerticalMoveUpTo(double tempCollidedTileY) {
-		for (int i = 0; i < collidedTiles.size(); i++) {
-			RectF currentSqr = collidedTiles.get(i);
-			if (tempCollidedTileY != currentSqr.centerY()) {
-				undoMove();
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * This function performs a sequence of actions in which it checks for
-	 * horizontal only collision
-	 * 
-	 * @param tempCollidedTileX
-	 * @return <b>TRUE</b> if there has been a horizontal <b>only </b>
-	 *         collision. Otherwise it will return <b>FALSE</b>
-	 */
-	private boolean handleHorizontalMoveUpTo(double tempCollidedTileX) {
-		for (int i = 0; i < collidedTiles.size(); i++) {
-			RectF currentSqr = collidedTiles.get(i);
-			if (tempCollidedTileX != currentSqr.centerX()) {
-				undoMove();
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Handles the sequence of actions this object should perform for a
-	 * collision at the right side of this object.
-	 * 
-	 * @param tempCollidedTileX
-	 *            the X position of collided tile.
-	 * @param tilenum
-	 *            the tile number it should perform this function on.
-	 * @return always returns true
-	 */
-	private boolean handleRightSideCollision(double tempCollidedTileX,
-			int tilenum) {
-		skipCollision = true;
-		if (moveUpToSide) {
-			if (handleHorizontalMoveUpTo(tempCollidedTileX)) {
-				return true;
-			}
-			setPosition(collidedTiles.get(tilenum).left - rectangle.width(),
-					getY());
-			moveUpToSide = false;
-		}
-		setHorizontal(true);
-		return true;
-	}
-
-	/**
-	 * Handles the sequence of actions this object should perform for a
-	 * collision at the left side of this object.
-	 * 
-	 * @param tempCollidedTileX
-	 *            the X position of collided tile.
-	 * @param tilenum
-	 *            the tile number it should perform this function on.
-	 * @return always returns true
-	 */
-	private boolean handleLeftSideCollision(double tempCollidedTileX,
-			int tilenum) {
-		skipCollision = true;
-		if (moveUpToSide) {
-			if (handleHorizontalMoveUpTo(tempCollidedTileX)) {
-				return true;
-			}
-			setPosition(collidedTiles.get(tilenum).right, getY());
-			moveUpToSide = false;
-		}
-		setHorizontal(true);
-		return true;
-	}
-
-	/**
-	 * Handles the sequence of actions this object should perform for a
-	 * collision at the top side of this object.
-	 * 
-	 * @param tempCollidedTileY
-	 *            the Y position of collided tile.
-	 * @param tilenum
-	 *            the tile number it should perform this function on.
-	 * @return always returns true
-	 */
-	private boolean handleTopSideCollision(double tempCollidedTileY, int tilenum) {
-		skipCollision = true;
-		if (moveUpToSide) {
-			if (handleVerticalMoveUpTo(tempCollidedTileY)) {
-				return true;
-			}
-			setPosition(getX(), collidedTiles.get(tilenum).bottom);
-			moveUpToSide = false;
-		}
-		setHorizontal(true);
-		return true;
-	}
-
-	/**
-	 * Handles the sequence of actions this object should perform for a
-	 * collision at the bottom side of this object.
-	 * 
-	 * @param tempCollidedTileY
-	 *            the Y position of collided tile.
-	 * @param tilenum
-	 *            the tile number it should perform this function on.
-	 * @return always returns true
-	 */
-	private boolean handleBottomSideCollision(double tempCollidedTileY,
-			int tilenum) {
-		skipCollision = true;
-		if (moveUpToSide) {
-			if (handleVerticalMoveUpTo(tempCollidedTileY)) {
-				return true;
-			}
-			setPosition(getX(),
-					collidedTiles.get(tilenum).top - rectangle.height());
-			moveUpToSide = false;
-		}
-		setHorizontal(true);
-		return true;
-	}
-
-	/***
-	 * Checks whenever this object colides with the given tiletype. If so, this
-	 * method returns true.
-	 * 
-	 * @author Edward van Raak & Roel van Bergen
-	 * @param tiletype
-	 *            The map tile type
-	 * @return
-	 */
-	private final ArrayList<RectF> calculateTileCollisions() {
-		int xSector = 0;
-		int ySector = 0;
-		collidedTiles.clear();
-		collidedTypes.clear();
-		/**
-		 * Calculate the size of the sector
-		 */
-		xSector = (int) Math.ceil(rectangle.width() / GameTiles.tileSize) + 1;
-		ySector = (int) Math.ceil(rectangle.height() / GameTiles.tileSize) + 1;
-		/**
-		 * Loop through all the tiles in the current sector, add any collided
-		 * tiles to the collidedTiles list (Refactor to level 1 complexity in
-		 * the future!)
-		 */
-		int xVertice = (int) Math.floor(xlocation / GameTiles.tileSize);
-		int yVertice = (int) Math.floor(ylocation / GameTiles.tileSize);
-		for (int i = xVertice - xSector; i < xVertice + xSector; i++) {
-			if (i >= GameTiles.tileMapWidth) {
-				break;
-			}
-			for (int j = yVertice - ySector; j < yVertice + ySector; j++) {
-				i = i < 0 ? 0 : i;
-				j = j < 0 ? 0 : j;
-				if (j >= GameTiles.tileMapHeight) {
-					break;
-				}
-				if (RectF.intersects(rectangle, GameTiles.tileRectArray[j][i])
-						&& GameTiles.tileArray[j][i] != -1) {
-					collidedTiles.add(GameTiles.tileRectArray[j][i]);
-					collidedTypes.add((int) GameTiles.tileArray[j][i]);
-				}
-			}
-		}
-		/**
-		 * Loop through the list of intersected tiles and calculate the angle
-		 * between the center point of the tile and the center point of the
-		 * sprite then add these angles to the angle list.
-		 */
-		double sumdx = 0;
-		double sumdy = 0;
-		for (int i = 0; i < collidedTiles.size(); i++) {
-			RectF currentSqr = collidedTiles.get(i);
-			sumdx += getPrevCenterX() - currentSqr.centerX();
-			sumdy += getPrevCenterY() - currentSqr.centerY();
-		}
-		double avgdx = sumdx / collidedTiles.size();
-		double avgdy = sumdy / collidedTiles.size();
-		degrees = Math.toDegrees(Math.atan2(avgdy, avgdx)) + 180;
-		/**
-		 * Reset the list that holds what type is being collided
-		 */
-		for (int i = 0; i < tileCollided.length; i++) {
-			tileCollided[i] = false;
-		}
-		/**
-		 * If no tiles were found that intersect with this game object...
-		 */
-		if (collidedTiles.size() == 0) {
-			/** Stop with collsision detection **/
-			skipCollision = false; // collision activated again
-			return null;
-		}
-		/**
-		 * Set elements in the collided tiletype list to true
-		 */
-		for (int i = 0; i < collidedTypes.size(); i++) {
-			int x = collidedTypes.get(i);
-			tileCollided[x] = true;
-		}
-		return collidedTiles;
-	}
-
-	/**
-	 * Check collision on all sides of this sprite.
-	 * 
-	 * @param type
-	 *            What tile type should be checked
-	 * @return true if a collision has occured on any side of this game object.
-	 */
-	public final boolean collided(int type) {
-		return checkSides(type, 5);
-	}
-
-	/**
-	 * Check collision on the the left side of this sprite.
-	 * 
-	 * @param type
-	 *            What tile type should be checked
-	 * @return true if a collision has occured on the left side of this game
-	 *         object.
-	 */
-	public final boolean collidedLeft(int type) {
-		return checkSides(type, 1);
-	}
-
-	/**
-	 * Check collision on the the bottom side of this sprite.
-	 * 
-	 * @param type
-	 *            What tile type should be checked
-	 * @return true if a collision has occured on the bottom side of this game
-	 *         object.
-	 */
-	public final boolean collidedBottom(int type) {
-		return checkSides(type, 2);
-	}
-
-	/**
-	 * Check collision on the the top side of this sprite.
-	 * 
-	 * @param type
-	 *            What tile type should be checked
-	 * @return true if a collision has occured on the top side of this game
-	 *         object.
-	 */
-	public final boolean collidedTop(int type) {
-		return checkSides(type, 3);
-	}
-
-	/**
-	 * Check collision on the the right side of this sprite.
-	 * 
-	 * @param type
-	 *            What tile type should be checked
-	 * @return true if a collision has occured on the right side of this game
-	 *         object.
-	 */
-	public final boolean collidedRight(int type) {
-		return checkSides(type, 4);
-	}
-
-	/**
-	 * Check sides for collision
-	 * 
-	 * @param type
-	 *            The type that should be checked
-	 * @param side
-	 *            The side that should be checked
-	 * @return true if collision was found
-	 */
-	private final boolean checkSides(int type, int side) {
-		if (skipCollision) {
-			System.out.println("Collision skipped!");
-			// return false;
-		}
-		if (!tileCollided[type]) {
-			return false;
-		}
-		if (handleTileCollision(type, side)) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Checks wether or not this gameObject has collided with one or multiple
-	 * gameObjects or MovableGameObjects. It will return a list with the
-	 * collided objects, it returns a null if there is no collision.
-	 * 
-	 * @return An arraylist of all objects that have been collided with.
-	 * 
-	 *         Note that you will never get the object calling this function
-	 *         back.
-	 */
-	public final ArrayList<GameObject> getCollidedObjects() {
-		ArrayList<GameObject> collidedObjects = new ArrayList<GameObject>();
-
-		for (int i = 0; i < GameEngine.items.size(); i++) {
-			if (GameEngine.items.get(i) != this) {
-				if (this.rectangle.intersect(GameEngine.items.get(i).rectangle)) {
-					collidedObjects.add(GameEngine.items.get(i));
-				}
-			}
-		}
-		if (collidedObjects.size() > 0) {
-			return collidedObjects;
-		}
-		return null;
-	}
-
-	/**
-	 * Gets the instance of a collided gameobject, this will get the first
-	 * object you collided with. Do not use this if you want to check for
-	 * multiple objects use getCollidedObjects instead! This function will
-	 * return a null if there has been no collision. Be sure to catch the null
-	 * or else you might receive a null pointer exception.
-	 * 
-	 * @retun returns the instance of the object or a null depending if there is
-	 *        a collision with an object or not.
-	 */
-	public final GameObject getCollidedObject() {
-
-		if (getCollidedObjects() != null) {
-			return getCollidedObjects().get(0);
-		}
-		return null;
-	}
-
-	/**
-	 * Checks if your object has collided with another object of a certain
-	 * class.
-	 * 
-	 * @param objectClass
-	 *            Asks for any generic class, classes you should use are
-	 *            Gameobject,MoveableGameobject or any extensions of these two.
-	 * 
-	 * @return returns if this object has collided with an instance of given
-	 *         class
-	 */
-	public final <T> boolean collidedWith(Class<T> objectClass) {
-
-		ArrayList<GameObject> tempArray = getCollidedObjects();
-		if (tempArray == null) {
-
-			return false;
-		}
-
-		for (int i = 0; i < tempArray.size(); i++) {
-			if (tempArray.get(i).getClass().isAssignableFrom(objectClass)) {
-				return true;
-			}
-		}
-
-		return false;
-
-	}
-
-	/**
-	 * Use this function to get the angle between you and another object. For
-	 * example: You can use this function to check if you approaching another
-	 * object from the left or right.
-	 * 
-	 * @param object
-	 *            an instance of another object to calculate the angle for.
-	 * @return the angle of the object or 0 if the object is null.
-	 */
-	public final int getAngle(GameObject object) {
-		if (object == null) {
-			return 0;
-		}
-		double dx = object.getCenterX() - this.getCenterX();
-		double dy = object.getCenterY() - this.getCenterY();
-		int angle = (int) Math.round(Math.toDegrees(Math.atan2(dy, dx)) + 180);
-		return angle;
-	}
-
-	/**
-	 * Set horizontal
-	 * 
-	 * @param horizontal
-	 *            the horizontal to set
-	 */
-	private final void setHorizontal(boolean horizontal) {
-		this.horizontal = horizontal;
-	}
-
-	/**
-	 * This method will return true when horizontal collision is detected, false
-	 * on vertical.
-	 * 
-	 * @return 'True' when there is a horizontal collision, false when it's
-	 *         vertical.
-	 */
-	public boolean getHorizontal() {
-		return horizontal;
-	}
-
-	/**
 	 * Gets the previous X position of this object, which is saved every loop.
 	 * 
 	 * @return the previous X position.
@@ -891,8 +385,8 @@ public class MoveableGameObject extends GameObject implements
 	}
 
 	/**
-	 * Gets the Y speed of this object. Note that an object only has a speed if
-	 * it first has been set with setSpeed(double),setxSpeed(double) or
+	 * Gets the speed of this object. Note that an object only has a speed if it
+	 * first has been set with setSpeed(double),setxSpeed(double) or
 	 * setySpeed(double)
 	 * 
 	 * @return The Y speed.
@@ -929,22 +423,172 @@ public class MoveableGameObject extends GameObject implements
 	 */
 	public final void undoMove() {
 		setPosition(this.getPrevX(), this.getPrevY());
-		rectangle.set((float) this.getPrevX(), (float) this.getPrevY(),
-				(float) this.getPrevX() + (float) getFrameWidth(),
-				(float) this.getPrevY() + (float) getFrameHeight());
+		updatePlayerFramePosition();
+	}
+
+	// Collision methods
+
+	/**
+	 * Checks wether or not this gameObject has collided with one or multiple
+	 * gameObjects or MovableGameObjects. It will return a list with the
+	 * collided objects, it returns a null if there is no collision.
+	 * 
+	 * @return An arraylist of all objects that have been collided with.
+	 * 
+	 *         Note that you will never get the object calling this function
+	 *         back.
+	 */
+	public final ArrayList<GameObject> getCollidedObjects() {
+		ArrayList<GameObject> collidedObjects = new ArrayList<GameObject>();
+
+		for (int i = 0; i < GameEngine.items.size(); i++) {
+			if (GameEngine.items.get(i) != this) {
+				if (this.position.intersect(GameEngine.items.get(i).position)) {
+					collidedObjects.add(GameEngine.items.get(i));
+				}
+			}
+		}
+		if (collidedObjects.size() > 0) {
+			return collidedObjects;
+		}
+		return null;
 	}
 
 	/**
-	 * If this method is called inside the update loop, it will cause this
-	 * object to move as close as possible to the tile it had collided with.
+	 * Checks if your object has collided with another object of a certain
+	 * class.
 	 * 
-	 * @param activate
-	 *            When set to false, this method will not have any effect.
-	 * @param tiletype
-	 *            The tiletype that should be used.
-	 **/
-	public final void moveUpToTileSide(int tiletype) {
-		moveUpToType = tiletype;
-		moveUpToSide = true;
+	 * @param objectClass
+	 *            Asks for any generic class, classes you should use are
+	 *            Gameobject,MoveableGameobject or any extensions of these two.
+	 * 
+	 * @return returns if this object has collided with an instance of given
+	 *         class
+	 */
+	public final <T> boolean collidedWith(Class<T> objectClass) {
+
+		ArrayList<GameObject> tempArray = getCollidedObjects();
+		if (tempArray == null) {
+
+			return false;
+		}
+
+		for (int i = 0; i < tempArray.size(); i++) {
+			if (tempArray.get(i).getClass().isAssignableFrom(objectClass)) {
+				return true;
+			}
+		}
+
+		return false;
+
 	}
+
+	/**
+	 * Calculates on which side of the object an collision has occurred with an
+	 * tile.
+	 * 
+	 * @param object
+	 *            The object that has the collision
+	 * @param tile
+	 *            The colided tile
+	 * @return Returns when collision is on: <b> 0 - Top, 1 - Right, 2 - Bottom,
+	 *         3 - Left</b>
+	 */
+	public int getCollisionSide(Tile tile) {
+
+		double angle = collidingObject.calculateCollisionAngle(
+				getFullX(), getFullY(), tile,
+				getSprite());
+
+		if ((angle >= 315 && angle < 360) || (angle >= 0 && angle <= 45)) { // collision
+																			// top
+			return 0;
+		}
+		if (angle >= 135 && angle <= 225) { // collision bottom
+			return 2;
+		}
+		if (angle > 45 && angle < 135) { // collision right
+			return 1;
+		}
+		if (angle > 225 && angle < 315) { // collision left
+			return 3;
+		}
+		return -1;
+	}
+
+	/**
+	 * Move as close as possible to the given (collided) tile
+	 * 
+	 * Note: this method is specially designed to work with collided tiles. 
+	 * Using Tiles that are not close to the object can cause strange behavior.
+	 * @param tile
+	 */
+	public void moveUpToTileSide(Tile tile){
+		undoMove();
+		
+		int tilePositionX = (tile.getTileNumberX() * tile.getGameTiles().tileSize)
+				+ (tile.getGameTiles().tileSize / 2);
+		int tilePositionY = (tile.getTileNumberY() * tile.getGameTiles().tileSize)
+				+(tile.getGameTiles().tileSize / 2);
+		
+		Rect ObjectAABB = new Rect();
+		ObjectAABB.top = getY() - (tile.getGameTiles().tileSize / 2);
+		ObjectAABB.left = getX() - (tile.getGameTiles().tileSize / 2);
+		ObjectAABB.right = getX() + getFrameWidth() + (tile.getGameTiles().tileSize / 2);
+		ObjectAABB.bottom = getY() + getFrameHeight() + (tile.getGameTiles().tileSize / 2);
+		
+		int deltaX = Math.abs(tilePositionX - ObjectAABB.centerX());
+		int deltaY = Math.abs(tilePositionY - ObjectAABB.centerY());
+		
+		int movement = 0;
+		if(deltaX > deltaY){
+			if(ObjectAABB.right < tilePositionX){
+				movement = (tilePositionX - ObjectAABB.right) - 1;
+			}
+			if(ObjectAABB.left > tilePositionX){
+				movement = (tilePositionX - ObjectAABB.left) + 1;
+			}
+			xlocation += movement;
+		}
+		if(deltaX < deltaY){
+			if(ObjectAABB.bottom < tilePositionY){
+				movement = (tilePositionY - ObjectAABB.bottom) - 1;
+			}
+			if(ObjectAABB.top > tilePositionY){
+				movement = (tilePositionY - ObjectAABB.top) + 1;
+			}
+			ylocation += movement;
+		}
+		
+	}
+	
+	/**
+	 * Get a tile on a specific x and y position in the game world
+	 * 
+	 * @param xPosition
+	 *            x position of the tile
+	 * @param yPosition
+	 *            y position of the tile
+	 * @param gameTiles
+	 * @return The Tile object at the given x and y position
+	 */
+	public Tile getTileOnPosition(int xPosition, int yPosition){
+		return collidingObject.getTileOnPosition(xPosition, yPosition, GameEngine.gameTiles);
+	}
+	
+	/**
+	 * Get the colliding object if you want to make use of the methods that are in there
+	 * @return the collidingObject
+	 */
+	public CollidingObject getCollidingObject() {
+		return collidingObject;
+	}
+	
+	/* (non-Javadoc)
+	 * @see android.gameengine.icadroids.objects.collisions.ICollision#collisionOccurred(java.util.List)
+	 */
+	public void collisionOccurred(List<Tile> collidedTiles) {
+		
+	}
+
 }

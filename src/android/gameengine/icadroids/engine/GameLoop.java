@@ -28,7 +28,7 @@ public class GameLoop implements Runnable {
 	/**
 	 * Max FPS of this Game
 	 */
-	public static int MAX_FPS = 90;
+	public static int MAX_FPS = 30;
 
 	/**
 	 * Registers the game FPS
@@ -78,6 +78,8 @@ public class GameLoop implements Runnable {
 		long ticksPS = 1000 / MAX_FPS;
 		long startTime;
 		long sleepTime;
+		gameEngine.initialize();
+		gameEngine.intializeTouch();
 		while (running) {
 			fps.logFrame("Render");
 			startTime = getCurrentSystemTime();

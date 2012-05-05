@@ -12,21 +12,20 @@ import android.gameengine.icadroids.input.OnScreenButtons;
 import android.gameengine.icadroids.input.TouchInput;
 import android.gameengine.icadroids.objects.GameObject;
 import android.gameengine.icadroids.objects.MoveableGameObject;
+import android.gameengine.icadroids.objects.graphics.Sprite;
 import android.gameengine.icadroids.renderer.GameView;
 import android.gameengine.icadroids.sound.GameSound;
 import android.gameengine.icadroids.sound.MusicPlayer;
+import android.gameengine.icadroids.tiles.GameTiles;
 import android.graphics.Canvas;
-import android.graphics.RectF;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Toast;
 
 /**
  * GameEngine is the core of the game. Extending this class is required to make
@@ -56,11 +55,6 @@ public abstract class GameEngine extends Activity {
 	 */
 	private static int screenWidth, screenHeight;
 	/**
-	 * GameTiles handles the creation and updates of any arrays or variables
-	 * that effect the tile system
-	 */
-	private GameTiles tiles;
-	/**
 	 * TouchInput handles input by touching the screen
 	 */
 	private TouchInput touch;
@@ -84,11 +78,6 @@ public abstract class GameEngine extends Activity {
 	 * manually want to delete/change alarms.
 	 */
 	public static Vector<Alarm> gameAlarms;
-	/**
-	 * A Two Dimensional byte array that can be used to create a tile based
-	 * environment.
-	 */
-	private byte[][] map;
 	/**
 	 * If update loop is set to true, use an experimental UpdateLoop
 	 */
@@ -115,21 +104,12 @@ public abstract class GameEngine extends Activity {
 	 */
 	private boolean landscape = true;
 	/**
-	 * Item ID's used by the menu
-	 */
-	private static final int MENU_ITEM_1 = Menu.FIRST + 1;
-	private static final int MENU_ITEM_2 = Menu.FIRST + 2;
-	private static final int MENU_ITEM_3 = Menu.FIRST + 3;
-	private static final int MENU_ITEM_4 = Menu.FIRST + 4;
-	/**
-	 * Message that will be shown by the menu
-	 */
-	Toast msg, msg1, msg2, msg3;
-	/**
 	 * Motion Sensor is used to receive certain statics about certain
 	 * motionEvent note that this only works on real phones and not in emulator.
 	 */
 	private MotionSensor sensor;
+
+	public static GameTiles gameTiles;
 
 	/**
 	 * The GameEngine forms the core of the game by controlling the gameloop and
@@ -141,6 +121,7 @@ public abstract class GameEngine extends Activity {
 	 */
 	public GameEngine() {
 
+		gameTiles = new GameTiles(100);
 		items = new Vector<GameObject>();
 		gameAlarms = new Vector<Alarm>();
 	}
@@ -175,7 +156,6 @@ public abstract class GameEngine extends Activity {
 		view = new GameView(this, gameThread);
 		gameloop.setView(view);
 
-		map = new byte[0][0];
 		touch = new TouchInput();
 		screenButtons = new OnScreenButtons();
 		sensor = new MotionSensor();
@@ -189,7 +169,6 @@ public abstract class GameEngine extends Activity {
 		screenHeight = getWindow().getWindowManager().getDefaultDisplay()
 				.getHeight();
 
-		initialize();
 		setContentView(view);
 		view.setKeepScreenOn(true);
 
@@ -217,10 +196,29 @@ public abstract class GameEngine extends Activity {
 	 * GameEngine. Call super.initialize() at the very start.
 	 */
 	protected void initialize() {
-		for (int i = 0; i < items.size(); i++) {
-			items.get(i).intializeGameObject();
+
+		System.out.println("Intializing...");
+
+		if (Sprite.loadDelayedSprites != null) {
+			for (Sprite sprite : Sprite.loadDelayedSprites) {
+				sprite.initialize();
+			}
 		}
-		addTileMap(map, 0, 0);
+		Sprite.loadDelayedSprites = null;
+
+		for (GameObject item : items) {
+			item.intializeGameObject();
+		}
+
+	}
+
+	protected void intializeTouch() {
+		if (TouchInput.use) {
+			view.setOnTouchListener(touch);
+		} else if (OnScreenButtons.use) {
+			Log.d("ButtonEnabled", "USING ON SCREEN BUTTONS");
+			view.setOnTouchListener(screenButtons);
+		}
 	}
 
 	/**
@@ -345,59 +343,12 @@ public abstract class GameEngine extends Activity {
 		MusicPlayer.pauseAll();
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(Menu.NONE, MENU_ITEM_1, Menu.NONE, "Ica Droid");
-		menu.add(Menu.NONE, MENU_ITEM_2, Menu.NONE, "Settings");
-		menu.add(Menu.NONE, MENU_ITEM_3, Menu.NONE, "Info");
-		menu.add(Menu.NONE, MENU_ITEM_4, Menu.NONE, "Close");
-		return (super.onCreateOptionsMenu(menu));
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case MENU_ITEM_1:
-			msg = Toast.makeText(GameEngine.this, "Welcome to the game!",
-					Toast.LENGTH_LONG);
-			msg.show();
-			break;
-		case MENU_ITEM_2:
-			msg = Toast.makeText(GameEngine.this, "Volume: 100%",
-					Toast.LENGTH_LONG);
-			msg.show();
-			break;
-		case MENU_ITEM_3:
-			msg = Toast.makeText(GameEngine.this, "ICA_DROID VERSION 1.0", 10);
-			msg1 = Toast.makeText(GameEngine.this,
-					"Created By DDOA STUDENTS 2011-2012", 10);
-			msg2 = Toast.makeText(GameEngine.this,
-					"Based on the old J2ME PhoneEngine", 10);
-			msg3 = Toast.makeText(GameEngine.this,
-					"Questions? Bugs? Report to teacher!", 10);
-			msg.show();
-			msg1.show();
-			msg2.show();
-			msg3.show();
-			break;
-		case MENU_ITEM_4:
-			finish();
-		}
-		return (super.onOptionsItemSelected(item));
-	}
-
 	/**
 	 * Start the gameloop thread. Should be called during the initializing
 	 * phase.
 	 */
-	protected final void startGame() {
-		gameloop.setRunning(true);
-		if (TouchInput.use) {
-			view.setOnTouchListener(touch);
-		} else if (OnScreenButtons.use) {
-			Log.d("ButtonEnabled", "USING ON SCREEN BUTTONS");
-			view.setOnTouchListener(screenButtons);
-		}
+	@Deprecated
+	protected void startGame() {
 
 	}
 
@@ -412,7 +363,6 @@ public abstract class GameEngine extends Activity {
 	/**
 	 * Add a GameObject to the GameObjectList. Items added to this list are
 	 * updated accordingly.<br>
-	 * This method should be called during the initializing phase.
 	 * 
 	 * @param gameObject
 	 *            The GameObject that will be added to the game. Should have
@@ -431,7 +381,6 @@ public abstract class GameEngine extends Activity {
 	/**
 	 * Add a GameObject to the GameObjectList. Items added to this list are
 	 * updated accordingly.<br>
-	 * This method should be called during the initializing phase.
 	 * 
 	 * @param gameObject
 	 *            The GameObject that will be added to the game. Should have
@@ -452,6 +401,31 @@ public abstract class GameEngine extends Activity {
 	}
 
 	/**
+	 * Add a GameObject to the GameObjectList.
+	 * 
+	 * @param gameObject
+	 *            The GameObject that will be added to the game. Should have
+	 *            either GameObject or MovableGameObject as it's parent.
+	 * @param layerposition
+	 *            The layerposition when this object is drawed. <b>Between 0 and
+	 *            1 (float). </b> 1 front, 0 back
+	 */
+	public final void addGameObject(GameObject gameObject, float layerposition) {
+		items.add(Math.round(items.size() * layerposition), gameObject);
+	}
+
+	/**
+	 * Add a GameObject to the GameObjectList
+	 * 
+	 * @param gameObjectThe
+	 *            GameObject that will be added to the game. Should have either
+	 *            GameObject or MovableGameObject as it's parent.
+	 */
+	public final void addGameObject(GameObject gameObject) {
+		items.add(gameObject);
+	}
+
+	/**
 	 * Add a collection of GameObjects. Usefull if you want to add a lot of
 	 * objects.
 	 * 
@@ -462,30 +436,16 @@ public abstract class GameEngine extends Activity {
 	}
 
 	/**
-	 * Create a tiled map, based on a two dimensional array. This method is
-	 * especially useful if you want to quickly build a level/map (walls, floor,
-	 * etc) for a platform- or boardgame.
+	 * Set a GameTiles object as the current GameTile map.
 	 * 
-	 * Width and Height of the map is automaticly calculated. Do not make a map
-	 * that has parts sticking out. Use -1 to create an empty space. <br/>
+	 * Width and Height of the map is automatically calculated. Do not make a
+	 * map that has parts sticking out. Use -1 to create an empty space. <br/>
 	 * 
-	 * @param TileMap
-	 *            A 2D array filled with Integers. Every Integer has a sprite
-	 *            associated with it.
-	 * @param xPosition
-	 *            the horizontal start position of the map on the screen (still
-	 *            buggy, keep it at 0 to be safe)
-	 * 
-	 * @param yPosition
-	 *            the vertical start position of the map on the screen (still
-	 *            buggy, keep it at 0 to be safe)
-	 * 
+	 * @param set
+	 *            the current gameTiles object.
 	 */
-	protected void addTileMap(byte[][] map2, int xPosition, int yPostition) {
-		map = map2;
-		tiles = null;
-		tiles = GameTiles.addTileMap(this, view, map, xPosition, yPostition);
-		GameTiles.setTileArray(map);
+	protected void setTileMap(GameTiles gameTiles) {
+		GameEngine.gameTiles = gameTiles;
 	}
 
 	/**
@@ -528,15 +488,6 @@ public abstract class GameEngine extends Activity {
 
 	/**
 	 * <b> DO NOT CALL THIS METHOD </b><br>
-	 * Draw the tiles. The gameloop handles this automaticly so you don't need
-	 * to call this unless you have a good reason.
-	 */
-	public final void drawTiles() {
-		tiles.DrawTiles();
-	}
-
-	/**
-	 * <b> DO NOT CALL THIS METHOD </b><br>
 	 * 
 	 * @return the gameloop
 	 */
@@ -569,6 +520,7 @@ public abstract class GameEngine extends Activity {
 	 */
 	public final void addPlayer(MoveableGameObject player, int x, int y) {
 		player.setStartPosition(x, y);
+		player.jumpToStartPosition();
 		items.add(player);
 		this.player = player;
 	}
@@ -592,6 +544,7 @@ public abstract class GameEngine extends Activity {
 	public final void addPlayer(MoveableGameObject player, int x, int y,
 			float position) {
 		player.setStartPosition(x, y);
+		player.jumpToStartPosition();
 		items.add(Math.round(items.size() * position), player);
 		this.player = player;
 	}
@@ -647,45 +600,15 @@ public abstract class GameEngine extends Activity {
 	 * @return the list of items it found at the location the size is zero when
 	 *         nothing is found.
 	 */
-	public final Vector<GameObject> findItemAt(RectF rectangle) {
+	public final Vector<GameObject> findItemAt(Rect rectangle) {
 		Vector<GameObject> foundItems = new Vector<GameObject>();
 
 		for (int i = 0; i < items.size(); i++) {
-			if (rectangle.intersect((items.get(i).rectangle))) {
+			if (rectangle.intersect((items.get(i).position))) {
 				foundItems.add(items.get(i));
 			}
 		}
 		return foundItems;
-	}
-
-	/**
-	 * This function should finds tiles inside a given rectangle and returns all
-	 * found tile types.
-	 * 
-	 * @param rectangle
-	 *            the rectangle specified in a left, top to bottom,right
-	 *            location
-	 * @return the list of tile numbers (as specified in tileID) it found at the
-	 *         location the size is zero when nothing is found.
-	 */
-	public final Vector<Integer> findTilesAt(RectF rectangle) {
-		Vector<Integer> foundTiles = new Vector<Integer>();
-
-		int xSector = (int) Math.ceil(rectangle.width() / GameTiles.tileSize) + 1;
-		int ySector = (int) Math.ceil(rectangle.height() / GameTiles.tileSize) + 1;
-
-		int xVertice = (int) Math.floor(rectangle.left / GameTiles.tileSize);
-		int yVertice = (int) Math.floor(rectangle.top / GameTiles.tileSize);
-
-		for (int i = xSector - xVertice; i < xVertice + xSector; i++) {
-			for (int j = ySector - yVertice; j < yVertice + ySector; j++) {
-				if (RectF.intersects(rectangle, GameTiles.tileRectArray[j][i])
-						&& GameTiles.tileArray[j][i] != -1) {
-					foundTiles.add((int) GameTiles.tileArray[j][i]);
-				}
-			}
-		}
-		return foundTiles;
 	}
 
 	/**
@@ -709,24 +632,6 @@ public abstract class GameEngine extends Activity {
 
 		return screenHeight;
 
-	}
-
-	/**
-	 * Gets the height of the map
-	 * 
-	 * @return The height of the current map, measured in tiles * tilesize
-	 */
-	public final int getMapHeight() {
-		return tiles.getMapHeight();
-	}
-
-	/**
-	 * Gets the width of the map
-	 * 
-	 * @return The width of the current map, measured in tiles * tilesize
-	 */
-	public final int getMapWidth() {
-		return tiles.getMapWidth();
 	}
 
 	private final void checkScreenOrientation() {
@@ -840,4 +745,5 @@ public abstract class GameEngine extends Activity {
 		InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 		mgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 	}
+
 }

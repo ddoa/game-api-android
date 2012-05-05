@@ -2,7 +2,6 @@ package testGames;
 
 import testGames.gameEngineTest.DebugEngine;
 import android.gameengine.icadroids.engine.GameEngine;
-import android.gameengine.icadroids.engine.GameTiles;
 import android.gameengine.icadroids.input.OnScreenButtons;
 import android.gameengine.icadroids.input.TouchInput;
 import android.gameengine.icadroids.objects.GameObject;
@@ -11,6 +10,7 @@ import android.gameengine.icadroids.objects.collisions.BoundingCircle;
 import android.gameengine.icadroids.objects.graphics.Sprite;
 import android.gameengine.icadroids.renderer.GameView;
 import android.gameengine.icadroids.renderer.Viewport;
+import android.gameengine.icadroids.tiles.GameTiles;
 import android.graphics.Color;
 import android.util.Log;
 
@@ -37,7 +37,7 @@ public class testGame extends DebugEngine {
 	public testGame() {
 		super();
 		// TouchInput.USE_TOUCH_INPUT = true;
-		GameTiles.debugMode = false;
+	//	GameTiles.debugMode = false;
 		//MoveableGameObject hoi = new MoveableGameObject();	
 		testObject2 = new Player();
 		testObject3 = new MoveableGameObject();
@@ -72,8 +72,8 @@ public class testGame extends DebugEngine {
 		tile3.loadSprite("tile4");		
 		GameView.BACKGROUND_COLOR = Color.CYAN;
 
-		GameTiles.tileTypes = new Sprite[] { tile1, tile2, tile3, tile1, tile1, tile1, tile2, tile3, tile1, tile1};
-		GameTiles.tileSize = 64;
+	//	GameTiles.tileTypes = new Sprite[] { tile1, tile2, tile3, tile1, tile1, tile1, tile2, tile3, tile1, tile1};
+		//GameTiles.tileSize = 64;
 		byte Map[][] = {
 				{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},	
 				{ 2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 2},
@@ -98,8 +98,8 @@ public class testGame extends DebugEngine {
 				{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
 				{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
 				};		
-		addTileMap(Map, 0, 0);
-		GameTiles.changeTile(1, 1, 1);
+		//addTileMap(Map, 0, 0);
+		//GameTiles.changeTile(1, 1, 1);
 		startGame();
 	}
 

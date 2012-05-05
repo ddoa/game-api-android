@@ -1,6 +1,9 @@
 package android.gameengine.icadroids.objects.graphics;
 
+import java.util.Vector;
+
 import android.gameengine.icadroids.engine.GameEngine;
+import android.gameengine.icadroids.renderer.GameView;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -26,6 +29,13 @@ public class Sprite {
 	 * The height in pixels of the sprite
 	 */
 	protected int spriteHeight;
+	/**
+	 * Save the resource location to load at a later time when the surface is
+	 * not created yet
+	 */
+	private String loadDelay;
+
+	public static Vector<Sprite> loadDelayedSprites;
 
 	/**
 	 * Make a Sprite without loading any bitmap in it
@@ -58,18 +68,33 @@ public class Sprite {
 	 *            'picture' .
 	 */
 	public void loadSprite(String resourceName) {
-		int resID = GameEngine
-				.getAppContext()
-				.getResources()
-				.getIdentifier(resourceName, "drawable",
-						GameEngine.getAppContext().getPackageName());
+		if (GameView.surfaceLoaded) {
+			int resID = GameEngine
+					.getAppContext()
+					.getResources()
+					.getIdentifier(resourceName, "drawable",
+							GameEngine.getAppContext().getPackageName());
 
-		spriteBitmap = BitmapFactory.decodeResource(GameEngine.getAppContext()
-				.getResources(), resID);
-		spriteBitmap.setDensity(Bitmap.DENSITY_NONE); // Don't let Android
-														// automaticaly
-														// resize your Bitmap!
-		calculateSize(spriteBitmap);
+			spriteBitmap = BitmapFactory.decodeResource(GameEngine
+					.getAppContext().getResources(), resID);
+			calculateSize(spriteBitmap);
+
+			// System.out.println("sprite loaded");
+		} else {
+			loadDelay = resourceName;
+			if (loadDelayedSprites != null) {
+				loadDelayedSprites.add(this);
+			} else {
+				loadDelayedSprites = new Vector<Sprite>();
+				loadDelayedSprites.add(this);
+			}
+		}
+	}
+
+	public void initialize() {
+		if (loadDelay != null) {
+			loadSprite(loadDelay);
+		}
 	}
 
 	/**

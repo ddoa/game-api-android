@@ -1,5 +1,6 @@
 package android.gameengine.icadroids.objects.graphics;
 
+import android.gameengine.icadroids.renderer.GameView;
 import android.graphics.Rect;
 
 /**
@@ -55,8 +56,14 @@ public class AnimatedSprite extends Sprite {
 	@Override
 	public final void loadSprite(String resourceName) {
 		super.loadSprite(resourceName);
-		frameWidth = spriteWidth;
-		calculateFramePosition(currentFrameNumber);
+		if (GameView.surfaceLoaded) {
+			if(!animate){
+				frameWidth = spriteWidth;
+			}
+			calculateNumberOfFrames();
+			calculateFramePosition(currentFrameNumber);
+			System.out.println("animated sprite loaded");
+		}
 	}
 
 	/**
@@ -64,7 +71,7 @@ public class AnimatedSprite extends Sprite {
 	 * GameObjects handle this method by itself!</b>
 	 */
 	public final void updateToNextFrame() {
-		if (animate && animationSpeed > 0) {
+		if (animate && animationSpeed > 0 && spriteBitmap != null) {
 			updateCounter++;
 			if ((updateCounter % animationSpeed) == 0) {
 				nextFrame();
@@ -99,6 +106,16 @@ public class AnimatedSprite extends Sprite {
 	 * Stop animating the sprite
 	 */
 	public final void stopAnimate() {
+		animate = false;
+	}
+	
+	/**
+	 * Reset the frame size to the original sprite size
+	 * and stop animating the sprite.
+	 */
+	public final void resetFrameSize(){
+		frameWidth = spriteWidth;
+		calculateNumberOfFrames();
 		animate = false;
 	}
 
@@ -151,9 +168,15 @@ public class AnimatedSprite extends Sprite {
 	 */
 	public final void startAnimate(int frameWidth) {
 		this.frameWidth = frameWidth;
-		calculateSize(spriteBitmap);
-		numberOfFrames = spriteWidth / frameWidth;
+		calculateNumberOfFrames();
 		animate = true;
+		calculateFramePosition(currentFrameNumber);
+	}
+	
+	private void calculateNumberOfFrames(){
+	if(frameWidth != 0){
+		numberOfFrames = spriteWidth / frameWidth;
+	}
 	}
 
 	/**

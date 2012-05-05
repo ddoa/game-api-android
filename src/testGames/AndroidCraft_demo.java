@@ -1,17 +1,14 @@
 package testGames;
 
 import android.gameengine.icadroids.engine.GameEngine;
-import android.gameengine.icadroids.engine.GameTiles;
+import android.gameengine.icadroids.engine.GameFPSCounter;
 import android.gameengine.icadroids.input.OnScreenButtons;
 import android.gameengine.icadroids.input.TouchInput;
-import android.gameengine.icadroids.objects.GameObject;
 import android.gameengine.icadroids.objects.MoveableGameObject;
-import android.gameengine.icadroids.objects.collisions.BoundingCircle;
-import android.gameengine.icadroids.objects.graphics.Sprite;
 import android.gameengine.icadroids.renderer.GameView;
 import android.gameengine.icadroids.renderer.Viewport;
+import android.gameengine.icadroids.tiles.GameTiles;
 import android.graphics.Color;
-import android.util.Log;
 
 /**
  * Deze test test de functionaliteiten van de viewport, de gametiles, de
@@ -21,67 +18,65 @@ import android.util.Log;
  */
 public class AndroidCraft_demo extends GameEngine {
 
-	Sprite tile1;
-	Sprite tile2;
-	Sprite tile3;
-	Sprite tile4;
 	MoveableGameObject player;
 
 	public AndroidCraft_demo() {
 		super();
-		GameTiles.debugMode = false;
 		player = new Player();
-		addPlayer(player, 256, 256);
-		player.setY(236);
-		player.setX(456);
-		player.setSprite("nyan");
-		player.setSpeed(0);
-		player.setDirection(47);
+		addPlayer(player, 150, 150);
+		player.setSprite("tile2");
+		Viewport.useViewport = true;
+		GameFPSCounter.USE_FPS_COUNTER = true;
+	}
+
+	@Override
+	public void update() {
+
+		super.update();
+
+		/*
+		 * if (TouchInput.onPress) { player.setSpeed(3);
+		 * player.moveTowardsAPoint(TouchInput.xPos, TouchInput.yPos); }
+		 */
 	}
 
 	@Override
 	public void initialize() {
 		super.initialize();
-		Viewport.useViewport = true;
+
 		setBackground("bg");
 		OnScreenButtons.use = true;
+		TouchInput.use = false;
+
 		OnScreenButtons.feedback = true;
-		OnScreenButtons.opacity = 195;
-		tile1 = new Sprite();
-		tile2 = new Sprite();
-		tile3 = new Sprite();
-		tile4 = new Sprite();
-		tile1.loadSprite("tile6");
-		tile2.loadSprite("tile4");
-		tile3.loadSprite("tile5");
+		// OnScreenButtons.opacity = 195;
 		GameView.BACKGROUND_COLOR = Color.BLACK;
-		GameTiles.tileTypes = new Sprite[] { tile1, tile2, tile3, tile1, tile1,
-				tile1, tile2, tile3, tile1, tile1 };
-		GameTiles.tileSize = 64;
-		byte Map[][] = {
+
+		String[] tileResources = { "tile1", "tile4", "tile5", "tile6" };
+		int[][] Map = {
 				{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 						2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 },
-				{ 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+				{ 2, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 						-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 						2, 2, 2, 2, 2, 2, 2, 2, 2 },
-				{ 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+				{ 2, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 						-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 						2, 2, 2, 2, 2, 2, 2, 2, 2 },
-				{ 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+				{ 2, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 						-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3, -1, -1, -1,
 						2, 2, 2, 2, 2, 2, 2, 2, 2 },
-				{ 2, -1, -1, -1, 3, 3, -1, -1, -1, -1, 3, 3, -1, -1, -1, -1, 3,
-						3, 3, 3, 3, -1, -1, -1, 3, -1, 3, -1, -1, 2, 2, 2, 2,
-						2, 2, 2, 2, 2 },
-				{ 2, -1, -1, -1, 3, -1, 3, -1, -1, -1, 3, -1, 3, -1, -1, -1, 3,
-						-1, -1, -1, 3, -1, -1, 3, -1, -1, -1, 3, -1, 2, 2, 2,
+				{ 2, 2, -1, -1, -1, 3, 3, -1, -1, -1, -1, 3, 3, -1, -1, -1, -1,
+						3, 3, 3, 3, 3, -1, -1, -1, 3, -1, 3, -1, -1, 2, 2, 2,
 						2, 2, 2, 2, 2, 2 },
-				{ 2, -1, -1, -1, 3, -1, -1, 3, -1, -1, 3, -1, -1, 3, -1, -1, 3,
-						-1, -1, -1, 3, -1, -1, 3, -1, -1, -1, 3, -1, 2, 2, 2,
+				{ 2, 2, -1, -1, -1, 3, -1, 3, -1, -1, -1, 3, -1, 3, -1, -1, -1,
+						3, -1, -1, -1, 3, -1, -1, 3, -1, -1, -1, 3, -1, 2, 2,
+						2, 2, 2, 2, 2, 2, 2 },
+				{ 2, 2, -1, -1, -1, 3, -1, -1, 3, -1, -1, 3, -1, -1, 3, -1, -1,
+						3, -1, -1, -1, 3, -1, -1, 3, -1, -1, -1, 3, -1, 2, 2,
+						2, 2, 2, 2, 2, 2, 2 },
+				{ 2, 2, -1, -1, -1, 3, -1, -1, 3, -1, -1, 3, -1, -1, 3, -1, -1,
+						3, -1, -1, -1, 3, -1, -1, 3, 3, 3, 3, 3, -1, 2, 2, 2,
 						2, 2, 2, 2, 2, 2 },
-				{ 2, -1, -1, -1, 3, -1, -1, 3, -1, -1, 3, -1, -1, 3, -1, -1, 3,
-						-1, -1, -1, 3, -1, -1, 3, 3, 3, 3, 3, -1, 2, 2, 2, 2,
-						2, 2, 2, 2, 2 },
 				{ 2, -1, -1, -1, 3, -1, -1, 3, -1, -1, 3, -1, -1, 3, -1, -1, 3,
 						-1, -1, -1, 3, -1, -1, 3, -1, -1, -1, 3, -1, 2, 2, 2,
 						2, 2, 2, 2, 2, 2 },
@@ -97,22 +92,22 @@ public class AndroidCraft_demo extends GameEngine {
 				{ 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 						-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 						2, 2, 2, 2, 2, 2, 2, 2, 2 },
-				{ 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+				{ 2, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 						-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 						2, 2, 2, 2, 2, 2, 2, 2, 2 },
-				{ 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+				{ 2, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 						-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 						2, 2, 2, 2, 2, 2, 2, 2, 2 },
-				{ 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+				{ 2, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 						-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 						2, 2, 2, 2, 2, 2, 2, 2, 2 },
-				{ 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+				{ 2, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 						-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 						2, 2, 2, 2, 2, 2, 2, 2, 2 },
-				{ 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+				{ 2, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 						-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 						2, 2, 2, 2, 2, 2, 2, 2, 2 },
-				{ 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+				{ 2, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 						-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 						2, 2, 2, 2, 2, 2, 2, 2, 2 },
 				{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
@@ -127,8 +122,8 @@ public class AndroidCraft_demo extends GameEngine {
 						2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 },
 				{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 						2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 }, };
-		addTileMap(Map, 0, 0);
-		startGame();
+		GameTiles gt = new GameTiles(tileResources, Map, 64);
+		setTileMap(gt);
 	}
 
 }
