@@ -25,7 +25,7 @@ public class TestGameBas extends GameEngine implements IAlarm, IFormInput {
 	private MoveableGameObject testObject = new MoveableGameObject();
 	//private GameObject testObject2 = new GameObject();
 	GameForm gf;
-	//Alarm am = new Alarm(1, 300, this);
+	Alarm am = new Alarm(1, 10, this);
 	//testGameObjectBas testObjectBas = new testGameObjectBas();
 	private MoveableGameObject hoi = new MoveableGameObject();
 

@@ -157,7 +157,7 @@ public class CollidingObject {
 
 		if (sprite != null) {
 			startX += sprite.getFrameWidth() / 2;
-			startY += sprite.getFrameWidth() / 2;
+			startY += sprite.getFrameHeight() / 2;
 		}
 
 		double deltaX = tileX - startX;

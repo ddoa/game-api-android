@@ -38,7 +38,7 @@ public class Player extends MoveableGameObject {
 		}
 		if (OnScreenButtons.dPadLeft) {
 			movePlayer(-15, 0);
-			// setDirectionSpeed(270, 5);
+			 setDirectionSpeed(75, 8);
 		}
 		if (OnScreenButtons.button2) {
 			setPosition(150, 150);
@@ -72,13 +72,13 @@ public class Player extends MoveableGameObject {
 
 			moveUpToTileSide(collidedTiles.get(0));
 
-			// reverseHorizontalDirection();
+			 reverseHorizontalDirection();
 		}
 		if (collisionVertical) {
 
 			moveUpToTileSide(collidedTiles.get(0));
 
-			// reverseVerticalDirection();
+			 reverseVerticalDirection();
 		}
 
 	}
