@@ -26,5 +26,5 @@ public interface ICollision {
 	 *            side the object has collided with the tile, use the method
 	 *            getCollisionSide(); .
 	 */
-	void collisionOccurred(List<Tile> collidedTiles);
+	public void collisionOccurred(List<TileCollision> collidedTiles);
 }

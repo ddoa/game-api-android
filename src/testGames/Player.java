@@ -5,6 +5,7 @@ import java.util.Random;
 
 import android.gameengine.icadroids.input.OnScreenButtons;
 import android.gameengine.icadroids.objects.MoveableGameObject;
+import android.gameengine.icadroids.objects.collisions.TileCollision;
 import android.gameengine.icadroids.tiles.Tile;
 
 /**
@@ -38,7 +39,7 @@ public class Player extends MoveableGameObject {
 		}
 		if (OnScreenButtons.dPadLeft) {
 			movePlayer(-15, 0);
-			 setDirectionSpeed(75, 8);
+			 setDirectionSpeed(75, 32);
 		}
 		if (OnScreenButtons.button2) {
 			setPosition(150, 150);
@@ -47,7 +48,7 @@ public class Player extends MoveableGameObject {
 	}
 
 	@Override
-	public void collisionOccurred(List<Tile> collidedTiles) {
+	public void collisionOccurred(List<TileCollision> collidedTiles) {
 
 		// System.out.println(collidedTiles.size() +
 		// " collision(s) detected on: "
@@ -57,9 +58,9 @@ public class Player extends MoveableGameObject {
 		boolean collisionVertical = false;
 
 		for (int i = 0; i < collidedTiles.size(); i++) {
-			int collisionSide = getCollisionSide(collidedTiles.get(i));
+			int collisionSide = collidedTiles.get(i).collisionSide;
 
-			collidedTiles.get(i).setTileType(1);
+			collidedTiles.get(i).theTile.setTileType(1);
 
 			if (collisionSide == 0 || collisionSide == 2) {
 				collisionVertical = true;
@@ -72,13 +73,13 @@ public class Player extends MoveableGameObject {
 
 			moveUpToTileSide(collidedTiles.get(0));
 
-			 reverseHorizontalDirection();
+			// reverseHorizontalDirection();
 		}
 		if (collisionVertical) {
 
 			moveUpToTileSide(collidedTiles.get(0));
 
-			 reverseVerticalDirection();
+			// reverseVerticalDirection();
 		}
 
 	}

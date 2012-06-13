@@ -284,7 +284,7 @@ public class GameObject {
 	 * 
 	 * @return Rectangle with the current positon + size of the GameObject
 	 */
-	public final Rect getPosition() {
+	public final Rect  getPosition() {
 		return position;
 	}
 

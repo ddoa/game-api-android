@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.gameengine.icadroids.engine.GameEngine;
 import android.gameengine.icadroids.objects.collisions.CollidingObject;
+import android.gameengine.icadroids.objects.collisions.TileCollision;
 import android.gameengine.icadroids.objects.collisions.ICollision;
 import android.gameengine.icadroids.tiles.Tile;
 import android.graphics.Rect;
@@ -484,82 +485,49 @@ public class MoveableGameObject extends GameObject implements ICollision {
 	}
 
 	/**
-	 * Calculates on which side of the object an collision has occurred with an
-	 * tile.
+	 * Move as close as possible to the side of tile, as specified in the TileCollision object,
+	 * using the direction that the GameObject already has 
 	 * 
-	 * @param object
-	 *            The object that has the collision
-	 * @param tile
-	 *            The colided tile
-	 * @return Returns when collision is on: <b> 0 - Top, 1 - Right, 2 - Bottom,
-	 *         3 - Left</b>
-	 */
-	public int getCollisionSide(Tile tile) {
-
-		double angle = collidingObject.calculateCollisionAngle(
-				getFullX(), getFullY(), tile,
-				getSprite());
-
-		if ((angle >= 315 && angle < 360) || (angle >= 0 && angle <= 45)) { // collision
-																			// top
-			return 0;
-		}
-		if (angle >= 135 && angle <= 225) { // collision bottom
-			return 2;
-		}
-		if (angle > 45 && angle < 135) { // collision right
-			return 1;
-		}
-		if (angle > 225 && angle < 315) { // collision left
-			return 3;
-		}
-		return -1;
-	}
-
-	/**
-	 * Move as close as possible to the given (collided) tile
+	 * Note: Using Tiles that are not involved in a collision or are not close to the object 
+	 * can cause strange behaviour: The GameObject is moved to the extended line that
+	 * passes through the specified side of the tile, using the <i>original direction</i>
+	 * of the object's speed. 
+	 * If there wasn't any collision in the first place, this may be somewhere not very close
+	 * to the tile!
 	 * 
-	 * Note: this method is specially designed to work with collided tiles. 
-	 * Using Tiles that are not close to the object can cause strange behavior.
-	 * @param tile
+	 * @param tc, the TileCollision (usually provided by the the 'collisionOccurred' call )
 	 */
-	public void moveUpToTileSide(Tile tile){
-		undoMove();
-		
-		int tilePositionX = (tile.getTileNumberX() * tile.getGameTiles().tileSize)
-				+ (tile.getGameTiles().tileSize / 2);
-		int tilePositionY = (tile.getTileNumberY() * tile.getGameTiles().tileSize)
-				+(tile.getGameTiles().tileSize / 2);
-		
-		Rect ObjectAABB = new Rect();
-		ObjectAABB.top = getY() - (tile.getGameTiles().tileSize / 2);
-		ObjectAABB.left = getX() - (tile.getGameTiles().tileSize / 2);
-		ObjectAABB.right = getX() + getFrameWidth() + (tile.getGameTiles().tileSize / 2);
-		ObjectAABB.bottom = getY() + getFrameHeight() + (tile.getGameTiles().tileSize / 2);
-		
-		int deltaX = Math.abs(tilePositionX - ObjectAABB.centerX());
-		int deltaY = Math.abs(tilePositionY - ObjectAABB.centerY());
-		
-		int movement = 0;
-		if(deltaX > deltaY){
-			if(ObjectAABB.right < tilePositionX){
-				movement = (tilePositionX - ObjectAABB.right) - 1;
+	public void moveUpToTileSide(TileCollision tc)
+	{
+		int side = tc.collisionSide;
+		// the position we want to move to, x or y
+		int pos;
+		if ( side == 0 || side == 2 )
+		{	// move to horizontal tile edge, top or bottom
+			pos = tc.theTile.getTileY();
+			if ( side == 2 )
+			{	// bottom, add gridsize to pos
+				pos = pos + GameEngine.gameTiles.tileSize;
+			} else
+			{	// top of tile, adapt for sprite height
+				pos = pos - getSprite().getFrameHeight();
 			}
-			if(ObjectAABB.left > tilePositionX){
-				movement = (tilePositionX - ObjectAABB.left) + 1;
+			// new y will be tileside (pos), x is changed in the same proportion as y, with respect to original move
+			xlocation = prevX + (xlocation-prevX)* (((double)pos-prevY)/(ylocation-prevY));
+			ylocation = (double) pos;
+		} else
+		{	// move to vertical tile edge, left or right
+			pos = tc.theTile.getTileX();
+			if ( side == 1 )
+			{	// right, add gridsize to pos
+				pos = pos + GameEngine.gameTiles.tileSize;
+			} else
+			{
+				pos = pos - getSprite().getFrameWidth();
 			}
-			xlocation += movement;
-		}
-		if(deltaX < deltaY){
-			if(ObjectAABB.bottom < tilePositionY){
-				movement = (tilePositionY - ObjectAABB.bottom) - 1;
-			}
-			if(ObjectAABB.top > tilePositionY){
-				movement = (tilePositionY - ObjectAABB.top) + 1;
-			}
-			ylocation += movement;
-		}
-		
+			ylocation = prevY + (ylocation-prevY)* (((double)pos-prevX)/(xlocation-prevX));
+			xlocation = (double) pos;			
+		}		
 	}
 	
 	/**
@@ -584,10 +552,8 @@ public class MoveableGameObject extends GameObject implements ICollision {
 		return collidingObject;
 	}
 	
-	/* (non-Javadoc)
-	 * @see android.gameengine.icadroids.objects.collisions.ICollision#collisionOccurred(java.util.List)
-	 */
-	public void collisionOccurred(List<Tile> collidedTiles) {
+	@Override
+	public void collisionOccurred(List<TileCollision> collidedTiles) {
 		
 	}
 
