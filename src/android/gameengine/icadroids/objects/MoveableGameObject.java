@@ -21,7 +21,7 @@ import android.graphics.Rect;
  * 
  * @author Edward van Raak,Bas van der Zandt, Roel van Bergen
  */
-public class MoveableGameObject extends GameObject implements ICollision {
+public class MoveableGameObject extends GameObject {
 
 	/** Holds the xspeed of this object */
 	private double xSpeed = 0;
@@ -202,9 +202,11 @@ public class MoveableGameObject extends GameObject implements ICollision {
 			ylocation += movementY;
 
 			// Calculate collision
+			if(this instanceof ICollision){
 			collidingObject.calculateCollision(xlocation, ylocation, xlocation
 					- movementX, ylocation - movementY, this.getSprite(),
-					GameEngine.gameTiles, this);
+					GameEngine.gameTiles, (ICollision) this);
+			}
 
 			moveX = 0;
 			moveY = 0;
@@ -499,6 +501,7 @@ public class MoveableGameObject extends GameObject implements ICollision {
 	 */
 	public void moveUpToTileSide(TileCollision tc)
 	{
+		System.out.println("movetileside");
 		int side = tc.collisionSide;
 		// the position we want to move to, x or y
 		int pos;
@@ -526,7 +529,9 @@ public class MoveableGameObject extends GameObject implements ICollision {
 				pos = pos - getSprite().getFrameWidth();
 			}
 			ylocation = prevY + (ylocation-prevY)* (((double)pos-prevX)/(xlocation-prevX));
+			System.out.println("xloc moveto pos:" + pos + " xlocation " + xlocation);
 			xlocation = (double) pos;			
+
 		}		
 	}
 	
@@ -541,7 +546,7 @@ public class MoveableGameObject extends GameObject implements ICollision {
 	 * @return The Tile object at the given x and y position
 	 */
 	public Tile getTileOnPosition(int xPosition, int yPosition){
-		return collidingObject.getTileOnPosition(xPosition, yPosition, GameEngine.gameTiles);
+		return GameEngine.gameTiles.getTileOnPosition(xPosition, yPosition);
 	}
 	
 	/**
@@ -550,11 +555,6 @@ public class MoveableGameObject extends GameObject implements ICollision {
 	 */
 	public CollidingObject getCollidingObject() {
 		return collidingObject;
-	}
-	
-	@Override
-	public void collisionOccurred(List<TileCollision> collidedTiles) {
-		
 	}
 
 }

@@ -16,6 +16,7 @@
 # generated files
 bin/
 gen/
+libs/
 
 # documentation
 doc/

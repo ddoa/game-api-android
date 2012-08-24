@@ -78,7 +78,7 @@ public class GameView extends SurfaceView implements Callback {
 	 * Ensures that the thread stops when the gameloop is stopped.
 	 */
 	public void surfaceDestroyed(SurfaceHolder holder) {
-		System.out.println("surface destroyed");
+		GameEngine.printDebugInfo("GameView", "surface destroyed");
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class GameView extends SurfaceView implements Callback {
 	 * it starts a new thread.
 	 */
 	public void surfaceCreated(SurfaceHolder holder) {
-		System.out.println("surface created");
+		GameEngine.printDebugInfo("GameView", "surface created");
 
 		surfaceLoaded = true;
 
@@ -132,7 +132,7 @@ public class GameView extends SurfaceView implements Callback {
 	 */
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
-		System.out.println("surface changed");
+		GameEngine.printDebugInfo("GameView", "surface changed");
 		// Empty method
 	}
 

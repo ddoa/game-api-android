@@ -3,11 +3,10 @@ package android.gameengine.icadroids.objects.collisions;
 import java.util.List;
 import java.util.Vector;
 
+import android.gameengine.icadroids.engine.GameEngine;
 import android.gameengine.icadroids.objects.graphics.Sprite;
 import android.gameengine.icadroids.tiles.GameTiles;
 import android.gameengine.icadroids.tiles.Tile;
-import android.graphics.Rect;
-import android.util.FloatMath;
 
 /**
  * CollidingObject holds methods to calculate tile collisions. It's also the
@@ -55,7 +54,7 @@ public class CollidingObject {
 			double startX, double startY, Sprite sprite, GameTiles gameTiles,
 			ICollision collisionObject) 
 	{	// no tiles, no sprite: no tile collisions
-		if (gameTiles.tileArray == null || sprite == null )
+		if (GameEngine.gameTiles == null || sprite == null )
 		{
 			return; 
 		}
@@ -84,7 +83,7 @@ public class CollidingObject {
         if ( moveleft ) 			// find gridline for horizontal collision
         { 	// find index of gridline just left of start-left side of item
             // -1: entire tile left of previous pos of object, we collide into right side
-            xTileIndex = divdown(startX /*- mapStartX*/, gridsize) - 1;
+            xTileIndex = divdown(Math.ceil(startX) + objwidth -1 /*- mapStartX*/, gridsize) + 1;
             // x of collision is right side of tile (hence '+1')
             collisionX = (xTileIndex + 1) * gridsize /*+ mapStartX*/;
             // x of item equals collisionX because collision is on left side
@@ -93,23 +92,23 @@ public class CollidingObject {
             xCollisionSide = 1;
         } else
         { 	// find index of gridline just right of start-right side of item
-            xTileIndex = divdown(startX + objwidth /*- mapStartX*/, gridsize) + 1;
+            xTileIndex = divdown(Math.ceil(startX) + objwidth -1 /*- mapStartX*/, gridsize) + 1;
             // x of collision is left side of tile
             collisionX = xTileIndex * gridsize /*+ mapStartX*/;
             // x of item equals collisionX-width because collision is on right side
             itemXatCollision = collisionX - objwidth;
             // collison will be on left side of tile, because object is moving to the right
             xCollisionSide = 3;
-        }
+        } 
         if ( moveup ) // vertical collision?? (comments ommitted, are like horizontal)
         {
-            yTileIndex = divdown(startY /*- mapStartY*/, gridsize) - 1;
+            yTileIndex = divdown(Math.ceil(startY) + objheight -1 /*- mapStartY*/, gridsize) + 1;
             collisionY = (yTileIndex + 1) * gridsize /*+ mapStartY*/;
             itemYatCollision = collisionY;
             yCollisionSide = 2;	// moving up, so hitting bottom of tile
         } else
         {
-            yTileIndex = divdown(startY + objheight /*- mapStartY*/, gridsize) + 1;
+            yTileIndex = divdown(Math.ceil(startY) + objheight -1 /*- mapStartY*/, gridsize) + 1;
             collisionY = yTileIndex * gridsize /*+ mapStartY*/;
             itemYatCollision = collisionY - objheight;
             yCollisionSide = 0;
@@ -137,7 +136,7 @@ public class CollidingObject {
            			// loop through y-range
            			for (int yindex = firsttile; yindex <=lasttile; yindex++)
            			{	// see if there is a tile at the current position
-           				Tile t = getTileOnIndex(xTileIndex, yindex, gameTiles);
+           				Tile t = gameTiles.getTileOnIndex(xTileIndex, yindex);
            				if ( t != null )
            					if ( t.getTileType() != -1 )
            						collidedTiles.add(new TileCollision(t, xCollisionSide));
@@ -165,7 +164,7 @@ public class CollidingObject {
            			int lasttile = Math.min(gameTiles.getMapWidth()-1, divdown(xpos + objwidth-1/*-mapStartX*/, gridsize));
            			for (int xindex = firsttile; xindex <= lasttile; xindex++)
            			{
-           				Tile t = getTileOnIndex(xindex, yTileIndex, gameTiles);
+           				Tile t = gameTiles.getTileOnIndex(xindex, yTileIndex);
            				if ( t != null )
            					if ( t.getTileType() != -1 )
            						collidedTiles.add(new TileCollision(t, yCollisionSide));
@@ -233,43 +232,6 @@ public class CollidingObject {
     	
     }
 
-	public Tile getTileOnIndex(int xPosition, int yPosition,
-			GameTiles gameTiles) {
 
-		if (gameTiles.tileArray != null) {
 
-			if (yPosition >= 0 && yPosition < gameTiles.tileArray.length) {
-				if (xPosition >= 0 && xPosition < gameTiles.tileArray[yPosition].length) {
-					return gameTiles.tileArray[yPosition][xPosition];
-				}
-			}
-		}
-		return null;
-	}
-	/**
-	 * Get a tile on a specific x and y position in the game world
-	 * 
-	 * @param xPosition
-	 *            x position of the tile
-	 * @param yPosition
-	 *            y position of the tile
-	 * @param gameTiles
-	 * @return The Tile object at the given x and y position
-	 */
-	public Tile getTileOnPosition(int xPosition, int yPosition,
-			GameTiles gameTiles) {
-
-		if (gameTiles.tileArray != null) {
-
-			int tiley = yPosition / gameTiles.tileSize;
-			int tilex = xPosition / gameTiles.tileSize;
-
-			if (tiley >= 0 && tiley < gameTiles.tileArray.length) {
-				if (tilex >= 0 && tilex < gameTiles.tileArray[tiley].length) {
-					return gameTiles.tileArray[tiley][tilex];
-				}
-			}
-		}
-		return null;
-	}
 }
