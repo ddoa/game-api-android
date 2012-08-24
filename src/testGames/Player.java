@@ -42,7 +42,11 @@ public class Player extends MoveableGameObject implements ICollision{
 		}
 		if (OnScreenButtons.dPadLeft) {
 			movePlayer(-15, 0);
+<<<<<<< HEAD
 			// setDirectionSpeed(270, 5);
+=======
+			// setDirectionSpeed(75, 32);
+>>>>>>> a291106... Unused Tiles are now Null, debug info can be switched off
 		}
 		if (OnScreenButtons.button2) {
 			setPosition(150, 150);
@@ -56,7 +60,15 @@ public class Player extends MoveableGameObject implements ICollision{
 
 	@Override
 	public void collisionOccurred(List<TileCollision> collidedTiles) {
+		
+		moveUpToTileSide(collidedTiles.get(0));
+		
+		for (TileCollision tileCollision : collidedTiles) {
+			tileCollision.theTile.setTileType(1);
+		}
+		
 
+<<<<<<< HEAD
 		for (TileCollision tc: collidedTiles )
 		{
 			System.out.println("side: "+tc.collisionSide+", x,y: "+tc.theTile.getTileNumberX()+", "+tc.theTile.getTileNumberY()
@@ -67,6 +79,41 @@ public class Player extends MoveableGameObject implements ICollision{
 		firsttile.setTileType(1);
 		bounce(collidedTiles.get(0));
 		
+=======
+		// System.out.println(collidedTiles.size() +
+		// " collision(s) detected on: "
+		// + calculateCollisionSide(collidedTiles.get(0)));
+
+/*		boolean collisionHorizontal = false;
+		boolean collisionVertical = false;
+
+		for (int i = 0; i < collidedTiles.size(); i++) {
+			int collisionSide = collidedTiles.get(i).collisionSide;
+
+			
+
+			if (collisionSide == 0 || collisionSide == 2) {
+				collisionVertical = true;
+			} else {
+				collisionHorizontal = true;
+			}
+
+		}
+		if (collisionHorizontal || collisionVertical) { 
+			undoMove();
+
+			moveUpToTileSide(collidedTiles.get(0));
+
+			// reverseHorizontalDirection();
+		}
+		//if (collisionVertical) {
+
+		//	moveUpToTileSide(collidedTiles.get(0));
+
+			// reverseVerticalDirection();
+		//}
+*/
+>>>>>>> a291106... Unused Tiles are now Null, debug info can be switched off
 	}
 
 }

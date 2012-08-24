@@ -1,5 +1,6 @@
 package android.gameengine.icadroids.objects.graphics;
 
+import android.gameengine.icadroids.engine.GameEngine;
 import android.gameengine.icadroids.renderer.GameView;
 import android.graphics.Rect;
 
@@ -62,7 +63,7 @@ public class AnimatedSprite extends Sprite {
 			}
 			calculateNumberOfFrames();
 			calculateFramePosition(currentFrameNumber);
-			System.out.println("animated sprite loaded");
+			GameEngine.printDebugInfo("AnimatedSprite", "animated sprite loaded");
 		}
 	}
 

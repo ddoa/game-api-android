@@ -202,10 +202,18 @@ public class MoveableGameObject extends GameObject {
 			ylocation += movementY;
 
 			// Calculate collision
+<<<<<<< HEAD
 			if ( this instanceof ICollision )
 			collidingObject.calculateCollision(xlocation, ylocation, xlocation
 					- movementX, ylocation - movementY, this.getSprite(),
 					GameEngine.gameTiles, (ICollision)this);
+=======
+			if(this instanceof ICollision){
+			collidingObject.calculateCollision(xlocation, ylocation, xlocation
+					- movementX, ylocation - movementY, this.getSprite(),
+					GameEngine.gameTiles, (ICollision) this);
+			}
+>>>>>>> a291106... Unused Tiles are now Null, debug info can be switched off
 
 			moveX = 0;
 			moveY = 0;
@@ -502,6 +510,7 @@ public class MoveableGameObject extends GameObject {
 	 */
 	public void moveUpToTileSide(TileCollision tc)
 	{
+		System.out.println("movetileside");
 		int side = tc.collisionSide;
 		// the position we want to move to, x or y
 		int pos;
@@ -532,11 +541,17 @@ public class MoveableGameObject extends GameObject {
 			{
 				pos = pos - getSprite().getFrameWidth();
 			}
+<<<<<<< HEAD
 			if ( xlocation != prevX )
 			{	
 				ylocation = prevY + (ylocation-prevY)* (((double)pos-prevX)/(xlocation-prevX));
 			}
+=======
+			ylocation = prevY + (ylocation-prevY)* (((double)pos-prevX)/(xlocation-prevX));
+			System.out.println("xloc moveto pos:" + pos + " xlocation " + xlocation);
+>>>>>>> a291106... Unused Tiles are now Null, debug info can be switched off
 			xlocation = (double) pos;			
+
 		}		
 	}
 	
@@ -564,7 +579,7 @@ public class MoveableGameObject extends GameObject {
 	 * @return The Tile object at the given x and y position
 	 */
 	public Tile getTileOnPosition(int xPosition, int yPosition){
-		return collidingObject.getTileOnPosition(xPosition, yPosition, GameEngine.gameTiles);
+		return GameEngine.gameTiles.getTileOnPosition(xPosition, yPosition);
 	}
 	
 	/**
@@ -574,8 +589,11 @@ public class MoveableGameObject extends GameObject {
 	public CollidingObject getCollidingObject() {
 		return collidingObject;
 	}
+<<<<<<< HEAD
 	
 	
 	
+=======
+>>>>>>> a291106... Unused Tiles are now Null, debug info can be switched off
 
 }

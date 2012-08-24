@@ -66,8 +66,8 @@ public class ViewCreator implements Runnable {
 		GameEngine.getAppView().setVisibility(View.VISIBLE);
 
 		LayoutParams lp = new ViewGroup.LayoutParams(
-				ViewGroup.LayoutParams.FILL_PARENT,
-				ViewGroup.LayoutParams.FILL_PARENT);
+				ViewGroup.LayoutParams.MATCH_PARENT,
+				ViewGroup.LayoutParams.MATCH_PARENT);
 		View formView = gameEngine.getLayoutInflater().inflate(layoutID, null);
 		formView.setTag(layoutID);
 		gameEngine.getWindow().addContentView(formView, lp);

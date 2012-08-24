@@ -39,6 +39,8 @@ import android.view.inputmethod.InputMethodManager;
  * @version 0.9
  */
 public abstract class GameEngine extends Activity {
+	
+	public static boolean printDebugInfo = true;
 	/**
 	 * The player that the viewport follows //
 	 */
@@ -127,8 +129,6 @@ public abstract class GameEngine extends Activity {
 	 * @version 1.0, January 10, 2012
 	 */
 	public GameEngine() {
-
-		gameTiles = new GameTiles(100);
 		items = new Vector<GameObject>();
 		newItems = new Vector<GameObject>();
 		gameAlarms = new Vector<Alarm>();
@@ -147,7 +147,7 @@ public abstract class GameEngine extends Activity {
 		super.onCreate(savedInstanceState);
 
 		checkScreenOrientation();
-		System.out.println("oncreate....");
+		printDebugInfo("GameEngine", "oncreate....");
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -204,8 +204,7 @@ public abstract class GameEngine extends Activity {
 	 * GameEngine. Call super.initialize() at the very start.
 	 */
 	protected void initialize() {
-
-		System.out.println("Intializing...");
+		printDebugInfo("GameEngine", "Intializing...");
 
 		if (Sprite.loadDelayedSprites != null) {
 			for (Sprite sprite : Sprite.loadDelayedSprites) {
@@ -373,11 +372,11 @@ public abstract class GameEngine extends Activity {
 	@Override
 	protected final void onResume() {
 		super.onResume();
-		System.out.println("onResume()...");
+		printDebugInfo("GameEngine", "onResume()...");
 		registerMotionSensor();
 		gameloop.setRunning(true);
 		if (gameThread.getState() == Thread.State.TERMINATED) {
-			System.out.println("thread terminated, starting new thread");
+			printDebugInfo("GameEngine", "thread terminated, starting new thread");
 			gameThread = new Thread(gameloop);
 			view.setGameThread(gameThread);
 			gameloop.setRunning(true);
@@ -391,8 +390,8 @@ public abstract class GameEngine extends Activity {
 	 */
 	@Override
 	protected final void onDestroy() {
-		super.onDestroy();
-		System.out.println("onDestroy...");
+		super.onDestroy();	
+		printDebugInfo("GameEngine", "onDestroy...");
 		if (UPDATE_LOOP_ON) {
 			updateLoop.setRunning(false);
 		}
@@ -406,7 +405,7 @@ public abstract class GameEngine extends Activity {
 	@Override
 	protected final void onPause() {
 		super.onPause();
-		System.out.println("OnPause...");
+		printDebugInfo("GameEngine", "OnPause...");
 		unregisterMotionSensor();
 		pause();
 		GameSound.pauseSounds();
@@ -813,6 +812,12 @@ public abstract class GameEngine extends Activity {
 	public void showKeyboard() {
 		InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 		mgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+	}
+	
+	public static void printDebugInfo(String tag, String msg){
+		if(printDebugInfo){
+			Log.d(tag, msg);
+		}		
 	}
 
 }
