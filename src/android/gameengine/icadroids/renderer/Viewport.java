@@ -1,6 +1,7 @@
 package android.gameengine.icadroids.renderer;
 
 import java.util.Random;
+import android.graphics.Point;
 import android.gameengine.icadroids.objects.GameObject;
 import android.gameengine.icadroids.objects.MoveableGameObject;
 
@@ -466,6 +467,16 @@ public class Viewport {
 		return viewportY;
 	}
 
+	/**
+	 * Gets the position of the viewport.
+	 * 
+	 * @return a Point-object containing the x- and y-position of the viewport
+	 */
+	public Point getViewportLocation()
+	{
+		return new Point(viewportX, viewportY);
+	}
+	
 	/**
 	 * Gets the zoomfactor for zooming in.
 	 * 
