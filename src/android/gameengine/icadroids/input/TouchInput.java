@@ -3,6 +3,8 @@
  */
 package android.gameengine.icadroids.input;
 
+import android.gameengine.icadroids.renderer.GameView;
+import android.graphics.Point;
 import android.util.FloatMath;
 import android.view.MotionEvent;
 import android.view.View;
@@ -41,6 +43,10 @@ public class TouchInput implements OnTouchListener {
 	public static float xPos = 0;
 	/** The relative Y position of where the user touches on the screen and NOT the actual game. */
 	public static float yPos = 0;
+	/** The X position in the game Taking the viewport into account */
+	public static float xPosGame = 0;
+	/** The X position in the game Taking the viewport into account. */
+	public static float yPosGame = 0;
 
 	// multi touch flags start from here.
 	/** TRUE when space between two fingers increase. */
@@ -60,7 +66,15 @@ public class TouchInput implements OnTouchListener {
 	private float oldDistance = 0f;
 	private float newDistance = 0f;
 	private boolean zoomCheck;
+	
+	private GameView theview;
 
+	public TouchInput(GameView v)
+	{
+		super();
+		theview = v;
+	}
+	
 	/**
 	 * DO NOT CALL THIS FUNCTION.
 	 * 
@@ -178,6 +192,10 @@ public class TouchInput implements OnTouchListener {
 		// Starting or end location of the touch event.
 		xPos = (int) e.getX();
 		yPos = (int) e.getY();
+		Point p = theview.getViewportLocation();
+		// ??? Need correction for zooming???
+		xPosGame = p.x + xPos;
+		yPosGame = p.y + yPos;
 		if (e.getPointerCount() > 1) {
 			for (int i = 0; i < e.getPointerCount(); i++) {
 				xPointer[i] = e.getX(i);

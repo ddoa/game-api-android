@@ -79,6 +79,7 @@ public class Sprite {
 					.getAppContext().getResources(), resID);
 			calculateSize(spriteBitmap);
 
+			// System.out.println("sprite loaded");
 		} else {
 			loadDelay = resourceName;
 			if (loadDelayedSprites != null) {

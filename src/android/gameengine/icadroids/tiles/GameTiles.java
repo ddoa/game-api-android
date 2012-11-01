@@ -26,7 +26,7 @@ public class GameTiles {
 	/***
 	 * Two dimensional array that holds the location of all tiles.
 	 */
-	private Tile tileArray[][];
+	public Tile tileArray[][];
 	/***
 	 * The width and height of every tile. Default value set to 50.
 	 */
@@ -100,13 +100,10 @@ public class GameTiles {
 
 		for (int i = 0; i < tileArray.length; i++) {
 			for (int j = 0; j < tileArray[i].length; j++) {
-				int tileIndex = map[i][j];
-				if (tileIndex > -1) {
-					tileArray[i][j] = new Tile(tileIndex, this);
-					tileArray[i][j].tileNumberX = j;
-					tileArray[i][j].tileNumberY = i;
-				}
-
+				tileArray[i][j] = new Tile(-1, this);
+				tileArray[i][j].setTileType(map[i][j]);
+				tileArray[i][j].tileNumberX = j;
+				tileArray[i][j].tileNumberY = i;
 			}
 
 		}
@@ -124,7 +121,7 @@ public class GameTiles {
 		if (tileArray != null) {
 			for (int i = 0; i < tileArray.length; i++) {
 				for (int j = 0; j < tileArray[i].length; j++) {
-					if (tileArray[i][j] != null) {
+					if (tileArray[i][j].getTileType() != -1) {
 						c.drawBitmap(
 								tileTypes.get(tileArray[i][j].getTileType())
 										.getSprite(), j * tileSize, i
@@ -151,15 +148,7 @@ public class GameTiles {
 	 *            the new sprite type that should replace this tile
 	 */
 	public void changeTile(int xTile, int yTile, int tileType) {
-		if(tileType < 0){
-			tileArray[yTile][xTile] = null;
-		}
-		else if(tileArray[yTile][xTile] != null){
-			tileArray[yTile][xTile].setTileType(tileType);
-		} else {
-			tileArray[yTile][xTile] = new Tile(tileType, this);
-		}
-		
+		tileArray[yTile][xTile].setTileType(tileType);
 	}
 
 	/**
@@ -178,7 +167,6 @@ public class GameTiles {
 	}
 
 	/**
-	 * Get the list with all the Tile objects in it.
 	 * @return the tileArray
 	 */
 	public Tile[][] getTileArray() {
@@ -233,43 +221,4 @@ public class GameTiles {
 
 		}
 	}
-	
-	/**
-	 * Get a tile on a specific x and y position in the game world
-	 * 
-	 * @param xPosition
-	 *            x position of the tile
-	 * @param yPosition
-	 *            y position of the tile
-	 * @param gameTiles
-	 * @return The Tile object at the given x and y position
-	 */
-	public Tile getTileOnPosition(int xPosition, int yPosition) {
-			int tiley = yPosition / tileSize;
-			int tilex = xPosition / tileSize;
-
-			return getTileOnIndex(tilex, tiley);
-	}
-	
-	/**
-	 * get a Tile on a specified index number of the tile list
-	 * @param xIndex The x index of the list
-	 * @param yIndex The y index of the List
-	 * @return The tile Object at the given index position
-	 */
-	public Tile getTileOnIndex(int xIndex, int yIndex) {
-
-		if (tileArray != null) {
-
-			if (yIndex >= 0 && yIndex < tileArray.length) {
-				if (xIndex >= 0 && xIndex < tileArray[yIndex].length) {
-					return tileArray[yIndex][xIndex];
-				}
-			}
-		}
-		return null;
-	}
-	
-	
-	
 }

@@ -33,7 +33,7 @@ public class Alarm {
 	/**
 	 * True if the alarm is running, false otherwise
 	 */
-	private boolean running = true;
+	private boolean running = false;
 
 	/**
 	 * Make a new Alarm with the given time. The alarm will start immediately.
@@ -49,7 +49,7 @@ public class Alarm {
 		alarmID = id;
 		this.time = Time;
 		this.alarmedObject = alarmedObject;
-		GameEngine.gameAlarms.add(this);
+		GameEngine.addAlarm(this);
 	}
 
 	/**
@@ -59,17 +59,12 @@ public class Alarm {
 	 *  Update handles the alarm to be triggered an deleted.
 	 */
 	public final void update() {
-		if (!alarmedObject.alarmsActiveForThisObject()) {
-			GameEngine.gameAlarms.removeElement(this);
-		} else {
-
-			if (running) {
-				if (counter >= time) {
-					running = false;
-					alarmedObject.triggerAlarm(alarmID);
-				}
-				counter++;
+		if (running) {
+			if (counter >= time) {
+				running = false;
+				alarmedObject.triggerAlarm(alarmID);
 			}
+			counter++;
 		}
 	}
 
@@ -103,5 +98,18 @@ public class Alarm {
 	 */
 	public final void setTime(int time) {
 		this.time = time;
+	}
+	
+	/**
+	 * Test if this alarm targets the specified Object (that must implement IAlarm)
+	 * 
+	 * @param ia
+	 * 		The object you want want to test
+	 * @return
+	 * 		true if this Alarm is set for the specified object
+	 */
+	public boolean targets(IAlarm ia)
+	{
+		return (ia == alarmedObject );
 	}
 }

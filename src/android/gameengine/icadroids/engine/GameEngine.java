@@ -1,12 +1,13 @@
 package android.gameengine.icadroids.engine;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Vector;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
-import android.gameengine.icadroids.alarms.Alarm;
+import android.gameengine.icadroids.alarms.*;
 import android.gameengine.icadroids.input.MotionSensor;
 import android.gameengine.icadroids.input.OnScreenButtons;
 import android.gameengine.icadroids.input.TouchInput;
@@ -38,8 +39,6 @@ import android.view.inputmethod.InputMethodManager;
  * @version 0.9
  */
 public abstract class GameEngine extends Activity {
-	
-	public static boolean printDebugInfo = true;
 	/**
 	 * The player that the viewport follows //
 	 */
@@ -75,6 +74,12 @@ public abstract class GameEngine extends Activity {
 	 * through this list and remove health of every GameObject.
 	 */
 	public static Vector<GameObject> items;
+	/**
+	 * A vectorlist that holds all the newly created GameObjects during this cycle
+	 * of the game loop. At the end of the cycle, all items in this list will be moved
+	 * to the items-list and the object become active 
+	 */
+	public static Vector<GameObject> newItems;
 	/**
 	 * A vectorlist that holds all the active alarms. Can be used if you
 	 * manually want to delete/change alarms.
@@ -122,6 +127,8 @@ public abstract class GameEngine extends Activity {
 	 * @version 1.0, January 10, 2012
 	 */
 	public GameEngine() {
+
+		gameTiles = new GameTiles(100);
 		items = new Vector<GameObject>();
 		gameAlarms = new Vector<Alarm>();
 	}
@@ -139,7 +146,7 @@ public abstract class GameEngine extends Activity {
 		super.onCreate(savedInstanceState);
 
 		checkScreenOrientation();
-		printDebugInfo("GameEngine", "oncreate....");
+		System.out.println("oncreate....");
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -156,7 +163,7 @@ public abstract class GameEngine extends Activity {
 		view = new GameView(this, gameThread);
 		gameloop.setView(view);
 
-		touch = new TouchInput();
+		touch = new TouchInput(view);
 		screenButtons = new OnScreenButtons();
 		sensor = new MotionSensor();
 		GameSound.initSounds(getAppContext());
@@ -196,7 +203,8 @@ public abstract class GameEngine extends Activity {
 	 * GameEngine. Call super.initialize() at the very start.
 	 */
 	protected void initialize() {
-		printDebugInfo("GameEngine", "Intializing...");
+
+		System.out.println("Intializing...");
 
 		if (Sprite.loadDelayedSprites != null) {
 			for (Sprite sprite : Sprite.loadDelayedSprites) {
@@ -229,7 +237,9 @@ public abstract class GameEngine extends Activity {
 		update();
 		for (int i = 0; i < items.size(); i++) {
 			items.get(i).update();
-
+			/*
+			 * Fout, want remove in tellende lus. Maar wat is status van die var active??
+			 */
 			if (!items.get(i).active) {
 				items.remove(i);
 			}
@@ -237,7 +247,29 @@ public abstract class GameEngine extends Activity {
 		for (int i = 0; i < gameAlarms.size(); i++) {
 			gameAlarms.get(i).update();
 		}
+		// call cleanupObjectlists()
 	}
+	
+	/* new!!
+	private void cleanupObjectlists()
+	{
+		Iterator<GameObject> it = items.iterator();
+		while ( it.hasNext() )
+		{
+			GameObject go = it.next();
+			if (  go.isActive() )
+			{
+				deleteObjectAlarms(go);
+				it.remove();
+			}
+		}
+		for ( int i = 0; i < newItems.size(); i++ )
+		{
+			// insert object 0 in the items-list (for this, object must know layer-info)
+			newItems.remove(0);
+		}
+	}
+	*/
 
 	/***
 	 * Allows the game to run logic such as updating the world, checking for
@@ -258,6 +290,50 @@ public abstract class GameEngine extends Activity {
 
 	}
 
+	/**
+	 * Add an Alarm to the list of alarms in the GameEngine. 
+	 * You must add an Alarm to make it 'tick', but it won't start ticking until you call
+	 * startAlarm()!
+	 * 
+	 * @param a
+	 * 		The alarm to be added.
+	 */
+	public static void addAlarm(Alarm a)
+	{
+		gameAlarms.add(a);
+	}
+	
+	/**
+	 * Remove an alarm from the GameEngine.
+	 * It will stop ticking.
+	 * 
+	 * @param a
+	 * 		The alarm to be deleted.
+	 */
+	public void deleteAlarm(Alarm a)
+	{
+		gameAlarms.remove(a);
+	}
+	
+	private void deleteObjectAlarms(GameObject go)
+	{
+		if ( go instanceof IAlarm )
+		{		
+			Iterator<Alarm> it = gameAlarms.iterator();
+			while ( it.hasNext() )
+			{			
+				if ( (it.next()).targets( ((IAlarm)go) ) )
+					it.remove();
+			}
+		}
+	}
+	/**
+	 * Removes all alarm instances
+	 */
+	public void deleteAllAlarms() {
+		gameAlarms.removeAllElements();
+	}
+
 	/***
 	 * Delete a GameObject. Including it's instance.
 	 * 
@@ -265,21 +341,17 @@ public abstract class GameEngine extends Activity {
 	 *            The GameObject instance to be removed
 	 */
 	public final void deleteGameObject(GameObject gameObject) {
+		// alleen setr active-var
 		items.removeElement(gameObject);
+		deleteObjectAlarms(gameObject);
 	}
 
 	/***
 	 * Delete all GameObjects. Included instances.
 	 */
 	public final void deleteAllGameObjects() {
+		// needs update
 		items.removeAllElements();
-	}
-
-	/**
-	 * Removes all alarm instances
-	 */
-	public void deleteAllAlarms() {
-		gameAlarms.removeAllElements();
 	}
 
 	/**
@@ -288,13 +360,28 @@ public abstract class GameEngine extends Activity {
 	 * @param type
 	 *            De class type of the instances to be removed
 	 */
-	public <T> void deleteAllGameObjectsOfType(Class<T> type) {
+	public <T> void deleteAllGameObjectsOfType(Class<T> type) 
+	{
+		/* Na introductie cleanup kan dit simpel, gewone for-each met set active-var*/
+		Iterator<GameObject> it = items.iterator();
+		while ( it.hasNext() )
+		{
+			GameObject go = it.next();
+			if ( go.getClass() == type)
+			{
+				deleteObjectAlarms(go);
+				it.remove();
+			}
+		}
+	}
+	/* remove in een tellende lus: in sommige landen word je al voor minder opgehangen!
+	{
 		for (int i = 0; i < items.size(); i++) {
 			if (items.get(i).getClass() == type) {
 				items.remove(i);
 			}
 		}
-	}
+	}*/
 
 	/**
 	 * <b>DO NOT CALL THIS METHOD</b>
@@ -302,11 +389,11 @@ public abstract class GameEngine extends Activity {
 	@Override
 	protected final void onResume() {
 		super.onResume();
-		printDebugInfo("GameEngine", "onResume()...");
+		System.out.println("onResume()...");
 		registerMotionSensor();
 		gameloop.setRunning(true);
 		if (gameThread.getState() == Thread.State.TERMINATED) {
-			printDebugInfo("GameEngine", "thread terminated, starting new thread");
+			System.out.println("thread terminated, starting new thread");
 			gameThread = new Thread(gameloop);
 			view.setGameThread(gameThread);
 			gameloop.setRunning(true);
@@ -320,8 +407,8 @@ public abstract class GameEngine extends Activity {
 	 */
 	@Override
 	protected final void onDestroy() {
-		super.onDestroy();	
-		printDebugInfo("GameEngine", "onDestroy...");
+		super.onDestroy();
+		System.out.println("onDestroy...");
 		if (UPDATE_LOOP_ON) {
 			updateLoop.setRunning(false);
 		}
@@ -335,7 +422,7 @@ public abstract class GameEngine extends Activity {
 	@Override
 	protected final void onPause() {
 		super.onPause();
-		printDebugInfo("GameEngine", "OnPause...");
+		System.out.println("OnPause...");
 		unregisterMotionSensor();
 		pause();
 		GameSound.pauseSounds();
@@ -743,12 +830,6 @@ public abstract class GameEngine extends Activity {
 	public void showKeyboard() {
 		InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 		mgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-	}
-	
-	public static void printDebugInfo(String tag, String msg){
-		if(printDebugInfo){
-			Log.d(tag, msg);
-		}		
 	}
 
 }

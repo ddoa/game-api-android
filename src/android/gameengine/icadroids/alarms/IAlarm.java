@@ -24,7 +24,7 @@ public interface IAlarm {
 	 * 
 	 * @return False if the alarms can be deleted.
 	 */
-	public boolean alarmsActiveForThisObject();
+	// public boolean alarmsActiveForThisObject();
 
 	/**
 	 * This method will be triggered when the alarm goes off.

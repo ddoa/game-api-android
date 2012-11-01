@@ -18,7 +18,7 @@ public class GameFPSCounter {
 		if (USE_FPS_COUNTER) {
 			frames++;
 			if (System.nanoTime() - startTime >= 1000000000) {
-				Log.d(name + " FPS:", "" + frames + " FPS!");
+				//Log.d(name + " FPS:", "" + frames + " FPS!");
 				frames = 0;
 				startTime = System.nanoTime();
 			}

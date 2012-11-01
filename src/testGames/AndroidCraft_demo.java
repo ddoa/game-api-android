@@ -2,7 +2,6 @@ package testGames;
 
 import android.gameengine.icadroids.engine.GameEngine;
 import android.gameengine.icadroids.engine.GameFPSCounter;
-import android.gameengine.icadroids.engine.GameLoop;
 import android.gameengine.icadroids.input.OnScreenButtons;
 import android.gameengine.icadroids.input.TouchInput;
 import android.gameengine.icadroids.objects.MoveableGameObject;
@@ -28,8 +27,6 @@ public class AndroidCraft_demo extends GameEngine {
 		player.setSprite("tile2");
 		Viewport.useViewport = true;
 		GameFPSCounter.USE_FPS_COUNTER = true;
-		//setBackground("tonk");
-		GameLoop.MAX_FPS = 5000;
 	}
 
 	@Override
@@ -46,11 +43,10 @@ public class AndroidCraft_demo extends GameEngine {
 	@Override
 	public void initialize() {
 		super.initialize();
-		
-		//System.out.println("resource name: " + player.getSprite().getResourceName());
-		setBackground("tonk");
-		OnScreenButtons.use = true;
-		TouchInput.use = false;
+
+		setBackground("bg");
+		OnScreenButtons.use = false;
+		TouchInput.use = true;
 
 		OnScreenButtons.feedback = true;
 		// OnScreenButtons.opacity = 195;

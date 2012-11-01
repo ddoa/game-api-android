@@ -9,6 +9,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Rect;
+import android.graphics.Point;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
@@ -78,7 +79,7 @@ public class GameView extends SurfaceView implements Callback {
 	 * Ensures that the thread stops when the gameloop is stopped.
 	 */
 	public void surfaceDestroyed(SurfaceHolder holder) {
-		GameEngine.printDebugInfo("GameView", "surface destroyed");
+		System.out.println("surface destroyed");
 	}
 
 	/**
@@ -86,7 +87,7 @@ public class GameView extends SurfaceView implements Callback {
 	 * it starts a new thread.
 	 */
 	public void surfaceCreated(SurfaceHolder holder) {
-		GameEngine.printDebugInfo("GameView", "surface created");
+		System.out.println("surface created");
 
 		surfaceLoaded = true;
 
@@ -132,7 +133,7 @@ public class GameView extends SurfaceView implements Callback {
 	 */
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
-		GameEngine.printDebugInfo("GameView", "surface changed");
+		System.out.println("surface changed");
 		// Empty method
 	}
 
@@ -295,5 +296,15 @@ public class GameView extends SurfaceView implements Callback {
 		}
 		canvas.setMatrix(null);
 		gameEngine.drawInterface(canvas);
+	}
+	
+	public Point getViewportLocation()
+	{
+		if (Viewport.useViewport) {
+			if (viewport != null) {
+				return viewport.getViewportLocation();
+			}
+		}
+		return new Point(0,0);	
 	}
 }

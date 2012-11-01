@@ -202,11 +202,10 @@ public class MoveableGameObject extends GameObject {
 			ylocation += movementY;
 
 			// Calculate collision
-			if(this instanceof ICollision){
+			if ( this instanceof ICollision )
 			collidingObject.calculateCollision(xlocation, ylocation, xlocation
 					- movementX, ylocation - movementY, this.getSprite(),
-					GameEngine.gameTiles, (ICollision) this);
-			}
+					GameEngine.gameTiles, (ICollision)this);
 
 			moveX = 0;
 			moveY = 0;
@@ -501,7 +500,6 @@ public class MoveableGameObject extends GameObject {
 	 */
 	public void moveUpToTileSide(TileCollision tc)
 	{
-		System.out.println("movetileside");
 		int side = tc.collisionSide;
 		// the position we want to move to, x or y
 		int pos;
@@ -516,7 +514,11 @@ public class MoveableGameObject extends GameObject {
 				pos = pos - getSprite().getFrameHeight();
 			}
 			// new y will be tileside (pos), x is changed in the same proportion as y, with respect to original move
-			xlocation = prevX + (xlocation-prevX)* (((double)pos-prevY)/(ylocation-prevY));
+			// note: if there was no move then prevY will equal ylocation and we do nothing to x
+			if ( ylocation != prevY )
+			{
+				xlocation = prevX + (xlocation-prevX)* (((double)pos-prevY)/(ylocation-prevY));
+			} 
 			ylocation = (double) pos;
 		} else
 		{	// move to vertical tile edge, left or right
@@ -528,11 +530,25 @@ public class MoveableGameObject extends GameObject {
 			{
 				pos = pos - getSprite().getFrameWidth();
 			}
-			ylocation = prevY + (ylocation-prevY)* (((double)pos-prevX)/(xlocation-prevX));
-			System.out.println("xloc moveto pos:" + pos + " xlocation " + xlocation);
+			if ( xlocation != prevX )
+			{	
+				ylocation = prevY + (ylocation-prevY)* (((double)pos-prevX)/(xlocation-prevX));
+			}
 			xlocation = (double) pos;			
-
 		}		
+	}
+	
+	public void bounce(TileCollision tc)
+	{
+		moveUpToTileSide(tc);
+		if ( tc.collisionSide == 0 || tc.collisionSide == 2)
+		{
+			reverseVerticalDirection();
+		} else
+		{
+			reverseHorizontalDirection();
+		}
+		
 	}
 	
 	/**
@@ -546,7 +562,7 @@ public class MoveableGameObject extends GameObject {
 	 * @return The Tile object at the given x and y position
 	 */
 	public Tile getTileOnPosition(int xPosition, int yPosition){
-		return GameEngine.gameTiles.getTileOnPosition(xPosition, yPosition);
+		return collidingObject.getTileOnPosition(xPosition, yPosition, GameEngine.gameTiles);
 	}
 	
 	/**
@@ -556,5 +572,8 @@ public class MoveableGameObject extends GameObject {
 	public CollidingObject getCollidingObject() {
 		return collidingObject;
 	}
+	
+	
+	
 
 }
