@@ -443,6 +443,8 @@ public class MoveableGameObject extends GameObject {
 	public final ArrayList<GameObject> getCollidedObjects() {
 		ArrayList<GameObject> collidedObjects = new ArrayList<GameObject>();
 
+		// move this part to GameEngine itself (and make 'items' private!!
+		// check if other item is active
 		for (int i = 0; i < GameEngine.items.size(); i++) {
 			if (GameEngine.items.get(i) != this) {
 				if (this.position.intersect(GameEngine.items.get(i).position)) {

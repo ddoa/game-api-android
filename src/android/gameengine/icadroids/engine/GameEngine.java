@@ -130,6 +130,7 @@ public abstract class GameEngine extends Activity {
 
 		gameTiles = new GameTiles(100);
 		items = new Vector<GameObject>();
+		newItems = new Vector<GameObject>();
 		gameAlarms = new Vector<Alarm>();
 	}
 
@@ -236,28 +237,23 @@ public abstract class GameEngine extends Activity {
 	protected final void updateGame() {
 		update();
 		for (int i = 0; i < items.size(); i++) {
-			items.get(i).update();
-			/*
-			 * Fout, want remove in tellende lus. Maar wat is status van die var active??
-			 */
-			if (!items.get(i).active) {
-				items.remove(i);
+			if (items.get(i).active) {
+				items.get(i).update();
 			}
 		}
 		for (int i = 0; i < gameAlarms.size(); i++) {
 			gameAlarms.get(i).update();
 		}
-		// call cleanupObjectlists()
+		cleanupObjectlists();
 	}
 	
-	/* new!!
 	private void cleanupObjectlists()
 	{
 		Iterator<GameObject> it = items.iterator();
 		while ( it.hasNext() )
 		{
 			GameObject go = it.next();
-			if (  go.isActive() )
+			if (  !go.isActive() )
 			{
 				deleteObjectAlarms(go);
 				it.remove();
@@ -266,10 +262,11 @@ public abstract class GameEngine extends Activity {
 		for ( int i = 0; i < newItems.size(); i++ )
 		{
 			// insert object 0 in the items-list (for this, object must know layer-info)
-			newItems.remove(0);
+			// layer gedoe moet er nog bij....
+			items.add(newItems.remove(0));
+			// note: always moving the first element of newItems ensures same order
 		}
 	}
-	*/
 
 	/***
 	 * Allows the game to run logic such as updating the world, checking for
@@ -341,16 +338,14 @@ public abstract class GameEngine extends Activity {
 	 *            The GameObject instance to be removed
 	 */
 	public final void deleteGameObject(GameObject gameObject) {
-		// alleen setr active-var
-		items.removeElement(gameObject);
-		deleteObjectAlarms(gameObject);
+		gameObject.clearActive();
 	}
 
 	/***
 	 * Delete all GameObjects. Included instances.
 	 */
 	public final void deleteAllGameObjects() {
-		// needs update
+		// needs update?? removing all elements generally means stopping the game...
 		items.removeAllElements();
 	}
 
@@ -362,26 +357,15 @@ public abstract class GameEngine extends Activity {
 	 */
 	public <T> void deleteAllGameObjectsOfType(Class<T> type) 
 	{
-		/* Na introductie cleanup kan dit simpel, gewone for-each met set active-var*/
-		Iterator<GameObject> it = items.iterator();
-		while ( it.hasNext() )
+		for (int i = 0; i < items.size(); i++)
 		{
-			GameObject go = it.next();
+			GameObject go = items.get(i);
 			if ( go.getClass() == type)
 			{
-				deleteObjectAlarms(go);
-				it.remove();
+				go.clearActive();
 			}
 		}
 	}
-	/* remove in een tellende lus: in sommige landen word je al voor minder opgehangen!
-	{
-		for (int i = 0; i < items.size(); i++) {
-			if (items.get(i).getClass() == type) {
-				items.remove(i);
-			}
-		}
-	}*/
 
 	/**
 	 * <b>DO NOT CALL THIS METHOD</b>
@@ -461,7 +445,7 @@ public abstract class GameEngine extends Activity {
 	public final void addGameObject(GameObject gameObject, int x, int y) {
 		gameObject.setStartPosition(x, y);
 		gameObject.jumpToStartPosition();
-		items.add(gameObject);
+		newItems.add(gameObject);
 	}
 
 	/**
@@ -483,7 +467,8 @@ public abstract class GameEngine extends Activity {
 			float layerposition) {
 		gameObject.setStartPosition(x, y);
 		gameObject.jumpToStartPosition();
-		items.add(Math.round(items.size() * layerposition), gameObject);
+		// note: store layerposition in Object for later use
+		newItems.add( gameObject);
 	}
 
 	/**
@@ -497,7 +482,9 @@ public abstract class GameEngine extends Activity {
 	 *            1 (float). </b> 1 front, 0 back
 	 */
 	public final void addGameObject(GameObject gameObject, float layerposition) {
-		items.add(Math.round(items.size() * layerposition), gameObject);
+		//items.add(Math.round(items.size() * layerposition), gameObject);
+		// note: store layerposition in Object for later use
+		newItems.add(gameObject);
 	}
 
 	/**
@@ -508,7 +495,7 @@ public abstract class GameEngine extends Activity {
 	 *            GameObject or MovableGameObject as it's parent.
 	 */
 	public final void addGameObject(GameObject gameObject) {
-		items.add(gameObject);
+		newItems.add(gameObject);
 	}
 
 	/**
@@ -518,7 +505,7 @@ public abstract class GameEngine extends Activity {
 	 * @param objectList
 	 */
 	public final void addListOfObject(Collection<GameObject> objectList) {
-		items.addAll(objectList);
+		newItems.addAll(objectList);
 	}
 
 	/**
@@ -605,9 +592,7 @@ public abstract class GameEngine extends Activity {
 	 *            The Y spawnlocation when this object is created
 	 */
 	public final void addPlayer(MoveableGameObject player, int x, int y) {
-		player.setStartPosition(x, y);
-		player.jumpToStartPosition();
-		items.add(player);
+		addGameObject(player, x, y);
 		this.player = player;
 	}
 
@@ -629,9 +614,7 @@ public abstract class GameEngine extends Activity {
 	 */
 	public final void addPlayer(MoveableGameObject player, int x, int y,
 			float position) {
-		player.setStartPosition(x, y);
-		player.jumpToStartPosition();
-		items.add(Math.round(items.size() * position), player);
+		addGameObject(player, x, y, position);
 		this.player = player;
 	}
 

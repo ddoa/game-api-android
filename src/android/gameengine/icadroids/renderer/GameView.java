@@ -284,6 +284,9 @@ public class GameView extends SurfaceView implements Callback {
 		
 		GameEngine.gameTiles.drawTiles(canvas);
 		
+		// hide 'items' by creating a GameEngine method that returns iterator for the list
+		// In this way you can access the elements without accessing the list itself
+		// uhmmmm this iterator shouldn't have a 'remove' ....
 		for (GameObject item : GameEngine.items) {
 			if (Viewport.useViewport) {
 				if (viewport.isInViewport(item)) {

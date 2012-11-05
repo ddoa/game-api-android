@@ -63,6 +63,26 @@ public class GameObject {
 	}
 
 	/**
+	 * Ask if an object is still alive
+	 * 
+	 * @return
+	 * 		boolean indicating if this object still is in the game 
+	 */
+	public boolean isActive()
+	{
+		return active;
+	}
+
+	/**
+	 * Mark an object as 'dead', to be removed at end of cycle
+	 * (this one should be invisible outside the gameengine package)
+	 */
+	public void clearActive()
+	{
+		active = false;
+	}
+	
+	/**
 	 * update is triggered every loop of the game
 	 */
 	public void update() {
@@ -333,12 +353,13 @@ public class GameObject {
 	 * @param position
 	 *            The position value of the image, images with a higher value
 	 *            will be drawn in the background
-	 */
+	 *
 	public final void setLayerPosition(float position) {
 		GameEngine.items.remove(GameEngine.items.indexOf(this));
 		GameEngine.items.add(Math.round(GameEngine.items.size() * position),
 				this);
-	}
+	} Deleted, because too hard to keep the itemslist ok during update()....
+	*/
 
 	/**
 	 * Jump to the object start position
