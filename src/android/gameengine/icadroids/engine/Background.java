@@ -2,7 +2,7 @@ package android.gameengine.icadroids.engine;
 
 import android.gameengine.icadroids.objects.graphics.Sprite;
 /**
- * Needs futher implementation
+ * Needs futher implementation, not ready for usage
  * 
  * used for managing and drawing backgrounds
  * @author Bas
