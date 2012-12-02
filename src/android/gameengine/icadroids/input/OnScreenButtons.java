@@ -6,6 +6,7 @@ import android.gameengine.icadroids.engine.GameEngine;
 import android.gameengine.icadroids.objects.graphics.Sprite;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.Display;
 import android.view.HapticFeedbackConstants;
@@ -587,7 +588,7 @@ public class OnScreenButtons implements OnTouchListener {
 		oldOpacity = opacity;
 		for (int i = 0; i < drawList.size(); i++) {
 			canvas.drawBitmap(drawList.get(i).getSprite(), null,
-					buttonList.get(i).rect, alphaPaint);
+							buttonList.get(i).rect, alphaPaint);
 		}
 	}
 
@@ -627,11 +628,11 @@ public class OnScreenButtons implements OnTouchListener {
 	 */
 	private class ButtonLocStruct {
 
-		private RectF rect;
+		private Rect rect;
 		
 		/** Constructor for this structure */
 		public ButtonLocStruct(int x, int y, int width, int height) {
-			rect = new RectF(x, y, x + width, y + height);
+			rect = new Rect(x, y, x + width, y + height);
 		}
 		
 		/**
@@ -642,7 +643,7 @@ public class OnScreenButtons implements OnTouchListener {
 		 */
 		public boolean intersects(float x, float y) {
 
-			if (rect.contains(x, y)) {
+			if (rect.contains((int)x,(int) y)) {
 				return true;
 			}
 			return false;

@@ -2,6 +2,7 @@ package testGames;
 
 import testGames.gameEngineTest.DebugEngine;
 import android.gameengine.icadroids.engine.GameEngine;
+import android.gameengine.icadroids.input.MotionSensor;
 import android.gameengine.icadroids.input.OnScreenButtons;
 import android.gameengine.icadroids.input.TouchInput;
 import android.gameengine.icadroids.objects.GameObject;
@@ -55,6 +56,7 @@ public class testGame extends DebugEngine {
 		testObject2.setSprite("fishframes");
 		testObject2.setSpeed(0);
 		testObject2.setDirection(47);	
+		MotionSensor.use = true;
 	}
 
 	@Override
@@ -106,6 +108,8 @@ public class testGame extends DebugEngine {
 	@Override
 	public void update() {			 
 		super.update();
+		Log.d("beweging", "x: " + MotionSensor.xAcceleration + " y: " + MotionSensor.yAcceleration);
+			
 	}
 	
 }

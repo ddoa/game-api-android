@@ -12,7 +12,7 @@
         android:label="@string/app_name" android:debuggable="true">
         <activity
             android:label="@string/app_name"
-            android:name="testGames.AndroidCraft_demo" >
+            android:name="testGames.gameEngineTest.GameEngineTestGame" >
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
 
