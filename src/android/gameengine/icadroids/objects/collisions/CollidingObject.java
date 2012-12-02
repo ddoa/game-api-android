@@ -55,7 +55,7 @@ public class CollidingObject {
 			double startX, double startY, Sprite sprite, GameTiles gameTiles,
 			ICollision collisionObject) 
 	{	// no tiles, no sprite: no tile collisions
-		if (gameTiles.tileArray == null || sprite == null )
+		if (gameTiles == null || sprite == null )
 		{
 			return; 
 		}
@@ -137,7 +137,7 @@ public class CollidingObject {
            			// loop through y-range
            			for (int yindex = firsttile; yindex <=lasttile; yindex++)
            			{	// see if there is a tile at the current position
-           				Tile t = getTileOnIndex(xTileIndex, yindex, gameTiles);
+           				Tile t = gameTiles.getTileOnIndex(xTileIndex, yindex);
            				if ( t != null )
            					if ( t.getTileType() != -1 )
            						collidedTiles.add(new TileCollision(t, xCollisionSide));
@@ -165,7 +165,7 @@ public class CollidingObject {
            			int lasttile = Math.min(gameTiles.getMapWidth()-1, divdown(xpos + objwidth-1/*-mapStartX*/, gridsize));
            			for (int xindex = firsttile; xindex <= lasttile; xindex++)
            			{
-           				Tile t = getTileOnIndex(xindex, yTileIndex, gameTiles);
+           				Tile t = gameTiles.getTileOnIndex(xindex, yTileIndex);
            				if ( t != null )
            					if ( t.getTileType() != -1 )
            						collidedTiles.add(new TileCollision(t, yCollisionSide));
@@ -233,7 +233,7 @@ public class CollidingObject {
     	
     }
 
-	public Tile getTileOnIndex(int xPosition, int yPosition,
+/*	public Tile getTileOnIndex(int xPosition, int yPosition,
 			GameTiles gameTiles) {
 
 		if (gameTiles.tileArray != null) {
@@ -246,7 +246,7 @@ public class CollidingObject {
 		}
 		return null;
 	}
-	/**
+	*//**
 	 * Get a tile on a specific x and y position in the game world
 	 * 
 	 * @param xPosition
@@ -255,7 +255,7 @@ public class CollidingObject {
 	 *            y position of the tile
 	 * @param gameTiles
 	 * @return The Tile object at the given x and y position
-	 */
+	 *//*
 	public Tile getTileOnPosition(int xPosition, int yPosition,
 			GameTiles gameTiles) {
 
@@ -271,5 +271,5 @@ public class CollidingObject {
 			}
 		}
 		return null;
-	}
+	}*/
 }

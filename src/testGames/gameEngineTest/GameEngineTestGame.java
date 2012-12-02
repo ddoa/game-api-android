@@ -34,7 +34,7 @@ public class GameEngineTestGame extends DebugEngine implements IAlarm,
 	@Override
 	protected void initialize() {
 		super.initialize();
-
+		triggerAlarm(12345); //custom call of (system) alarm to test alarms
 		startGame();
 	}
 
