@@ -46,18 +46,12 @@ public class AndroidCraft_demo extends GameEngine {
 	@Override
 	public void initialize() {
 		super.initialize();
-<<<<<<< HEAD
+
 
 		setBackground("bg");
 		OnScreenButtons.use = false;
 		TouchInput.use = true;
-=======
-		
-		//System.out.println("resource name: " + player.getSprite().getResourceName());
-		setBackground("tonk");
-		OnScreenButtons.use = true;
-		TouchInput.use = false;
->>>>>>> a291106... Unused Tiles are now Null, debug info can be switched off
+
 
 		OnScreenButtons.feedback = true;
 		// OnScreenButtons.opacity = 195;
