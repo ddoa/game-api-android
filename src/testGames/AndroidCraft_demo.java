@@ -25,11 +25,12 @@ public class AndroidCraft_demo extends GameEngine {
 		super();
 		player = new Player();
 		addPlayer(player, 150, 150);
-		player.setSprite("tile2");
+		player.setSprite("blokframe");
 		Viewport.useViewport = true;
 		GameFPSCounter.USE_FPS_COUNTER = true;
 		//setBackground("tonk");
 		GameLoop.MAX_FPS = 5000;
+		player.startAnimate(10);
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package android.gameengine.icadroids.renderer;
 import android.gameengine.icadroids.engine.GameEngine;
 import android.gameengine.icadroids.objects.GameObject;
 import android.gameengine.icadroids.objects.graphics.Sprite;
+import android.gameengine.icadroids.tiles.GameTiles;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -282,7 +283,9 @@ public class GameView extends SurfaceView implements Callback {
 					viewport.getMinY() - viewport.getViewportY());
 		}
 		
+		if(GameEngine.gameTiles != null){
 		GameEngine.gameTiles.drawTiles(canvas);
+		}
 		
 		// hide 'items' by creating a GameEngine method that returns iterator for the list
 		// In this way you can access the elements without accessing the list itself
