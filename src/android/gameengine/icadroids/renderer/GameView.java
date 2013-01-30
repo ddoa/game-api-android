@@ -3,7 +3,6 @@ package android.gameengine.icadroids.renderer;
 import android.gameengine.icadroids.engine.GameEngine;
 import android.gameengine.icadroids.objects.GameObject;
 import android.gameengine.icadroids.objects.graphics.Sprite;
-import android.gameengine.icadroids.tiles.GameTiles;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;

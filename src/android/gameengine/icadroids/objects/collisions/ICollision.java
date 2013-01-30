@@ -2,8 +2,6 @@ package android.gameengine.icadroids.objects.collisions;
 
 import java.util.List;
 
-import android.gameengine.icadroids.tiles.Tile;
-
 /**
  * Every object that wants <b> Tile </b> collision needs to implement this
  * interface. A MoveableGameObject implements this method by itself, so instead
