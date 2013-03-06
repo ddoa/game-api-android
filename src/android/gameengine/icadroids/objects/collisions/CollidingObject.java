@@ -15,6 +15,9 @@ import android.util.FloatMath;
  * NOTE: main method for detection is very long and complicated. This can be improved
  * by making all its local variables global and then splitting up. Now it is no use, we would
  * have loads of parameteres and problems with return values, probably.
+ * <br />
+ * <b>This is a utility class vor the GameEngine. Game programmers will have no need
+ * of this class! (Hide it, make it an inner class?)</b>
  * 
  * @author Bas van der Zandt, Paul Bergervoet
  * 
@@ -23,10 +26,12 @@ public class CollidingObject {
 
 
 	/**
-	 * <b> This method is automatically called by a MoveableGameObject </b>
-	 * 
-	 * This method calculates if there has been an collision when the object has
-	 * moved.
+	 * <b>This method is automatically called by a MoveableGameObject, do
+	 * not call this yourself!</b>
+	 * <br />
+	 * This method calculates if there has been an collision <i>with tiles</i>
+	 * when the object has moved. It will call the method 
+	 * collisionOccurred(ArrayList<TileCollision>) if ther are collisions
 	 * 
 	 * It calculates its collision by adding a collision box around it. This
 	 * collision box includes it's current position and it's next position. This
@@ -50,6 +55,8 @@ public class CollidingObject {
 	 * @param collisionObject
 	 *            An ICollision object that needs to be called when a collision
 	 *            has occurred
+	 *     
+	 * @see android.gameengine.icadroids.objects.collision.ICollision
 	 */
 	public void calculateCollision(double endX, double endY, 
 			double startX, double startY, Sprite sprite, GameTiles gameTiles,

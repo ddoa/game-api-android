@@ -3,7 +3,7 @@ package android.gameengine.icadroids.engine;
 import android.util.Log;
 
 /**
- * <b> EXPERIMENTAL! </b>, runs the gamelogic in a seperate thread. May runs
+ * <b> EXPERIMENTAL! </b>, runs the gamelogic in a seperate thread. May run
  * the game faster on newer (dualcore) android devices.
  * 
  * @author Edward & Bas

@@ -71,8 +71,6 @@ public class TestGameBas extends GameEngine implements IAlarm, IFormInput {
 		super.initialize();
 
 		
-		startGame();
-
 	}
 
 	@Override

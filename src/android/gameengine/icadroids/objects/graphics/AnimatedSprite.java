@@ -47,8 +47,12 @@ public class AnimatedSprite extends Sprite {
 	 */
 	private boolean animate = false;
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Load a sprite with the given resource.
+	 * Sprites must be stored in the res/drawable
+	 * folders of your Android project. If you have only one image, store it in
+	 * the 'nodpi' folder. If you have various versions (hi-res and lo-res) for
+	 * rendering on devices of varying screen sizes, use the lo- & hi-dpi folders.
 	 * 
 	 * @see
 	 * android.gameengine.icadroids.objects.graphics.Sprite#loadSprite(java.
@@ -165,7 +169,7 @@ public class AnimatedSprite extends Sprite {
 	 * Start animating the sprite
 	 * 
 	 * @param frameWidth
-	 *            The size of each frame
+	 *            The width of each frame. Sprite width must be a multiple of frame width.
 	 */
 	public final void startAnimate(int frameWidth) {
 		this.frameWidth = frameWidth;
@@ -174,10 +178,13 @@ public class AnimatedSprite extends Sprite {
 		calculateFramePosition(currentFrameNumber);
 	}
 	
+	/**
+	 * calculate the number of frames from the sprite and frame widths.
+	 */
 	private void calculateNumberOfFrames(){
-	if(frameWidth != 0){
-		numberOfFrames = spriteWidth / frameWidth;
-	}
+		if(frameWidth != 0){
+			numberOfFrames = spriteWidth / frameWidth;
+		}
 	}
 
 	/**
@@ -201,8 +208,8 @@ public class AnimatedSprite extends Sprite {
 		return animationSpeed;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Get the frame width of this AnimatedSprite
 	 * 
 	 * @see android.gameengine.icadroids.objects.graphics.Sprite#getFrameWidth()
 	 */
@@ -224,8 +231,8 @@ public class AnimatedSprite extends Sprite {
 		return numberOfFrames;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Get the middle of the frame, horizontally
 	 * 
 	 * @see
 	 * android.gameengine.icadroids.objects.graphics.Sprite#getSpriteCenterX()
@@ -235,8 +242,8 @@ public class AnimatedSprite extends Sprite {
 		return getFrameWidth() / 2;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Get the middle of the frame, vertically
 	 * 
 	 * @see
 	 * android.gameengine.icadroids.objects.graphics.Sprite#getSpriteCenterY()

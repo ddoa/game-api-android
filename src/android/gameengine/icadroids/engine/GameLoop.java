@@ -6,7 +6,9 @@ import android.util.Log;
 
 /**
  * GameLoop is the Thread that handles the timing of the GameLogic and the
- * drawing.
+ * drawing.<br />
+ * Generally, game programmers will not make direct use of this class. It
+ * handles the internal workings of the GameEngine.
  * 
  * @author Edward & Bas
  * 
@@ -14,11 +16,11 @@ import android.util.Log;
 public class GameLoop implements Runnable {
 
 	/**
-	 * The view to draw on
+	 * The view onto which the game is rendered.
 	 */
 	private GameView view;
 	/**
-	 * The currently running GameEngine
+	 * The currently running GameEngine.
 	 */
 	private GameEngine gameEngine;
 	/**

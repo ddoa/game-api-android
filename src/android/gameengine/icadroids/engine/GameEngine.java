@@ -138,7 +138,9 @@ public abstract class GameEngine extends Activity {
 	 * <b>Do NOT call this method.</b>
 	 * <p>
 	 * Called when activity is started. Initialise GameEngine objects and set
-	 * options to be used by the GameEngine.
+	 * options to be used by the GameEngine.<br />
+	 * This method is part of the Android Activity lifecycle which is managed
+	 * by GameEngine itself.</p>
 	 * 
 	 * @param savedInstanceState
 	 */
@@ -236,7 +238,7 @@ public abstract class GameEngine extends Activity {
 	protected final void updateGame() {
 		update();
 		for (int i = 0; i < items.size(); i++) {
-			if (items.get(i).active) {
+			if (items.get(i).isActive()) {
 				items.get(i).update();
 			}
 		}
@@ -246,6 +248,10 @@ public abstract class GameEngine extends Activity {
 		cleanupObjectlists();
 	}
 	
+	/**
+	 * This method will do the actual removing and adding of GameObjects at the end of
+	 * a gameloop pass. 
+	 */
 	private void cleanupObjectlists()
 	{
 		Iterator<GameObject> it = items.iterator();
@@ -268,8 +274,8 @@ public abstract class GameEngine extends Activity {
 	}
 
 	/***
-	 * Allows the game to run logic such as updating the world, checking for
-	 * collisions, gathering input, and playing audio.
+	 * Allows the game to run logic such as updating the world, gathering input
+	 * and playing audio.
 	 * <p>
 	 * Override this method inside your game base class that extends from
 	 * GameEngine. Every gameloop this method is called once.
@@ -323,6 +329,7 @@ public abstract class GameEngine extends Activity {
 			}
 		}
 	}
+	
 	/**
 	 * Removes all alarm instances
 	 */
@@ -331,7 +338,7 @@ public abstract class GameEngine extends Activity {
 	}
 
 	/***
-	 * Delete a GameObject. Including it's instance.
+	 * Delete a GameObject from the game.
 	 * 
 	 * @param gameObject
 	 *            The GameObject instance to be removed
@@ -341,7 +348,7 @@ public abstract class GameEngine extends Activity {
 	}
 
 	/***
-	 * Delete all GameObjects. Included instances.
+	 * Delete all GameObjects from the game
 	 */
 	public final void deleteAllGameObjects() {
 		// needs update?? removing all elements generally means stopping the game...
@@ -368,6 +375,8 @@ public abstract class GameEngine extends Activity {
 
 	/**
 	 * <b>DO NOT CALL THIS METHOD</b>
+	 * <p>This method is part of the Android Activity lifecycle which is managed
+	 * by GameEngine itself.</p>
 	 */
 	@Override
 	protected final void onResume() {
@@ -387,6 +396,8 @@ public abstract class GameEngine extends Activity {
 
 	/**
 	 * <b>DO NOT CALL THIS METHOD</b>
+	 * <p>This method is part of the Android Activity lifecycle which is managed
+	 * by GameEngine itself.</p>
 	 */
 	@Override
 	protected final void onDestroy() {
@@ -401,6 +412,8 @@ public abstract class GameEngine extends Activity {
 
 	/**
 	 * <b>DO NOT CALL THIS METHOD</b>
+	 * <p>This method is part of the Android Activity lifecycle which is managed
+	 * by GameEngine itself.</p>
 	 */
 	@Override
 	protected final void onPause() {
@@ -413,15 +426,6 @@ public abstract class GameEngine extends Activity {
 	}
 
 	/**
-	 * Start the gameloop thread. Should be called during the initializing
-	 * phase.
-	 */
-	@Deprecated
-	protected void startGame() {
-
-	}
-
-	/**
 	 * End the game and close the application.
 	 */
 	protected final void endGame() {
@@ -430,8 +434,8 @@ public abstract class GameEngine extends Activity {
 	}
 
 	/**
-	 * Add a GameObject to the GameObjectList. Items added to this list are
-	 * updated accordingly.<br>
+	 * Add a GameObject to the game. New GameObjects will become active in
+	 * the next pass of the gameloop.<br />
 	 * 
 	 * @param gameObject
 	 *            The GameObject that will be added to the game. Should have
@@ -448,8 +452,9 @@ public abstract class GameEngine extends Activity {
 	}
 
 	/**
-	 * Add a GameObject to the GameObjectList. Items added to this list are
-	 * updated accordingly.<br>
+	 * Add a GameObject to the game. New GameObjects will become active in
+	 * the next pass of the gameloop. <br />
+	 * Layerposition may not work very well as yet, still under construction.<br />
 	 * 
 	 * @param gameObject
 	 *            The GameObject that will be added to the game. Should have
@@ -471,7 +476,9 @@ public abstract class GameEngine extends Activity {
 	}
 
 	/**
-	 * Add a GameObject to the GameObjectList.
+	 * Add a GameObject to the game. New GameObjects will become active in
+	 * the next pass of the gameloop. <br />
+	 * Layerposition may not work very well as yet, still under construction.<br />
 	 * 
 	 * @param gameObject
 	 *            The GameObject that will be added to the game. Should have
@@ -487,7 +494,8 @@ public abstract class GameEngine extends Activity {
 	}
 
 	/**
-	 * Add a GameObject to the GameObjectList
+	 * Add a GameObject to the game. New GameObjects will become active in
+	 * the next pass of the gameloop. <br />
 	 * 
 	 * @param gameObjectThe
 	 *            GameObject that will be added to the game. Should have either
@@ -498,7 +506,7 @@ public abstract class GameEngine extends Activity {
 	}
 
 	/**
-	 * Add a collection of GameObjects. Usefull if you want to add a lot of
+	 * Add a collection of GameObjects. Useful if you want to add a lot of
 	 * objects.
 	 * 
 	 * @param objectList
@@ -577,10 +585,12 @@ public abstract class GameEngine extends Activity {
 	}
 
 	/***
-	 * Add a Player to the GameObjectList. Items added to this list are updated
-	 * accordingly.<br>
+	 * Add a GameObject to the Game in the role of the Player object. Note that
+	 * this is relevant only for the viewport. If your game is larger than the screen,
+	 * the viewport will follow the GameObject that has been added as player.
+	 * <br />
 	 * This method should be called during the initializing phase. Only add 1
-	 * player at a time.
+	 * player.
 	 * 
 	 * @param player
 	 *            The player that should be added to the game. The location of
@@ -596,9 +606,12 @@ public abstract class GameEngine extends Activity {
 	}
 
 	/***
-	 * Add a GameObject to the GameObjectList. Items added to this list are
-	 * updated accordingly.<br>
-	 * This method should be called during the initializing phase.
+	 * Add a GameObject to the Game in the role of the Player object. Note that
+	 * this is relevant only for the viewport. If your game is larger than the screen,
+	 * the viewport will follow the GameObject that has been added as player.
+	 * <br />
+	 * This method should be called during the initializing phase. Only add 1
+	 * player.
 	 * 
 	 * @param player
 	 *            The player that should be added to the game. The location of
@@ -629,7 +642,6 @@ public abstract class GameEngine extends Activity {
 
 	/**
 	 * Set the zoom factor for the viewport. Always set higher than 1. 2 = 200%.
-	 * 0.3=30%.
 	 * 
 	 * @param zoomFactor
 	 */
@@ -637,7 +649,9 @@ public abstract class GameEngine extends Activity {
 		view.setZoomFactor(zoomFactor);
 	}
 
-	/** clears the background Image so only the back ground color will show */
+	/** 
+	 * Clears the background Image so only the background color will show 
+	 */
 	public final void clearBackgroundImage() {
 		view.setBackgroundImage(null);
 	}
@@ -769,26 +783,6 @@ public abstract class GameEngine extends Activity {
 	}
 
 	/**
-	 * Return false before the IAlarm object is destroyed for correct garbage
-	 * collection of the alarms.
-	 * 
-	 * When the IAlarm object is destroyed, the alarms will still exists. This
-	 * causes a problem because the alarms prevent the garbage collector to
-	 * clear up the IAlarm.
-	 * <p>
-	 * When you want to delete a IAlarm, let this method return 'false' before
-	 * you delete the IAlarm.
-	 * <p>
-	 * <b> NOTE: GameObjects will handle this by itself! If you really want your
-	 * own implementation, override this method. </b>
-	 * 
-	 * @return False if the alarms can be deleted.
-	 */
-	public boolean alarmsActiveForThisObject() {
-		return true;
-	}
-
-	/**
 	 * Pause the game (stop the gamethread)
 	 */
 	public void pause() {
@@ -814,6 +808,12 @@ public abstract class GameEngine extends Activity {
 		mgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 	}
 	
+	/**
+	 * Print information into the Logcat, for debugging purposes.
+	 * 
+	 * @param tag	The tag (shown in Logcat)
+	 * @param msg	The message you want to be displayed
+	 */
 	public static void printDebugInfo(String tag, String msg){
 		if(printDebugInfo){
 			Log.d(tag, msg);

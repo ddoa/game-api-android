@@ -17,6 +17,11 @@ import android.view.SurfaceView;
 
 /**
  * Class that correctly renders the game on the screen.
+ * <br />
+ * Game programmers will not be accessing this class directly,
+ * it is a utility class used by the GameEngine.
+ * <br />
+ * Note: javadoc comments not finished
  * 
  * @author Edward, Lex, Leon, Roel, Bas
  * 

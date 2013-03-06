@@ -47,6 +47,10 @@ public class Sprite {
 
 	/**
 	 * Load a sprite with the given resource
+	 * Sprites must be stored in the res/drawable
+	 * folders of your Android project. If you have only one image, store it in
+	 * the 'nodpi' folder. If you have various versions (hi-res and lo-res) for
+	 * rendering on devices of varying screen sizes, use the lo- & hi-dpi folders.
 	 * 
 	 * @param resourceName
 	 *            The name of the resource in the /res/drawable folder <b>
@@ -60,6 +64,10 @@ public class Sprite {
 
 	/**
 	 * Load the given resource in the sprite object
+	 * Sprites must be stored in the res/drawable
+	 * folders of your Android project. If you have only one image, store it in
+	 * the 'nodpi' folder. If you have various versions (hi-res and lo-res) for
+	 * rendering on devices of varying screen sizes, use the lo- & hi-dpi folders.
 	 * 
 	 * @param resourceName
 	 *            The name of the resource in the /res/drawable folder <b>
@@ -90,6 +98,15 @@ public class Sprite {
 		}
 	}
 
+	/**
+	 * Initialize the sprite image.
+	 * <br />
+	 * Note: Don't call this yourself. 
+	 * This method is automatically called by the GameEngine when loading of 
+	 * the sprite has been postponed. (In the Android Activity lifecycle, sprites
+	 * can only be loaded after a certain point, or an error will be thrown.
+	 * The GameEngine postpones loading until after this point)
+	 */
 	public void initialize() {
 		if (loadDelay != null) {
 			loadSprite(loadDelay);
@@ -97,7 +114,7 @@ public class Sprite {
 	}
 
 	/**
-	 * Calculate the size of the sprite. Causes a nullpointer when no sprite is
+	 * Calculate the size of the sprite. Throws a null pointer exception when no sprite is
 	 * loaded.
 	 * 
 	 * @param sprite
@@ -109,7 +126,7 @@ public class Sprite {
 	}
 
 	/**
-	 * Get the sprite in Bitmap. Returns nullpointer when no sprite is loaded
+	 * Get the sprite in Bitmap. Throws a null pointer exception when no sprite is loaded
 	 * 
 	 * @return The sprite in bitmap
 	 */

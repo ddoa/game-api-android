@@ -100,7 +100,7 @@ public class testGame extends DebugEngine {
 				};		
 		//addTileMap(Map, 0, 0);
 		//GameTiles.changeTile(1, 1, 1);
-		startGame();
+
 	}
 
 	@Override

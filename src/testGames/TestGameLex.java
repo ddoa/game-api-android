@@ -38,7 +38,6 @@ public class TestGameLex extends GameEngine {
 		setZoomFactor(.2f);
 		GameView.MAP_HEIGHT = 3000;
 		GameView.MAP_WIDTH = 4000;
-		startGame();
 		GameSound.addSound(0, "lucas");
 		GameSound.addSound(1, "ding");
 	}

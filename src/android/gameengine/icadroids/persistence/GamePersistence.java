@@ -68,6 +68,8 @@ public class GamePersistence {
 	 * Returns the full data (in String format) that is stored in the file. This
 	 * function will return the data or an empty String if the file does not
 	 * exist, or the file is empty.
+	 * 
+	 * @return String The data saved earlier.
 	 */
 	public String loadData() {
 		String content = "";

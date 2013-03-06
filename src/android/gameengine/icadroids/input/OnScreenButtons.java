@@ -21,7 +21,8 @@ import android.view.WindowManager;
  * the user can check wether a button is pressed or not, by accessing the static
  * boolean values for each correspodending button.
  * 
- * Do not make an instance of this class yourself.
+ * Do not make an instance of this class yourself. If you want to use the OnScreenButtons
+ * in your game, set the static variable <i>use</i> to true.
  * @author Roel
  */
 public class OnScreenButtons implements OnTouchListener {
