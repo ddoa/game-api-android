@@ -633,13 +633,17 @@ public abstract class GameEngine extends Activity {
 
 	/**
 	 * Sets the background image of the current view.
-	 * 
+	 * xxx
 	 * @param backgroundImage
 	 *            The name of the background image that will be set
 	 */
 	public final void setBackground(String backgroundImage, boolean backgroundFit) {
 		view.setBackgroundImage(backgroundImage);
 		view.setBackgroundFit(backgroundFit);
+	}
+	public final void setBackground(String backgroundImage) {
+		view.setBackgroundImage(backgroundImage);
+		view.setBackgroundFit(false);
 	}
 
 	/**
@@ -812,6 +816,7 @@ public abstract class GameEngine extends Activity {
 	
 	/**
 	 * Print information into the Logcat, for debugging purposes.
+	 * xxx
 	 * 
 	 * @param tag	The tag (shown in Logcat)
 	 * @param msg	The message you want to be displayed
