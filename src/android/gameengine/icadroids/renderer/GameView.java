@@ -38,6 +38,7 @@ public class GameView extends SurfaceView implements Callback {
 	private Rect rect = new Rect();
 
 	private boolean backgroundFit = false;
+
 	private boolean tileBasedMap = false;
 	private Thread gameThread;
 
@@ -315,4 +316,9 @@ public class GameView extends SurfaceView implements Callback {
 		}
 		return new Point(0,0);	
 	}
+	
+	public void setBackgroundFit(boolean backgroundFit) {
+		this.backgroundFit = backgroundFit;
+	}
+
 }

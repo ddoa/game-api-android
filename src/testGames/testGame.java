@@ -6,7 +6,6 @@ import android.gameengine.icadroids.input.OnScreenButtons;
 import android.gameengine.icadroids.input.TouchInput;
 import android.gameengine.icadroids.objects.GameObject;
 import android.gameengine.icadroids.objects.MoveableGameObject;
-import android.gameengine.icadroids.objects.collisions.BoundingCircle;
 import android.gameengine.icadroids.objects.graphics.Sprite;
 import android.gameengine.icadroids.renderer.GameView;
 import android.gameengine.icadroids.renderer.Viewport;
@@ -24,8 +23,6 @@ public class testGame extends DebugEngine {
 	Sprite tile1;
 	Sprite tile2;
 	Sprite tile3;
-	BoundingCircle bounding1;
-	BoundingCircle bounding2;
 	MoveableGameObject testObject1;
 	MoveableGameObject testObject2;
 	MoveableGameObject testObject3;
@@ -43,7 +40,6 @@ public class testGame extends DebugEngine {
 		testObject3 = new MoveableGameObject();
 		testObject1 = new MoveableGameObject();
 		//bounding1 = new BoundingCircle(hoi, 300, 0, 0);
-		bounding2 = new BoundingCircle(6, 0, 0);		
 		//showKeyboard();	
 		//hoi5.startAnimate(16);
 		//Viewport.useViewport = true;

@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Vector;
 
+import android.R.bool;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -636,8 +637,9 @@ public abstract class GameEngine extends Activity {
 	 * @param backgroundImage
 	 *            The name of the background image that will be set
 	 */
-	public final void setBackground(String backgroundImage) {
+	public final void setBackground(String backgroundImage, boolean backgroundFit) {
 		view.setBackgroundImage(backgroundImage);
+		view.setBackgroundFit(backgroundFit);
 	}
 
 	/**

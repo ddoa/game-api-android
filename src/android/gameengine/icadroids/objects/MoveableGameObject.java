@@ -46,7 +46,7 @@ public class MoveableGameObject extends GameObject {
 	/** Holds the friction of this object */
 	private double friction = 0;
 
-	CollidingObject collidingObject = new CollidingObject();
+	private CollidingObject collidingObject = new CollidingObject();
 
 	/**
 	 * The update-method will be called every cycle of the game loop.

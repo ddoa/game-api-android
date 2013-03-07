@@ -8,7 +8,7 @@ import android.gameengine.icadroids.tiles.Tile;
  * TileCollisions will be in the 'collided'-list that is passed on
  * by collision detection in the collisionOccurred-method
  * 
- * @author gebruiker
+ * @author Paul Bergervoet
  *
  */
 public class TileCollision {
