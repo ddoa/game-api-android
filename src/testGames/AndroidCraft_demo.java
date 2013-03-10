@@ -30,7 +30,7 @@ public class AndroidCraft_demo extends GameEngine {
 		GameFPSCounter.USE_FPS_COUNTER = true;
 		//setBackground("tonk");
 		GameLoop.MAX_FPS = 5000;
-		player.startAnimate(10);
+		player.startAnimate();
 	}
 
 	@Override

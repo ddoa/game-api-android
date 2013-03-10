@@ -117,16 +117,36 @@ public class GameObject {
 	}
 
 	/**
-	 * Draw the GameObject on the screen, called by game renderer.
+	 * Override this method to implement your own rendered canvas objects
+	 * like text, rectangles or colors. When you are using a viewport,
+	 * the rendering will be relative to the screen. If you want absolute
+	 * rendering, use 'drawCustomObjects'.
 	 * 
-	 * @param canvas
-	 *            Android canvas
+	 *<b> Don't forget to call super(canvas)!! </b>
+	 * Draw the GameObject on the screen, called by game renderer
+	 * 
+	 * @param canvas The Android canvas. Use this provided object to
+	 * draw for example text, rectangles and colors. For the api see:
+	 * http://developer.android.com/reference/android/graphics/Canvas.html
 	 */
 	public void drawGameObject(Canvas canvas) {
 		if (sprite.getSprite() != null && isVisible) {
 			canvas.drawBitmap(sprite.getSprite(),
 					sprite.getCurrentFrameRectangle(), position, null);
 		}
+	}
+	
+	/**
+	 * Override this method to draw your own text, rectangle and
+	 * other objects on the screen (like a game dashboard). The objects
+	 * will be rendered on the absolute x,y position.
+	 * 
+	 * @param canvas The Android canvas. Use this provided object to
+	 * draw for example text, rectangles and colors. For the api see:
+	 * http://developer.android.com/reference/android/graphics/Canvas.html
+	 */
+	public void drawCustomObjects(Canvas canvas){
+		//Override this method to implement your own rendered objects
 	}
 
 	/**
@@ -482,4 +502,5 @@ public class GameObject {
 			return Math.toDegrees((Math.atan2(deltaY, deltaX))) + 450;
 		}
 	}
+	
 }

@@ -10,6 +10,9 @@
  */
 package game;
 
+import com.android.vissenspel.Vissenkom;
+
+import android.content.Intent;
 import android.gameengine.icadroids.engine.GameEngine;
 
 
@@ -19,6 +22,15 @@ public class MyAndroidGame extends GameEngine {
 protected void initialize() {
 	super.initialize();
 	//put your initialization code here
+	
+	
+	//////////////////////////////////////////////////
+	//These 2 lines will start vissenkom as example.//
+	//       Delete when creating own game!         //
+	//////////////////////////////////////////////////
+	Intent intent = new Intent(this, Vissenkom.class);
+	startActivity(intent);
+	////////////////////////////////////////////////////
 }
 
 @Override

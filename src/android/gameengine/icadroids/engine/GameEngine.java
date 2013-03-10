@@ -851,5 +851,22 @@ public abstract class GameEngine extends Activity {
 			Log.d(tag, msg);
 		}		
 	}
-
+	/**
+	 * Get the first (rendered) object that is touched. Useful for checking
+	 * if a gameObject is touched.
+	 * @param touchSize The size (rectangle) around the finger that will be checked
+	 *  for objects.
+	 * @return The first (rendered) gameObject that is touched.
+	 */
+	public final GameObject getGameObjectAtTouchPosition(int touchSize){
+		Rect clickedPos = new Rect();
+		clickedPos.set((int)TouchInput.xPos - touchSize,(int) TouchInput.yPos - touchSize,
+				(int) TouchInput.xPos + touchSize,(int) TouchInput.xPos + touchSize);
+		if (!findItemAt(clickedPos).isEmpty()) {
+			GameObject gameObject = findItemAt(clickedPos).get(0);
+			return gameObject;
+	}
+		return null;
+	}
+	
 }
