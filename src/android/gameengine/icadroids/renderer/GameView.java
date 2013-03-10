@@ -309,6 +309,11 @@ public class GameView extends SurfaceView implements Callback {
 			}
 		}
 		canvas.setMatrix(null);
+		
+		for (GameObject item : GameEngine.items) {
+				item.drawCustomObjects(canvas);		
+		}		
+		
 		gameEngine.drawInterface(canvas);
 	}
 	
