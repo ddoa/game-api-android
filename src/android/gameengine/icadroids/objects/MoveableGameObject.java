@@ -1,7 +1,6 @@
 package android.gameengine.icadroids.objects;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import android.gameengine.icadroids.engine.GameEngine;
 import android.gameengine.icadroids.objects.collisions.CollidingObject;
@@ -46,8 +45,18 @@ public class MoveableGameObject extends GameObject {
 	/** Holds the friction of this object */
 	private double friction = 0;
 
-	CollidingObject collidingObject = new CollidingObject();
+	private CollidingObject collidingObject = new CollidingObject();
 
+	/**
+	 * The update-method will be called every cycle of the game loop.
+	 * Override this method to give an object any time driven behaviour.
+	 * <br />
+	 * Note: Always call <i>super.update()</i> first in your overrides, 
+	 * because the default update does some important actions, like
+	 * moving the object.
+	 * 
+	 * @see android.gameengine.icadroids.objects.GameObject#update()
+	 */
 	@Override
 	public void update() {
 		super.update();
@@ -72,6 +81,7 @@ public class MoveableGameObject extends GameObject {
 
 	/**
 	 * Sets the direction of this object in degrees
+	 * Direction 0 points up, directions go clockwise, so 90 is right, etc.
 	 * 
 	 * @param direction
 	 *            the direction in degrees.
@@ -137,6 +147,7 @@ public class MoveableGameObject extends GameObject {
 
 	/**
 	 * Sets both the direction and the speed of this object.
+	 * Direction 0 points up, directions go clockwise, so 90 is right, etc.
 	 * 
 	 * @param direction
 	 *            the direction you want to set in the degrees
@@ -174,6 +185,7 @@ public class MoveableGameObject extends GameObject {
 
 	/**
 	 * Sets the current direction of this object in radians
+	 * Direction 0 points up, directions go clockwise, so 0.5*pi is right, etc.
 	 * 
 	 * @param Direction
 	 *            the direction in radians.
@@ -276,10 +288,21 @@ public class MoveableGameObject extends GameObject {
 	}
 
 	/**
-	 * Sets the friction of this object
+	 * Sets the friction of this object, that is the amount of speed reduction.
+	 * <br />
+	 * The decrease in speed is measured as a fraction, if you want a 5% decrease
+	 * in speed per cycle of the game loop, use 0.05.
+	 * 
+	 * @param friction, 
+	 * 			the fraction of decrease in speed per cycle of the game loop.
+	 * 			Must be a number between 0 and 1
 	 */
 	public final void setFriction(double friction) {
-		this.friction = friction;
+		if ( friction > 0 && friction < 1 ) {
+			this.friction = friction;
+		} else {
+			this.friction = 1;
+		}
 	}
 
 	/**
@@ -292,32 +315,19 @@ public class MoveableGameObject extends GameObject {
 	}
 
 	/**
-	 * Calculates the changes in speed.
+	 * Calculates the changes in speed due to friction.
 	 * 
 	 * @param directionSpeed
 	 *            the current speed
 	 * @return the new speed.
 	 */
 	private double calculateFriction(double directionSpeed) {
-		if (directionSpeed < 0) {
-			if (directionSpeed - friction > 0) {
-				return 0;
-			} else {
-				return directionSpeed += friction;
-			}
-		}
-		if (directionSpeed > 0) {
-			if (directionSpeed - friction < 0) {
-				return 0;
-			} else {
-				return directionSpeed -= friction;
-			}
-		}
-		return 0;
+		return (1-friction)* directionSpeed;
 	}
 
 	/**
 	 * Gets the direction of the objects movement in degrees.
+	 * Direction 0 points up, directions go clockwise, so 90 is right, etc.
 	 * 
 	 * @return the direction(angle) in degrees.
 	 */
@@ -327,6 +337,7 @@ public class MoveableGameObject extends GameObject {
 
 	/**
 	 * Gets the direction of the objects movement in radians.
+	 * Direction 0 points up, directions go clockwise, so 0.5*pi is right, etc.
 	 * 
 	 * @return the direction(angle) in radians
 	 */
@@ -388,10 +399,10 @@ public class MoveableGameObject extends GameObject {
 
 	/**
 	 * Gets the speed of this object. Note that an object only has a speed if it
-	 * first has been set with setSpeed(double),setxSpeed(double) or
+	 * first has been set with setSpeed(double), setxSpeed(double) or
 	 * setySpeed(double)
 	 * 
-	 * @return The Y speed.
+	 * @return The speed.
 	 */
 	public final double getSpeed() {
 		return speed;
@@ -399,7 +410,7 @@ public class MoveableGameObject extends GameObject {
 
 	/**
 	 * Gets the X speed of this object. Note that an object only has a speed if
-	 * it first has been set with setSpeed(double),setxSpeed(double) or
+	 * it first has been set with setSpeed(double), setxSpeed(double) or
 	 * setySpeed(double)
 	 * 
 	 * @return The X speed.
@@ -432,10 +443,12 @@ public class MoveableGameObject extends GameObject {
 
 	/**
 	 * Checks wether or not this gameObject has collided with one or multiple
-	 * gameObjects or MovableGameObjects. It will return a list with the
-	 * collided objects, it returns a null if there is no collision.
+	 * GameObjects or MovableGameObjects. It will return a list with the
+	 * collided objects, it returns a null if there is no collision.<br />
+	 * Call this method inside your <i>update()</i>, if you want to handle
+	 * collisions.
 	 * 
-	 * @return An arraylist of all objects that have been collided with.
+	 * @return An arraylist of all objects that this object has collided with.
 	 * 
 	 *         Note that you will never get the object calling this function
 	 *         back.
@@ -447,7 +460,7 @@ public class MoveableGameObject extends GameObject {
 		// check if other item is active
 		for (int i = 0; i < GameEngine.items.size(); i++) {
 			if (GameEngine.items.get(i) != this) {
-				if (this.position.intersect(GameEngine.items.get(i).position)) {
+				if (Rect.intersects(this.position, GameEngine.items.get(i).position)) {
 					collidedObjects.add(GameEngine.items.get(i));
 				}
 			}
@@ -466,7 +479,7 @@ public class MoveableGameObject extends GameObject {
 	 *            Asks for any generic class, classes you should use are
 	 *            Gameobject,MoveableGameobject or any extensions of these two.
 	 * 
-	 * @return returns if this object has collided with an instance of given
+	 * @return returns true if this object has collided with an instance of the given
 	 *         class
 	 */
 	public final <T> boolean collidedWith(Class<T> objectClass) {
@@ -544,6 +557,16 @@ public class MoveableGameObject extends GameObject {
 		}		
 	}
 	
+	/**
+	 * Bounce at the tile this object has just collided into. The TileCollision
+	 * object will be provided by the tile-collision detection, so this method will
+	 * typically be called at collision handling.<br />
+	 * The object will be moved to the side of the tile and, according to the side
+	 * of the tile it bounces on, x- or y-Speed will be reversed, so the object
+	 * will move away in the next cycle of the game loop.
+	 * 
+	 * @param tc 	The TileCollision (that is Tile plus side) you want to bounce onto
+	 */
 	public void bounce(TileCollision tc)
 	{
 		moveUpToTileSide(tc);
@@ -558,13 +581,14 @@ public class MoveableGameObject extends GameObject {
 	}
 	
 	/**
-	 * Get a tile on a specific x and y position in the game world
+	 * Get a tile on a specific x and y position in the game world.<br />
+	 * ToDo Note: this method should not be here, but in class GameEngine.
+	 * Change in next version!
 	 * 
 	 * @param xPosition
 	 *            x position of the tile
 	 * @param yPosition
 	 *            y position of the tile
-	 * @param gameTiles
 	 * @return The Tile object at the given x and y position
 	 */
 	public Tile getTileOnPosition(int xPosition, int yPosition){

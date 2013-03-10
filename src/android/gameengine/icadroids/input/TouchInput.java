@@ -79,6 +79,8 @@ public class TouchInput implements OnTouchListener {
 	 * DO NOT CALL THIS FUNCTION.
 	 * 
 	 * This is the standard function android provides for touch events.
+	 * That is, Android calls this function to inform the game about the status
+	 * of the touch screen.<br />
 	 * This class checks for the static values he need to change.
 	 * 
 	 * @param v

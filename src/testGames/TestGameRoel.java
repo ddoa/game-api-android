@@ -32,7 +32,6 @@ public class TestGameRoel extends GameEngine {
 		OnScreenButtons.use = true;
 		OnScreenButtons.feedback = true;
 		OnScreenButtons.opacity = 255;
-		startGame();
 	}
 
 	@Override

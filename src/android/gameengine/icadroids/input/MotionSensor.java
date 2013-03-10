@@ -8,13 +8,16 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
 /**
- *Motion Sensor is used to receive certain statics about certain
- *motionEvent note that this only works on real phones and not in
- *emulator. Some of these functions will not work if you do not have
- *the required sensor in your phone.
+ * Motion Sensor is used to receive certain statics about certain
+ * motionEvent note that this only works on real phones and not in
+ * emulator. Some of these functions will not work if you do not have
+ * the required sensor in your phone.<br />
+ * Use of MotionSensor in your game: use the static variables to read
+ * the state of the sensors. All other methods are for communication
+ * between game engine and android device.
  *         
- *@author Roel
- *@see http://developer.android.com/reference/android/hardware/SensorEvent.html
+ * @author Roel
+ * @see http://developer.android.com/reference/android/hardware/SensorEvent.html
  */
 public class MotionSensor implements SensorEventListener {
 

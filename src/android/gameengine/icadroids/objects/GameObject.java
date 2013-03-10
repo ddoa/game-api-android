@@ -19,17 +19,17 @@ public class GameObject {
 	/**
 	 * When active is false, the object can be destroyed
 	 */
-	public boolean active = true;
+	private boolean active = true;
 	/**
 	 * Indicates if the object is visible or not.
 	 */
-	public boolean isVisible = true;
+	private boolean isVisible = true;
 	/**
-	 * The exact x position of the object
+	 * The exact x position of the upper left corner of the object.
 	 */
 	protected double xlocation = 0;
 	/**
-	 * the exact y position of the object
+	 * the exact y position of the upper left corner of the object.
 	 */
 	protected double ylocation = 0;
 	/**
@@ -37,7 +37,7 @@ public class GameObject {
 	 */
 	private AnimatedSprite sprite = new AnimatedSprite();
 	/**
-	 * The sprite position on the screen
+	 * The bounding rectangle that contains the sprite on the screen
 	 */
 	public Rect position = new Rect(0, 0, 0, 0);
 	/**
@@ -56,14 +56,19 @@ public class GameObject {
 	}
 
 	/**
-	 * Called when the application starts.
+	 * Called when the application starts. You can override this method to do initialization
+	 * at the <i>very start of the game</i>. Therefore it is only useful for objects that are
+	 * always present in the game, from start of the game. 
+	 * These objects must be created in the constructor of your game.
+	 * 
 	 */
 	public void intialize() {
 
 	}
 
 	/**
-	 * Ask if an object is still alive
+	 * Ask if an object is still alive, that is: it hasn't been deleted from the game
+	 * or added in this cycle of the game.
 	 * 
 	 * @return
 	 * 		boolean indicating if this object still is in the game 
@@ -74,8 +79,23 @@ public class GameObject {
 	}
 
 	/**
-	 * Mark an object as 'dead', to be removed at end of cycle
-	 * (this one should be invisible outside the gameengine package)
+	 * Ask if an object is visible
+	 * 
+	 * @return
+	 * 		boolean indicating if this object still is visible 
+	 */
+	public boolean isVisible()
+	{
+		return isVisible;
+	}
+
+	/**
+	 * Mark an object as 'dead', to be removed at end of cycle.<br />
+	 * Note: don't use this method to delete objects, use deleteGameObject
+	 * instead. This method will call clearActive() and it will also do other
+	 * necessary actions, like removing Alarms belonging to the object.
+	 * <br />
+	 * Note: this method should be invisible to game programmers.
 	 */
 	public void clearActive()
 	{
@@ -83,7 +103,12 @@ public class GameObject {
 	}
 	
 	/**
-	 * update is triggered every loop of the game
+	 * The update-method will be called every cycle of the game loop.
+	 * Override this method to give an object any time driven behaviour.
+	 * <br />
+	 * Note: Always call <i>super.update()</i> first in your overrides, 
+	 * because the default update does some important actions, like
+	 * sprite animation.
 	 */
 	public void update() {
 		sprite.updateToNextFrame();
@@ -92,7 +117,7 @@ public class GameObject {
 	}
 
 	/**
-	 * Draw the GameObject on the screen
+	 * Draw the GameObject on the screen, called by game renderer.
 	 * 
 	 * @param canvas
 	 *            Android canvas
@@ -105,7 +130,7 @@ public class GameObject {
 	}
 
 	/**
-	 * update position rectangle used for drawing the sprite on the right
+	 * Update position rectangle used for drawing the sprite on the right
 	 * position with the right size on the screen. This rectangle is also used
 	 * for collision detection between GameObjects.
 	 */
@@ -115,7 +140,10 @@ public class GameObject {
 	}
 
 	/**
-	 * Set a sprite for the GameObject.
+	 * Set a sprite for the GameObject. Sprite images must be stored in the res/drawable
+	 * folders of your Android project. If you have only one image, store it in
+	 * the 'nodpi' folder. If you have various versions (hi-res and lo-res) for
+	 * rendering on devices of varying screen sizes, use the lo- & hi-dpi folders.
 	 * 
 	 * <b>Note: Extremely small sprites don't work well with Collision
 	 * Detection!</b>
@@ -124,42 +152,72 @@ public class GameObject {
 	 *            The name of the resource in the /res/drawable folder <b>
 	 *            without extension </b>, so when your picture in the
 	 *            /res/drawable is named 'picture.jpg', this parameter should be
-	 *            'picture' .
+	 *            "picture" .
 	 */
 	public final void setSprite(String resourceName) {
-		sprite.loadSprite(resourceName);
+		sprite.loadAnimatedSprite(resourceName, 1);
 	}
 
 	/**
-	 * Start animating the sprite
+	 * Set a sprite for the GameObject. Sprite images must be stored in the res/drawable
+	 * folders of your Android project. If you have only one image, store it in
+	 * the 'nodpi' folder. If you have various versions (hi-res and lo-res) for
+	 * rendering on devices of varying screen sizes, use the lo- & hi-dpi folders.
 	 * 
+	 * <b>Note: Extremely small sprites don't work well with Collision
+	 * Detection!</b>
+	 * 
+	 * @param resourceName
+	 *            The name of the resource in the /res/drawable folder <b>
+	 *            without extension </b>, so when your picture in the
+	 *            /res/drawable is named 'picture.jpg', this parameter should be
+	 *            "picture" .
 	 * @param frameWidth
-	 *            The width size of each frame
+	 *            The width of each frame in an animated sprite (film strip)
 	 */
-	public final void startAnimate(int frameWidth) {
-		sprite.startAnimate(frameWidth);
+	public final void setSprite(String resourceName, int numberOfFrames) {
+		sprite.loadAnimatedSprite(resourceName, numberOfFrames);
 	}
 
 	/**
-	 * Stop animating the sprite
+	 * Set a sprite for the GameObject. Use this method if you create
+	 * sprites yourself, for instance if you create subclasses of
+	 * AnimatedSprite that have special animations.
+	 * 
+	 * @param theSprite
+	 *         AnimatedSprite that has been created earlier
+	 */
+	public final void setSprite(AnimatedSprite theSprite) {
+		sprite = theSprite;
+	}
+	/**
+	 * Start animating the sprite, from the current frame
+	 */
+	public final void startAnimate() {
+		sprite.startAnimate();
+	}
+
+	/**
+	 * Stop animating the sprite. The animation will stop at the current frame
+	 * and will not go back to the first frame
 	 */
 	public final void stopAnimate() {
 		sprite.stopAnimate();
 	}
 
 	/**
-	 * get the x position on the screen
+	 * Get the x position on the screen, rounds the exact X-pos to an int.
 	 * 
-	 * @return x position on the screen
+	 * @return x position on the screen as an int
 	 */
 	public final int getX() {
 		return (int) Math.round(xlocation);
 	}
 
 	/**
-	 * Get the y position on the screen
+	 * Get the y position on the screen, rounds the exact Y-pos to an int.
 	 * 
-	 * @return the y position on the screen
+	 * @return the y position on the screen as an int
 	 */
 	public final int getY() {
 		return (int) Math.round(ylocation);
@@ -184,18 +242,18 @@ public class GameObject {
 	}
 
 	/**
-	 * Get the absolute x position of the GameObject
+	 * Get the exact x position of the GameObject
 	 * 
-	 * @return the absolute x position
+	 * @return the exact x position, as a double
 	 */
 	public final double getFullX() {
 		return xlocation;
 	}
 
 	/**
-	 * Get the absolute y position of the GameObject
+	 * Get the exact y position of the GameObject
 	 * 
-	 * @return the absolute y position
+	 * @return the exact y position, as a double
 	 */
 	public final double getFullY() {
 		return ylocation;
@@ -203,7 +261,7 @@ public class GameObject {
 
 	/**
 	 * Set x position of the GameObject WARNING: Do NOT use this method to move
-	 * the player or a lot of methods will behave incorectly.
+	 * the player or a lot of methods will behave incorrectly.
 	 * 
 	 * @param x
 	 *            The x position
@@ -213,8 +271,8 @@ public class GameObject {
 	}
 
 	/**
-	 * Set y position of GameObject WARNING: Do NOT use this method to move the
-	 * player or a lot of methods will behave incorectly.
+	 * Set y position of the GameObject. WARNING: Do NOT use this method to move the
+	 * player or a lot of methods will behave incorrectly.
 	 * 
 	 * @param y
 	 *            The y position
@@ -224,7 +282,8 @@ public class GameObject {
 	}
 
 	/**
-	 * Set the position on the screen.
+	 * Set the position on the screen. WARNING: Do NOT use this method to move the
+	 * player or a lot of methods will behave incorrectly.
 	 * 
 	 * @param x
 	 *            The x position
@@ -246,20 +305,20 @@ public class GameObject {
 	}
 
 	/**
-	 * Get the size of the size of the frame width. This wil standard be the
-	 * sprite width.
+	 * Get the frame width of the object's sprite, this will be also the width
+	 * of the object in the game.
 	 * 
-	 * @return The width size of the frame
+	 * @return The width of the frame in pixels
 	 */
 	public final int getFrameWidth() {
 		return sprite.getFrameWidth();
 	}
 
 	/**
-	 * Get the size of the size of the frame height. This will standard be the
-	 * sprite height.
+	 * Get the frame height of the object's sprite, this will be also the height
+	 * of the object in the game.
 	 * 
-	 * @return The height size of the frame
+	 * @return The height of the frame in pixels
 	 */
 	public final int getFrameHeight() {
 		return sprite.getFrameHeight();
@@ -290,6 +349,7 @@ public class GameObject {
 
 	/**
 	 * Triggered when the GameObject moves outside of the world.
+	 * Override this method to take action when this happens!
 	 * 
 	 * @param horizontal
 	 *            is true when the object moves outside the left or right edge.
@@ -302,14 +362,14 @@ public class GameObject {
 	/**
 	 * Get the sprite position as rectangle
 	 * 
-	 * @return Rectangle with the current positon + size of the GameObject
+	 * @return Rectangle with the current position + size of the GameObject
 	 */
 	public final Rect  getPosition() {
 		return position;
 	}
 
 	/**
-	 * The speed of the sprite animation.
+	 * Set the speed of the sprite animation.
 	 * 
 	 * @param speed
 	 *            The number of game loops that must occur before the next
@@ -320,17 +380,20 @@ public class GameObject {
 	}
 
 	/**
-	 * Set the frame number of the sprite when animated.
+	 * Set the frame number of the sprite. This method can be used both
+	 * with animated sprites and non-animated sprites (for instance when
+	 * there are frames for looking left, right, ...).<br />
+	 * Of course, sprite must be a film strip.
 	 * 
 	 * @param number
-	 *            The frame number, frame numbers start at 0
+	 *            The frame number, frame numbers range from 0 to NrOfFrames-1
 	 */
 	public final void setFrameNumber(int number) {
 		sprite.setFrameNumber(number);
 	}
 
 	/**
-	 * Delete the GameObject
+	 * Delete the GameObject. This will also delete the Alarms of this object.
 	 */
 	public final void deleteThisGameObject() {
 		active = false;
@@ -362,7 +425,7 @@ public class GameObject {
 	*/
 
 	/**
-	 * Jump to the object start position
+	 * Jump to the object's start position
 	 * 
 	 * Note: this only works when a start position is set, this happens
 	 * automatically when 'addGameObject' is called.
@@ -392,15 +455,17 @@ public class GameObject {
 	 * implementation, overide this method. </b>
 	 * 
 	 * @return If the alarm can still be active for this object
+	 * @deprecated
 	 */
-	public boolean alarmsActiveForThisObject() {
-		return active;
-	}
+	//public boolean alarmsActiveForThisObject() {
+	//	return active;
+	//}
 	
 	/**
 	 * Use this function to get the angle between you and another object. For
 	 * example: You can use this function to check if you approaching another
 	 * object from the left or right.
+	 * Direction 0 points up, directions go clockwise, so 90 is right, etc.
 	 * 
 	 * @param object
 	 *            an instance of another object to calculate the angle for.

@@ -47,24 +47,79 @@ public class AnimatedSprite extends Sprite {
 	 */
 	private boolean animate = false;
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Make an AnimatedSprite without loading any bitmap in it
+	 */
+	public AnimatedSprite() {
+
+	}
+	
+	/**
+	 * Create an Animated sprite using the specified image and having
+	 * the specified number of frames.
+	 * Sprite images must be stored in the res/drawable
+	 * folders of your Android project. If you have only one image, store it in
+	 * the 'nodpi' folder. If you have various versions (hi-res and lo-res) for
+	 * rendering on devices of varying screen sizes, use the lo- & hi-dpi folders.
+	 * 
+	 * <b>Note: Extremely small sprites don't work well with Collision
+	 * Detection!</b>
+	 * 
+	 * @param resourceName
+	 *            The name of the resource in the /res/drawable folder <b>
+	 *            without extension </b>, so when your picture in the
+	 *            /res/drawable is named 'picture.jpg', this parameter should be
+	 *            "picture" .
+	 * @param frameWidth
+	 *            The width of each frame in an animated sprite (film strip)
+	 */
+	public AnimatedSprite(String resourceName, int numberOfFrames)
+	{
+		loadAnimatedSprite(resourceName, numberOfFrames);
+	}
+	
+	/**
+	 * Load a sprite with the given resource.
+	 * Sprites must be stored in the res/drawable
+	 * folders of your Android project. If you have only one image, store it in
+	 * the 'nodpi' folder. If you have various versions (hi-res and lo-res) for
+	 * rendering on devices of varying screen sizes, use the lo- & hi-dpi folders.
 	 * 
 	 * @see
 	 * android.gameengine.icadroids.objects.graphics.Sprite#loadSprite(java.
 	 * lang.String)
 	 */
-	@Override
-	public final void loadSprite(String resourceName) {
+	public final void loadAnimatedSprite(String resourceName, int numberOfFrames) {
 		super.loadSprite(resourceName);
+		// Note: frameWidth will be calculated by override of initialize(), 
+		// in case loading is postponed.
+		this.numberOfFrames=numberOfFrames;
 		if (GameView.surfaceLoaded) {
-			if(!animate){
-				frameWidth = spriteWidth;
-			}
-			calculateNumberOfFrames();
+			// so we assume the sprite has been loaded and not postponed...
+			//if(!animate){    NO!!! animate is pas true als je animatie gestart hebt
+			//	frameWidth = spriteWidth;    dus nu altijd!
+			//}
+			calculateFrameWidth();
 			calculateFramePosition(currentFrameNumber);
 			GameEngine.printDebugInfo("AnimatedSprite", "animated sprite loaded");
 		}
+	}
+
+	/**
+	 * Initialize the sprite image.
+	 * <br />
+	 * Note: Don't call this yourself. 
+	 * This method is automatically called by the GameEngine when loading of 
+	 * the sprite has been postponed. (In the Android Activity lifecycle, sprites
+	 * can only be loaded after a certain point, or an error will be thrown.
+	 * The GameEngine postpones loading until after this point)
+	 */
+	@Override
+	public void initialize() {
+		super.initialize();
+		// sprite moet er nu zijn, dus spriteWidth, dus FrameWidth uitrekenen
+		calculateFrameWidth();
+		calculateFramePosition(currentFrameNumber);
 	}
 
 	/**
@@ -83,6 +138,9 @@ public class AnimatedSprite extends Sprite {
 
 	/**
 	 * Go to the next frame of the animation
+	 * By default this method will make your animated sprite cycle
+	 * through all frames. Override this method if you want to create
+	 * custom animations
 	 */
 	public final void nextFrame() {
 		currentFrameNumber++;
@@ -111,23 +169,14 @@ public class AnimatedSprite extends Sprite {
 	}
 	
 	/**
-	 * Reset the frame size to the original sprite size
-	 * and stop animating the sprite.
-	 */
-	public final void resetFrameSize(){
-		frameWidth = spriteWidth;
-		calculateNumberOfFrames();
-		animate = false;
-	}
-
-	/**
 	 * Set the frame number of the animation
 	 * 
-	 * @param currentFrameNumber
+	 * @param frameNumber
 	 *            The frame number to jump to
 	 */
-	public final void setFrameNumber(int currentFrameNumber) {
-		this.currentFrameNumber = currentFrameNumber;
+	public final void setFrameNumber(int frameNumber) {
+		this.currentFrameNumber = 
+				Math.max(0, Math.min(frameNumber, numberOfFrames-1));
 		calculateFramePosition(currentFrameNumber);
 	}
 
@@ -165,19 +214,18 @@ public class AnimatedSprite extends Sprite {
 	 * Start animating the sprite
 	 * 
 	 * @param frameWidth
-	 *            The size of each frame
+	 *            The width of each frame. Sprite width must be a multiple of frame width.
 	 */
-	public final void startAnimate(int frameWidth) {
-		this.frameWidth = frameWidth;
-		calculateNumberOfFrames();
+	public final void startAnimate() {
 		animate = true;
 		calculateFramePosition(currentFrameNumber);
 	}
 	
-	private void calculateNumberOfFrames(){
-	if(frameWidth != 0){
-		numberOfFrames = spriteWidth / frameWidth;
-	}
+	/**
+	 * calculate the number of frames from the sprite and frame widths.
+	 */
+	private void calculateFrameWidth(){
+		frameWidth = spriteWidth / numberOfFrames;
 	}
 
 	/**
@@ -201,8 +249,8 @@ public class AnimatedSprite extends Sprite {
 		return animationSpeed;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Get the frame width of this AnimatedSprite
 	 * 
 	 * @see android.gameengine.icadroids.objects.graphics.Sprite#getFrameWidth()
 	 */
@@ -224,8 +272,8 @@ public class AnimatedSprite extends Sprite {
 		return numberOfFrames;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Get the middle of the frame, horizontally
 	 * 
 	 * @see
 	 * android.gameengine.icadroids.objects.graphics.Sprite#getSpriteCenterX()
@@ -235,8 +283,8 @@ public class AnimatedSprite extends Sprite {
 		return getFrameWidth() / 2;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Get the middle of the frame, vertically
 	 * 
 	 * @see
 	 * android.gameengine.icadroids.objects.graphics.Sprite#getSpriteCenterY()

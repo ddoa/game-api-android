@@ -3,11 +3,9 @@ package android.gameengine.icadroids.alarms;
 import android.gameengine.icadroids.engine.GameEngine;
 
 /**
- * Set alarms who will trigger after a specified number of updates.
- * 
- * Alarms will trigger a method (specified in IAlarm) after the given time in
- * the specified object.
- * 
+ * Set alarms who will trigger after a specified time. 
+ * Time is measured in cycles of the game loop.
+ * Alarms will trigger a method (specified in IAlarm) after the given time
  * To make use of alarms, create a alarm object. This alarm will start immediately.
  * 
  * @author Bas van der Zandt
@@ -15,28 +13,33 @@ import android.gameengine.icadroids.engine.GameEngine;
  */
 public class Alarm {
 	/**
-	 * The ID of the alarm
+	 * The ID of the alarm. You can give an alarm an unique ID. In this way you can
+	 * distinguish between alarms if you have more than one.
 	 */
 	private int alarmID;
+	
 	/**
-	 * How long the alarm will count
+	 * Duration of the alarm, counted in cycles of the game loop.
 	 */
 	private int time;
+	
 	/**
 	 * Counts how many updates has been passed
 	 */
 	private int counter = 0;
+	
 	/**
 	 * The object that needs to be triggered
 	 */	
 	IAlarm alarmedObject;
+	
 	/**
 	 * True if the alarm is running, false otherwise
 	 */
 	private boolean running = false;
 
 	/**
-	 * Make a new Alarm with the given time. The alarm will start immediately.
+	 * Create a new Alarm with the given time. The alarm will start immediately.
 	 * 
 	 * @param id
 	 *            ID to identify the alarm
@@ -54,9 +57,8 @@ public class Alarm {
 
 	/**
 	 * Update will be triggered <b>by the GameEngine</b> every update.
-	 *  <b> Don't call this update by yourself! </b>
+	 * The update does the counting, so <b>don't call this update yourself!</b>
 	 *  
-	 *  Update handles the alarm to be triggered an deleted.
 	 */
 	public final void update() {
 		if (running) {
@@ -69,21 +71,23 @@ public class Alarm {
 	}
 
 	/**
-	 * Pause the alarm until you start it again with startAlarm()
+	 * Pause the alarm, it will stop ticking.
+	 * You can restart the alarm with startAlarm().
 	 */
 	public final void pauseAlarm() {
 		running = false;
 	}
 
 	/**
-	 * Starts the alarm when it has paused
+	 * Restart an alarm <b>without</b> resetting the clock.
+	 * Use this method when an alarm has been paused.
 	 */
 	public final void startAlarm() {
 		running = true;
 	}
 
 	/**
-	 * Restart the alarm
+	 * Reset the clock to zero and start the alarm 
 	 */
 	public final void restartAlarm() {
 		counter = 0;
@@ -91,7 +95,9 @@ public class Alarm {
 	}
 
 	/**
-	 * Change the time of the alarm
+	 * Change the time of the alarm. This will not influence the clock,
+	 * when an alarm is already ticking. If you set a time that the counter
+	 * has already passed, the alarm will go off immediately.
 	 * 
 	 * @param time
 	 *            The time

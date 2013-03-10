@@ -16,9 +16,9 @@ public class randomObject extends MoveableGameObject implements IAlarm {
 	int timesAlarmTriggerd = 0;
 
 	public randomObject() {
-		setSprite("fishframes");
+		setSprite("fishframes", 4);
 		getSprite().nextFrame();
-		startAnimate(36);
+		startAnimate();
 		setAnimationSpeed(10);
 	}
 

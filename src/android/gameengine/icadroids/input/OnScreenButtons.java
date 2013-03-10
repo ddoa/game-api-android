@@ -6,7 +6,6 @@ import android.gameengine.icadroids.engine.GameEngine;
 import android.gameengine.icadroids.objects.graphics.Sprite;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.Display;
 import android.view.HapticFeedbackConstants;
@@ -22,7 +21,8 @@ import android.view.WindowManager;
  * the user can check wether a button is pressed or not, by accessing the static
  * boolean values for each correspodending button.
  * 
- * Do not make an instance of this class yourself.
+ * Do not make an instance of this class yourself. If you want to use the OnScreenButtons
+ * in your game, set the static variable <i>use</i> to true.
  * @author Roel
  */
 public class OnScreenButtons implements OnTouchListener {
@@ -588,7 +588,7 @@ public class OnScreenButtons implements OnTouchListener {
 		oldOpacity = opacity;
 		for (int i = 0; i < drawList.size(); i++) {
 			canvas.drawBitmap(drawList.get(i).getSprite(), null,
-							buttonList.get(i).rect, alphaPaint);
+					buttonList.get(i).rect, alphaPaint);
 		}
 	}
 
@@ -628,11 +628,11 @@ public class OnScreenButtons implements OnTouchListener {
 	 */
 	private class ButtonLocStruct {
 
-		private Rect rect;
+		private RectF rect;
 		
 		/** Constructor for this structure */
 		public ButtonLocStruct(int x, int y, int width, int height) {
-			rect = new Rect(x, y, x + width, y + height);
+			rect = new RectF(x, y, x + width, y + height);
 		}
 		
 		/**
@@ -643,7 +643,7 @@ public class OnScreenButtons implements OnTouchListener {
 		 */
 		public boolean intersects(float x, float y) {
 
-			if (rect.contains((int)x,(int) y)) {
+			if (rect.contains(x, y)) {
 				return true;
 			}
 			return false;

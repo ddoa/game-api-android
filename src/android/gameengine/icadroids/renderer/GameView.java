@@ -17,6 +17,11 @@ import android.view.SurfaceView;
 
 /**
  * Class that correctly renders the game on the screen.
+ * <br />
+ * Game programmers will not be accessing this class directly,
+ * it is a utility class used by the GameEngine.
+ * <br />
+ * Note: javadoc comments not finished
  * 
  * @author Edward, Lex, Leon, Roel, Bas
  * 
@@ -33,6 +38,7 @@ public class GameView extends SurfaceView implements Callback {
 	private Rect rect = new Rect();
 
 	private boolean backgroundFit = false;
+
 	private boolean tileBasedMap = false;
 	private Thread gameThread;
 
@@ -96,7 +102,10 @@ public class GameView extends SurfaceView implements Callback {
 		rectanglePaint.setStrokeMiter(5);
 		rectanglePaint.setColor(Color.RED);
 		rectanglePaint.setStyle(Style.STROKE);
-
+		
+		if ( GameEngine.gameTiles != null ) {
+		    this.tileBasedMap = true;
+		}
 		if (Viewport.useViewport) {
 			if (viewport == null) {
 				viewport = Viewport.getInstance();
@@ -282,8 +291,8 @@ public class GameView extends SurfaceView implements Callback {
 					viewport.getMinY() - viewport.getViewportY());
 		}
 		
-		if(GameEngine.gameTiles != null){
-		GameEngine.gameTiles.drawTiles(canvas);
+		if ( tileBasedMap ) {
+			GameEngine.gameTiles.drawTiles(canvas);		    
 		}
 		
 		// hide 'items' by creating a GameEngine method that returns iterator for the list
@@ -312,4 +321,9 @@ public class GameView extends SurfaceView implements Callback {
 		}
 		return new Point(0,0);	
 	}
+	
+	public void setBackgroundFit(boolean backgroundFit) {
+		this.backgroundFit = backgroundFit;
+	}
+
 }
