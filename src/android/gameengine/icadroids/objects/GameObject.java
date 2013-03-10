@@ -140,7 +140,7 @@ public class GameObject {
 	}
 
 	/**
-	 * Set a sprite for the GameObject. Sprites must be stored in the res/drawable
+	 * Set a sprite for the GameObject. Sprite images must be stored in the res/drawable
 	 * folders of your Android project. If you have only one image, store it in
 	 * the 'nodpi' folder. If you have various versions (hi-res and lo-res) for
 	 * rendering on devices of varying screen sizes, use the lo- & hi-dpi folders.
@@ -155,17 +155,46 @@ public class GameObject {
 	 *            "picture" .
 	 */
 	public final void setSprite(String resourceName) {
-		sprite.loadSprite(resourceName);
+		sprite.loadAnimatedSprite(resourceName, 1);
 	}
 
 	/**
-	 * Start animating the sprite, from the current frame
+	 * Set a sprite for the GameObject. Sprite images must be stored in the res/drawable
+	 * folders of your Android project. If you have only one image, store it in
+	 * the 'nodpi' folder. If you have various versions (hi-res and lo-res) for
+	 * rendering on devices of varying screen sizes, use the lo- & hi-dpi folders.
 	 * 
+	 * <b>Note: Extremely small sprites don't work well with Collision
+	 * Detection!</b>
+	 * 
+	 * @param resourceName
+	 *            The name of the resource in the /res/drawable folder <b>
+	 *            without extension </b>, so when your picture in the
+	 *            /res/drawable is named 'picture.jpg', this parameter should be
+	 *            "picture" .
 	 * @param frameWidth
-	 *            The width size of each frame
+	 *            The width of each frame in an animated sprite (film strip)
 	 */
-	public final void startAnimate(int frameWidth) {
-		sprite.startAnimate(frameWidth);
+	public final void setSprite(String resourceName, int numberOfFrames) {
+		sprite.loadAnimatedSprite(resourceName, numberOfFrames);
+	}
+
+	/**
+	 * Set a sprite for the GameObject. Use this method if you create
+	 * sprites yourself, for instance if you create subclasses of
+	 * AnimatedSprite that have special animations.
+	 * 
+	 * @param theSprite
+	 *         AnimatedSprite that has been created earlier
+	 */
+	public final void setSprite(AnimatedSprite theSprite) {
+		sprite = theSprite;
+	}
+	/**
+	 * Start animating the sprite, from the current frame
+	 */
+	public final void startAnimate() {
+		sprite.startAnimate();
 	}
 
 	/**

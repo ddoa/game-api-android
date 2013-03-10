@@ -1,7 +1,6 @@
 package android.gameengine.icadroids.objects;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import android.gameengine.icadroids.engine.GameEngine;
 import android.gameengine.icadroids.objects.collisions.CollidingObject;
@@ -291,15 +290,19 @@ public class MoveableGameObject extends GameObject {
 	/**
 	 * Sets the friction of this object, that is the amount of speed reduction.
 	 * <br />
-	 * ToDo note: at this moment the friction works additive, so the speed goes
-	 * down with a fixed amount every cycle, regardless of the actual value of speed. 
-	 * Perhaps a more realistic way to implement friction is relative, like reduce speed
-	 * by 5% every cycle...
+	 * The decrease in speed is measured as a fraction, if you want a 5% decrease
+	 * in speed per cycle of the game loop, use 0.05.
 	 * 
-	 * @param friction, the total amount of decrease in speed per cycle of the game loop
+	 * @param friction, 
+	 * 			the fraction of decrease in speed per cycle of the game loop.
+	 * 			Must be a number between 0 and 1
 	 */
 	public final void setFriction(double friction) {
-		this.friction = friction;
+		if ( friction > 0 && friction < 1 ) {
+			this.friction = friction;
+		} else {
+			this.friction = 1;
+		}
 	}
 
 	/**
@@ -312,28 +315,14 @@ public class MoveableGameObject extends GameObject {
 	}
 
 	/**
-	 * Calculates the changes in speed.
+	 * Calculates the changes in speed due to friction.
 	 * 
 	 * @param directionSpeed
 	 *            the current speed
 	 * @return the new speed.
 	 */
 	private double calculateFriction(double directionSpeed) {
-		if (directionSpeed < 0) {
-			if (directionSpeed - friction > 0) {
-				return 0;
-			} else {
-				return directionSpeed += friction;
-			}
-		}
-		if (directionSpeed > 0) {
-			if (directionSpeed - friction < 0) {
-				return 0;
-			} else {
-				return directionSpeed -= friction;
-			}
-		}
-		return 0;
+		return (1-friction)* directionSpeed;
 	}
 
 	/**
@@ -471,7 +460,7 @@ public class MoveableGameObject extends GameObject {
 		// check if other item is active
 		for (int i = 0; i < GameEngine.items.size(); i++) {
 			if (GameEngine.items.get(i) != this) {
-				if (this.position.intersect(GameEngine.items.get(i).position)) {
+				if (Rect.intersects(this.position, GameEngine.items.get(i).position)) {
 					collidedObjects.add(GameEngine.items.get(i));
 				}
 			}

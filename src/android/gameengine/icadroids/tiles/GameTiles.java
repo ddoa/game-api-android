@@ -140,7 +140,7 @@ public class GameTiles {
 	 * <p/>
 	 * Notes:
 	 * <p/>
-	 * The x and y positions are the x and y positions in the world. <br/>
+	 * The x and y positions are the indices in the tile array. <br/>
 	 * A negative value for the tilenumber makes the tile invisible. <br/>
 	 * 
 	 * @param yTile

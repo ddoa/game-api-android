@@ -6,8 +6,6 @@ import java.util.Vector;
 import android.gameengine.icadroids.objects.graphics.Sprite;
 import android.gameengine.icadroids.tiles.GameTiles;
 import android.gameengine.icadroids.tiles.Tile;
-import android.graphics.Rect;
-import android.util.FloatMath;
 
 /**
  * CollidingObject holds methods to calculate tile collisions. It's also the
@@ -31,7 +29,7 @@ public class CollidingObject {
 	 * <br />
 	 * This method calculates if there has been an collision <i>with tiles</i>
 	 * when the object has moved. It will call the method 
-	 * collisionOccurred(ArrayList<TileCollision>) if ther are collisions
+	 * collisionOccurred(ArrayList<TileCollision>) if there are collisions
 	 * 
 	 * It calculates its collision by adding a collision box around it. This
 	 * collision box includes it's current position and it's next position. This
@@ -194,8 +192,8 @@ public class CollidingObject {
         }
         // 4. call collisonOccurred with list of tileCollisions
 		if (collidedTiles.size() >  0) {
-			System.out.println("=====");
-			System.out.println("startx,y: "+startX+", "+startY+" endx,y: "+endX+", "+endY);
+			// System.out.println("=====");	// Debug feedback
+			// System.out.println("startx,y: "+startX+", "+startY+" endx,y: "+endX+", "+endY);
 			collisionObject.collisionOccurred(collidedTiles);
 			// Tile found? collision occurred
 		}

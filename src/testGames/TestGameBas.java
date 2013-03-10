@@ -43,15 +43,15 @@ public class TestGameBas extends GameEngine implements IAlarm, IFormInput {
 	}
 	
 	public void animateStart(){
-		testObject.setSprite("tile6");
-		testObject.startAnimate(10);
+		testObject.setSprite("tile6", 10);
+		testObject.startAnimate();
 		testObject.setAnimationSpeed(30);
 
 		addGameObject(testObject, 10, 10);
-			hoi.setSprite("fishframes");
+			hoi.setSprite("fishframes", 4);
 		
 		
-		hoi.startAnimate(36);
+		hoi.startAnimate();
 		hoi.setAnimationSpeed(0);
 		
 		hoi.setFrameNumber(0);

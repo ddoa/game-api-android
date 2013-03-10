@@ -102,7 +102,10 @@ public class GameView extends SurfaceView implements Callback {
 		rectanglePaint.setStrokeMiter(5);
 		rectanglePaint.setColor(Color.RED);
 		rectanglePaint.setStyle(Style.STROKE);
-
+		
+		if ( GameEngine.gameTiles != null ) {
+		    this.tileBasedMap = true;
+		}
 		if (Viewport.useViewport) {
 			if (viewport == null) {
 				viewport = Viewport.getInstance();
@@ -288,7 +291,9 @@ public class GameView extends SurfaceView implements Callback {
 					viewport.getMinY() - viewport.getViewportY());
 		}
 		
-		GameEngine.gameTiles.drawTiles(canvas);
+		if ( tileBasedMap ) {
+			GameEngine.gameTiles.drawTiles(canvas);		    
+		}
 		
 		// hide 'items' by creating a GameEngine method that returns iterator for the list
 		// In this way you can access the elements without accessing the list itself

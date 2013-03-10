@@ -1,7 +1,5 @@
 package android.gameengine.icadroids.engine;
 
-import android.util.Log;
-
 /**
  * Utility to log the FPS (frames per second) of the Game.
  * To use the FPS logger, set USE_FPS_COUNTER to 'true' in the GameEngine.

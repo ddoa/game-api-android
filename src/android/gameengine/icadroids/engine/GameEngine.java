@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Vector;
 
-import android.R.bool;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -222,6 +221,9 @@ public abstract class GameEngine extends Activity {
 
 	}
 
+	/**
+	 * Initialize the Listener for the screen (general touch OR screenButtons)
+	 */
 	protected void intializeTouch() {
 		if (TouchInput.use) {
 			view.setOnTouchListener(touch);
@@ -527,6 +529,9 @@ public abstract class GameEngine extends Activity {
 	 */
 	protected void setTileMap(GameTiles gameTiles) {
 		GameEngine.gameTiles = gameTiles;
+		if ( view != null ) {
+		    view.setTileBasedMap(true);
+		}
 	}
 
 	/**
@@ -632,15 +637,36 @@ public abstract class GameEngine extends Activity {
 	}
 
 	/**
-	 * Sets the background image of the current view.
-	 * xxx
+	 * Sets the background image of the current view. You can indicate
+	 * if the image must be scaled to fit the screen.<br />
+	 * Images must be stored in the res/drawable
+	 * folders of your Android project. If you have only one image, store it in
+	 * the 'nodpi' folder. If you have various versions (hi-res and lo-res) for
+	 * rendering on devices of varying screen sizes, use the lo- & hi-dpi folders.
+	 * 
 	 * @param backgroundImage
-	 *            The name of the background image that will be set
+	 *            The name of the background image that will be set.
+	 * @param backgroundFit
+	 * 				boolean, indicating if the image must be scaled to fit.
 	 */
 	public final void setBackground(String backgroundImage, boolean backgroundFit) {
 		view.setBackgroundImage(backgroundImage);
 		view.setBackgroundFit(backgroundFit);
 	}
+	
+	/**
+	 * Sets the background image of the current view. 
+	 * The image will not be scaled to fit the screen. The viewport
+	 * will scroll over the backgroundimage, just like it does over 
+	 * the rest of the game.<br />
+	 * Images must be stored in the res/drawable
+	 * folders of your Android project. If you have only one image, store it in
+	 * the 'nodpi' folder. If you have various versions (hi-res and lo-res) for
+	 * rendering on devices of varying screen sizes, use the lo- & hi-dpi folders.
+	 * 
+	 * @param backgroundImage
+	 *            The name of the background image that will be set
+	 */
 	public final void setBackground(String backgroundImage) {
 		view.setBackgroundImage(backgroundImage);
 		view.setBackgroundFit(false);
@@ -816,7 +842,6 @@ public abstract class GameEngine extends Activity {
 	
 	/**
 	 * Print information into the Logcat, for debugging purposes.
-	 * xxx
 	 * 
 	 * @param tag	The tag (shown in Logcat)
 	 * @param msg	The message you want to be displayed
