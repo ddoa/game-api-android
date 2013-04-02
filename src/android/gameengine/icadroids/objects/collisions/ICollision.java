@@ -32,7 +32,14 @@ public interface ICollision {
 	 * is moving fast and passing several tiles in one move, the tile it hits first
 	 * will be the first in the list. You may hit several tiles at the same time,
 	 * especially if the size of the object is bigger than the size of the Tile, these
-	 * tile collisions are in the list in random order.
+	 * tile collisions are in the list in random order. 
+	 * <br />
+	 * The picture below shows the
+	 * tile collisions that will be found when a green objects passes over a background
+	 * of white tiles at great speed. First, tiles 1-3 will be hit at the left side, then tiles
+	 * 4-5 also on the left side, then tiles 6-7 on their bottom side, etc.
+	 * <br />
+	 * <p><img src="tilecollision.png"</p>
 	 * <br />
 	 * Collision detection <b>does not change the position</b> 
 	 * of the MoveableGameObject. If you don't do anything, objects will fly through

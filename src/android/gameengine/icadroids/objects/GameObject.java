@@ -33,6 +33,11 @@ public class GameObject {
 	 */
 	protected double ylocation = 0;
 	/**
+	 * Depth of the object in rendering. Number between 0 and 1. 1  means at the top (foreground)
+	 * 0 means at the bottom (background)
+	 */
+	private float depth = 0;
+	/**
 	 * The sprite (image) of the object.
 	 */
 	private AnimatedSprite sprite = new AnimatedSprite();
@@ -501,6 +506,34 @@ public class GameObject {
 		} else {
 			return Math.toDegrees((Math.atan2(deltaY, deltaX))) + 450;
 		}
+	}
+
+	/**
+	 * Get the depth of the object in rendering. 
+	 * Depth is a number between 0 and 1. 1  means at the top (foreground)
+	 * 0 means at the bottom (background)
+	 * 
+	 * @return depth, a float
+	 */
+	public float getDepth() {
+	    return depth;
+	}
+
+	/**
+	 * Set the depth of the object in rendering. Number between 0 and 1. 
+	 * 1  means at the top (foreground), 0 means at the bottom (background).
+	 * <br />
+	 * Setting the depth is only useful <b>before</b> you add the Object to the game,
+	 * because it influences its position in the list of Objects. Using this method on Objects
+	 * that have already been added has no effect.
+	 * Instead of using this method, it is recommended to use the addGameObject method with depth-parameter
+	 * in GameEngine
+	 * 
+	 * @param depth the depth, a float
+	 * @see GameEngine.addGameObject(GameObject gameObject, float layerposition)
+	 */
+	public void setDepth(float depth) {
+	    this.depth = depth;
 	}
 	
 }

@@ -56,7 +56,7 @@ public class Vis extends MoveableGameObject implements ICollision {
 		if (g instanceof Strawberry) {
 		    score = score + ((Strawberry) g).getPoints();
 		    Log.d("hapje!!!", "score is nu " + score);
-		    g.deleteThisGameObject();
+		    //g.deleteThisGameObject();
 		} else if (g instanceof Monster) {
 		    Log.d("Gepakt", "Ai, wat nu...");
 		}

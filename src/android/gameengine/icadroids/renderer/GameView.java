@@ -295,11 +295,11 @@ public class GameView extends SurfaceView implements Callback {
 			GameEngine.gameTiles.drawTiles(canvas);		    
 		}
 		
-		// hide 'items' by creating a GameEngine method that returns iterator for the list
-		// In this way you can access the elements without accessing the list itself
-		// uhmmmm this iterator shouldn't have a 'remove' ....
-		for (GameObject item : GameEngine.items) {
-			if (Viewport.useViewport) {
+		// Paint items in reverse order of the list, so item added last will be painted
+		// first and thus be on the bottom of the object depth
+		for ( int i = GameEngine.items.size()-1; i >=0; i--) {
+			GameObject item = GameEngine.items.get(i);
+		    	if (Viewport.useViewport) {
 				if (viewport.isInViewport(item)) {
 					item.drawGameObject(canvas);
 					// View.isHardwareAccelerated();

@@ -79,7 +79,7 @@ public class MotionSensor implements SensorEventListener {
 				.getSystemService(Context.SENSOR_SERVICE);
 		accelMeter = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		magneticMeter = sensorManager
-				.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+				.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 	}
 	
 	/**

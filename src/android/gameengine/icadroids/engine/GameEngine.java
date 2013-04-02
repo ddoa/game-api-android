@@ -269,10 +269,24 @@ public abstract class GameEngine extends Activity {
 		}
 		for ( int i = 0; i < newItems.size(); i++ )
 		{
-			// insert object 0 in the items-list (for this, object must know layer-info)
-			// layer gedoe moet er nog bij....
-			items.add(newItems.remove(0));
 			// note: always moving the first element of newItems ensures same order
+			GameObject item = newItems.remove(0);
+			if ( item.getDepth() > 0 )
+			{
+			    float d = item.getDepth();
+			    // move index to position of first element having smaller depth
+			    int index = 0;
+			    while ( index < items.size() ) {
+				if ( items.get(index).getDepth() < d ) {
+				    break;
+				}
+				index++;
+			    }
+			    items.add(index, item);
+			} else {
+			    // just add to the back of the list
+			    items.add(item);			    
+			}
 		}
 	}
 
@@ -474,7 +488,7 @@ public abstract class GameEngine extends Activity {
 			float layerposition) {
 		gameObject.setStartPosition(x, y);
 		gameObject.jumpToStartPosition();
-		// note: store layerposition in Object for later use
+		gameObject.setDepth(layerposition);
 		newItems.add( gameObject);
 	}
 
@@ -491,8 +505,7 @@ public abstract class GameEngine extends Activity {
 	 *            1 (float). </b> 1 front, 0 back
 	 */
 	public final void addGameObject(GameObject gameObject, float layerposition) {
-		//items.add(Math.round(items.size() * layerposition), gameObject);
-		// note: store layerposition in Object for later use
+		gameObject.setDepth(layerposition);
 		newItems.add(gameObject);
 	}
 

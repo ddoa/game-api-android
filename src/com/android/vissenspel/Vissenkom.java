@@ -28,10 +28,12 @@ public class Vissenkom extends GameEngine {
 	createTileEnvironment();
 
 	vis = new Vis();
-	addGameObject(vis, 120, 240);
+	addGameObject(vis, 120, 240, 0.5f);
 
 	Monster engerd = new Monster(vis);
-	addGameObject(engerd, 480, 240);
+	addGameObject(engerd, 480, 240, 1.0f);
+	Monster engerd2 = new Monster(vis);
+	addGameObject(engerd2, 480, 360, 0.4f);
 
 	@SuppressWarnings("unused")
 	StrawberryControler sc = new StrawberryControler(this);
