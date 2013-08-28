@@ -34,7 +34,7 @@ public class StrawberryControler implements IAlarm {
      * @see android.gameengine.icadroids.alarms.IAlarm#triggerAlarm(int)
      */
     public void triggerAlarm(int id) { // aardbei maken
-	Log.d("StrawberryControler", "Alarm gaat af");
+	//Log.d("StrawberryControler", "Alarm gaat af");
 	Strawberry s = new Strawberry(mygame);
 	// world size has not been fixed, put it in a block of 600*400 pixels
 	int x = 10 + (int) (570 * Math.random());

@@ -3,13 +3,12 @@ package com.android.vissenspel;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.gameengine.icadroids.input.MotionSensor;
 import android.gameengine.icadroids.input.OnScreenButtons;
-import android.gameengine.icadroids.input.TouchInput;
 import android.gameengine.icadroids.objects.GameObject;
 import android.gameengine.icadroids.objects.MoveableGameObject;
 import android.gameengine.icadroids.objects.collisions.ICollision;
 import android.gameengine.icadroids.objects.collisions.TileCollision;
-import android.util.Log;
 
 /**
  * Vis is the player object of the game.
@@ -36,9 +35,7 @@ public class Vis extends MoveableGameObject implements ICollision {
 	setDirection(90);
 
 	score = 0;
-	// might also be in intialization of game
-	TouchInput.use = false;
-	OnScreenButtons.use = true;
+
     }
 
     /**
@@ -55,27 +52,40 @@ public class Vis extends MoveableGameObject implements ICollision {
 	    for (GameObject g : gebotst) {
 		if (g instanceof Strawberry) {
 		    score = score + ((Strawberry) g).getPoints();
-		    Log.d("hapje!!!", "score is nu " + score);
+		    //Log.d("hapje!!!", "score is nu " + score);
 		    g.deleteThisGameObject();
 		} else if (g instanceof Monster) {
-		    Log.d("Gepakt", "Ai, wat nu...");
+		    //Log.d("Gepakt", "Ai, wat nu...");
 		}
 	    }
 	}
-	// input from OnScreenButtons, now just 4 directional buttons
-	if (OnScreenButtons.dPadUp) {
+	// Handle input. Both on screen buttons and tilting are supported.
+	// Buttons take precedence.
+	boolean buttonPressed = false;
+	if(OnScreenButtons.dPadUp
+		|| OnScreenButtons.dPadDown
+		|| OnScreenButtons.dPadLeft
+		|| OnScreenButtons.dPadRight) {
+		buttonPressed = true;
+	}
+
+	if (OnScreenButtons.dPadUp
+			|| (MotionSensor.tiltUp && ! buttonPressed) ) {
 	    setDirectionSpeed(0, 8);
 	    setFrameNumber(1);
 	}
-	if (OnScreenButtons.dPadDown) {
+	if (OnScreenButtons.dPadDown
+			|| (MotionSensor.tiltDown && ! buttonPressed)) {
 	    setDirectionSpeed(180, 8);
 	    setFrameNumber(3);
 	}
-	if (OnScreenButtons.dPadRight) {
+	if (OnScreenButtons.dPadRight
+			|| (MotionSensor.tiltRight && ! buttonPressed)) {
 	    setDirectionSpeed(90, 8);
 	    setFrameNumber(0);
 	}
-	if (OnScreenButtons.dPadLeft) {
+	if (OnScreenButtons.dPadLeft
+			|| (MotionSensor.tiltLeft && ! buttonPressed)) {
 	    setDirectionSpeed(270, 8);
 	    setFrameNumber(2);
 	}

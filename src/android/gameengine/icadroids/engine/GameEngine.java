@@ -7,7 +7,8 @@ import java.util.Vector;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
-import android.gameengine.icadroids.alarms.*;
+import android.gameengine.icadroids.alarms.Alarm;
+import android.gameengine.icadroids.alarms.IAlarm;
 import android.gameengine.icadroids.input.MotionSensor;
 import android.gameengine.icadroids.input.OnScreenButtons;
 import android.gameengine.icadroids.input.TouchInput;
@@ -20,6 +21,10 @@ import android.gameengine.icadroids.sound.MusicPlayer;
 import android.gameengine.icadroids.tiles.GameTiles;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
@@ -27,6 +32,10 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.TextView;
 
 /**
  * GameEngine is the core of the game. Extending this class is required to make
@@ -38,7 +47,7 @@ import android.view.inputmethod.InputMethodManager;
  * 
  * @version 0.9
  */
-public abstract class GameEngine extends Activity {
+public abstract class GameEngine extends Activity implements SensorEventListener {
 	
 	public static boolean printDebugInfo = true;
 	/**
@@ -52,7 +61,9 @@ public abstract class GameEngine extends Activity {
 	/**
 	 * View deals with the proper rendering of the game
 	 */
-	private static GameView view;
+	private static GameView gameView;
+	
+	private static FrameLayout mainView;
 	/**
 	 * The width and height of the device
 	 */
@@ -65,11 +76,13 @@ public abstract class GameEngine extends Activity {
 	 * OnScreenButtons draws buttons to screen and handles input by touch
 	 */
 	private OnScreenButtons screenButtons;
+	
 	/**
 	 * Vibrator holds the methods that handle vibrating functionalities of a
 	 * phone.
 	 */
 	private Vibrator vibrator;
+		
 	/**
 	 * A vectorlist that holds all the active GameObjects. Can be used if you
 	 * mannualy want to delete/change GameObjects. For instance, you could loop
@@ -112,13 +125,21 @@ public abstract class GameEngine extends Activity {
 	 * Sets the mobile device to landscape view if set to true
 	 */
 	private boolean landscape = true;
-	/**
-	 * Motion Sensor is used to receive certain statics about certain
-	 * motionEvent note that this only works on real phones and not in emulator.
-	 */
-	private MotionSensor sensor;
 
 	public static GameTiles gameTiles;
+	
+	/**
+	 * The game dashboard. It's an Android LinearLayout (see:
+	 * http://developer.android.com/reference/android/widget/LinearLayout.html)
+	 * 
+	 * If you want to manipulate it or one of its child views while
+	 * the game is running you need to create a runnable and run
+	 * it on the UI thread using the runOnUiThread method of the
+	 * GameEngine object (see:
+	 * http://developer.android.com/reference/android/app/Activity.html#runOnUiThread(java.lang.Runnable)
+	 * )
+	 */
+	public LinearLayout dashboard;
 
 	/**
 	 * The GameEngine forms the core of the game by controlling the gameloop and
@@ -163,24 +184,33 @@ public abstract class GameEngine extends Activity {
 		gameThread = new Thread(gameloop);
 		gameThread.setPriority(7);
 
-		view = new GameView(this, gameThread);
-		gameloop.setView(view);
+		gameView = new GameView(this, gameThread);
+		mainView = new FrameLayout(this);
+		mainView.addView(gameView);
+		
+		gameloop.setView(gameView);
+		
+		dashboard = new LinearLayout(this);
+		dashboard.setLayoutParams(
+				new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+		dashboard.setOrientation(LinearLayout.HORIZONTAL);
+		mainView.addView(dashboard);
 
-		touch = new TouchInput(view);
+		touch = new TouchInput(gameView);
 		screenButtons = new OnScreenButtons();
-		sensor = new MotionSensor();
 		GameSound.initSounds(getAppContext());
-		if (MotionSensor.use) {
-			sensor.initializeSensors();
-		}
+		
+		SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+		MotionSensor.initialize( sensorManager);
+		
 
 		screenWidth = getWindow().getWindowManager().getDefaultDisplay()
 				.getWidth();
 		screenHeight = getWindow().getWindowManager().getDefaultDisplay()
 				.getHeight();
 
-		setContentView(view);
-		view.setKeepScreenOn(true);
+		setContentView(mainView);
+		gameView.setKeepScreenOn(true);
 
 		if (UPDATE_LOOP_ON) {
 			updateLoop = new UpdateLoop(this);
@@ -226,10 +256,10 @@ public abstract class GameEngine extends Activity {
 	 */
 	protected void intializeTouch() {
 		if (TouchInput.use) {
-			view.setOnTouchListener(touch);
+			gameView.setOnTouchListener(touch);
 		} else if (OnScreenButtons.use) {
 			Log.d("ButtonEnabled", "USING ON SCREEN BUTTONS");
-			view.setOnTouchListener(screenButtons);
+			gameView.setOnTouchListener(screenButtons);
 		}
 	}
 
@@ -276,6 +306,27 @@ public abstract class GameEngine extends Activity {
 		}
 	}
 
+	/**
+	 * <b>DO NOT CALL THIS METHOD</b>
+	 * <p>This method is part of the Android sensor mechanism. It is used
+	 * by GameEngine itself.</p>
+	 */
+	@Override
+	public final void onAccuracyChanged(Sensor sensor, int accuracy) {
+		// Not used.
+	}
+	
+	/**
+	 * <b>DO NOT CALL THIS METHOD</b>
+	 * <p>This method is part of the Android sensor mechanism. It is used
+	 * by GameEngine itself.</p>
+	 */
+	@Override
+	public void onSensorChanged(SensorEvent event) {
+		MotionSensor.handleSensorChange(event);
+	}
+	
+	
 	/***
 	 * Allows the game to run logic such as updating the world, gathering input
 	 * and playing audio.
@@ -384,18 +435,23 @@ public abstract class GameEngine extends Activity {
 	@Override
 	protected final void onResume() {
 		super.onResume();
-		printDebugInfo("GameEngine", "onResume()...");
-		registerMotionSensor();
+		//printDebugInfo("GameEngine", "onResume()...");
 		gameloop.setRunning(true);
 		if (gameThread.getState() == Thread.State.TERMINATED) {
 			printDebugInfo("GameEngine", "thread terminated, starting new thread");
 			gameThread = new Thread(gameloop);
-			view.setGameThread(gameThread);
+			gameView.setGameThread(gameThread);
 			gameloop.setRunning(true);
 		}
 		GameSound.resumeSounds();
 		MusicPlayer.resumeAll();
+		
+		MotionSensor.handleOnResume(this);
+
 	}
+	
+	// TODO
+	TextView testTextView;
 
 	/**
 	 * <b>DO NOT CALL THIS METHOD</b>
@@ -422,10 +478,11 @@ public abstract class GameEngine extends Activity {
 	protected final void onPause() {
 		super.onPause();
 		printDebugInfo("GameEngine", "OnPause...");
-		unregisterMotionSensor();
 		pause();
 		GameSound.pauseSounds();
 		MusicPlayer.pauseAll();
+		
+		MotionSensor.handleOnPause(this);
 	}
 
 	/**
@@ -529,8 +586,8 @@ public abstract class GameEngine extends Activity {
 	 */
 	protected void setTileMap(GameTiles gameTiles) {
 		GameEngine.gameTiles = gameTiles;
-		if ( view != null ) {
-		    view.setTileBasedMap(true);
+		if ( gameView != null ) {
+		    gameView.setTileBasedMap(true);
 		}
 	}
 
@@ -650,8 +707,8 @@ public abstract class GameEngine extends Activity {
 	 * 				boolean, indicating if the image must be scaled to fit.
 	 */
 	public final void setBackground(String backgroundImage, boolean backgroundFit) {
-		view.setBackgroundImage(backgroundImage);
-		view.setBackgroundFit(backgroundFit);
+		gameView.setBackgroundImage(backgroundImage);
+		gameView.setBackgroundFit(backgroundFit);
 	}
 	
 	/**
@@ -668,8 +725,8 @@ public abstract class GameEngine extends Activity {
 	 *            The name of the background image that will be set
 	 */
 	public final void setBackground(String backgroundImage) {
-		view.setBackgroundImage(backgroundImage);
-		view.setBackgroundFit(false);
+		gameView.setBackgroundImage(backgroundImage);
+		gameView.setBackgroundFit(false);
 	}
 
 	/**
@@ -678,14 +735,14 @@ public abstract class GameEngine extends Activity {
 	 * @param zoomFactor
 	 */
 	public final void setZoomFactor(float zoomFactor) {
-		view.setZoomFactor(zoomFactor);
+		gameView.setZoomFactor(zoomFactor);
 	}
 
 	/** 
 	 * Clears the background Image so only the background color will show 
 	 */
 	public final void clearBackgroundImage() {
-		view.setBackgroundImage(null);
+		gameView.setBackgroundImage(null);
 	}
 
 	/**
@@ -789,19 +846,7 @@ public abstract class GameEngine extends Activity {
 	 * @return
 	 */
 	public static View getAppView() {
-		return view;
-	}
-
-	private void registerMotionSensor() {
-		if (MotionSensor.use) {
-			sensor.registerListener();
-		}
-	}
-
-	private void unregisterMotionSensor() {
-		if (MotionSensor.use) {
-			sensor.unregisterListener();
-		}
+		return gameView;
 	}
 
 	/**
@@ -826,7 +871,7 @@ public abstract class GameEngine extends Activity {
 	 */
 	public void resume() {
 		gameThread = new Thread(gameloop);
-		view.setGameThread(gameThread);
+		gameView.setGameThread(gameThread);
 		gameThread.start();
 		gameloop.setRunning(true);
 	}
