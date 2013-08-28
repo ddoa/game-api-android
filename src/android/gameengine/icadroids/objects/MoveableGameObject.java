@@ -515,7 +515,6 @@ public class MoveableGameObject extends GameObject {
 	 */
 	public void moveUpToTileSide(TileCollision tc)
 	{
-		System.out.println("movetileside");
 		int side = tc.collisionSide;
 		// the position we want to move to, x or y
 		int pos;
