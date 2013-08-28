@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.gameengine.icadroids.input.OnScreenButtons;
-import android.gameengine.icadroids.input.TouchInput;
 import android.gameengine.icadroids.objects.GameObject;
 import android.gameengine.icadroids.objects.MoveableGameObject;
 import android.gameengine.icadroids.objects.collisions.ICollision;
@@ -36,9 +35,7 @@ public class Vis extends MoveableGameObject implements ICollision {
 	setDirection(90);
 
 	score = 0;
-	// might also be in intialization of game
-	TouchInput.use = false;
-	OnScreenButtons.use = true;
+
     }
 
     /**

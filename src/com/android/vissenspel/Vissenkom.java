@@ -1,6 +1,9 @@
 package com.android.vissenspel;
 
 import android.gameengine.icadroids.engine.GameEngine;
+import android.gameengine.icadroids.input.MotionSensor;
+import android.gameengine.icadroids.input.OnScreenButtons;
+import android.gameengine.icadroids.input.TouchInput;
 import android.gameengine.icadroids.tiles.GameTiles;
 import android.util.Log;
 
@@ -68,6 +71,11 @@ public class Vissenkom extends GameEngine {
 	GameTiles myTiles = new GameTiles(tileImagesNames, tilemap, 20);
 	setTileMap(myTiles);
 	Log.d("Vissenkom", "GameTiles created");
+	
+	// Set up control mechanisms to use
+	TouchInput.use = false;
+	MotionSensor.use = true;
+	OnScreenButtons.use = true;
     }
 
     /**
