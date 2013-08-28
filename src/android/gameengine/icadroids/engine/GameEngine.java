@@ -7,7 +7,8 @@ import java.util.Vector;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
-import android.gameengine.icadroids.alarms.*;
+import android.gameengine.icadroids.alarms.Alarm;
+import android.gameengine.icadroids.alarms.IAlarm;
 import android.gameengine.icadroids.input.MotionSensor;
 import android.gameengine.icadroids.input.OnScreenButtons;
 import android.gameengine.icadroids.input.TouchInput;
@@ -20,6 +21,10 @@ import android.gameengine.icadroids.sound.MusicPlayer;
 import android.gameengine.icadroids.tiles.GameTiles;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
@@ -38,7 +43,7 @@ import android.view.inputmethod.InputMethodManager;
  * 
  * @version 0.9
  */
-public abstract class GameEngine extends Activity {
+public abstract class GameEngine extends Activity implements SensorEventListener {
 	
 	public static boolean printDebugInfo = true;
 	/**
@@ -65,11 +70,13 @@ public abstract class GameEngine extends Activity {
 	 * OnScreenButtons draws buttons to screen and handles input by touch
 	 */
 	private OnScreenButtons screenButtons;
+	
 	/**
 	 * Vibrator holds the methods that handle vibrating functionalities of a
 	 * phone.
 	 */
 	private Vibrator vibrator;
+		
 	/**
 	 * A vectorlist that holds all the active GameObjects. Can be used if you
 	 * mannualy want to delete/change GameObjects. For instance, you could loop
@@ -112,11 +119,6 @@ public abstract class GameEngine extends Activity {
 	 * Sets the mobile device to landscape view if set to true
 	 */
 	private boolean landscape = true;
-	/**
-	 * Motion Sensor is used to receive certain statics about certain
-	 * motionEvent note that this only works on real phones and not in emulator.
-	 */
-	private MotionSensor sensor;
 
 	public static GameTiles gameTiles;
 
@@ -168,11 +170,11 @@ public abstract class GameEngine extends Activity {
 
 		touch = new TouchInput(view);
 		screenButtons = new OnScreenButtons();
-		sensor = new MotionSensor();
 		GameSound.initSounds(getAppContext());
-		if (MotionSensor.use) {
-			sensor.initializeSensors();
-		}
+		
+		SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+		MotionSensor.initialize( sensorManager);
+		
 
 		screenWidth = getWindow().getWindowManager().getDefaultDisplay()
 				.getWidth();
@@ -276,6 +278,27 @@ public abstract class GameEngine extends Activity {
 		}
 	}
 
+	/**
+	 * <b>DO NOT CALL THIS METHOD</b>
+	 * <p>This method is part of the Android sensor mechanism. It is used
+	 * by GameEngine itself.</p>
+	 */
+	@Override
+	public final void onAccuracyChanged(Sensor sensor, int accuracy) {
+		// Not used.
+	}
+	
+	/**
+	 * <b>DO NOT CALL THIS METHOD</b>
+	 * <p>This method is part of the Android sensor mechanism. It is used
+	 * by GameEngine itself.</p>
+	 */
+	@Override
+	public void onSensorChanged(SensorEvent event) {
+		MotionSensor.handleSensorChange(event);
+	}
+	
+	
 	/***
 	 * Allows the game to run logic such as updating the world, gathering input
 	 * and playing audio.
@@ -384,8 +407,7 @@ public abstract class GameEngine extends Activity {
 	@Override
 	protected final void onResume() {
 		super.onResume();
-		printDebugInfo("GameEngine", "onResume()...");
-		registerMotionSensor();
+		//printDebugInfo("GameEngine", "onResume()...");
 		gameloop.setRunning(true);
 		if (gameThread.getState() == Thread.State.TERMINATED) {
 			printDebugInfo("GameEngine", "thread terminated, starting new thread");
@@ -395,6 +417,9 @@ public abstract class GameEngine extends Activity {
 		}
 		GameSound.resumeSounds();
 		MusicPlayer.resumeAll();
+		
+		MotionSensor.handleOnResume(this);
+		
 	}
 
 	/**
@@ -422,10 +447,11 @@ public abstract class GameEngine extends Activity {
 	protected final void onPause() {
 		super.onPause();
 		printDebugInfo("GameEngine", "OnPause...");
-		unregisterMotionSensor();
 		pause();
 		GameSound.pauseSounds();
 		MusicPlayer.pauseAll();
+		
+		MotionSensor.handleOnPause(this);
 	}
 
 	/**
@@ -790,18 +816,6 @@ public abstract class GameEngine extends Activity {
 	 */
 	public static View getAppView() {
 		return view;
-	}
-
-	private void registerMotionSensor() {
-		if (MotionSensor.use) {
-			sensor.registerListener();
-		}
-	}
-
-	private void unregisterMotionSensor() {
-		if (MotionSensor.use) {
-			sensor.unregisterListener();
-		}
 	}
 
 	/**
