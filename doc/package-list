@@ -1,4 +1,5 @@
 android.gameengine.icadroids.alarms
+android.gameengine.icadroids.dashboard
 android.gameengine.icadroids.engine
 android.gameengine.icadroids.forms
 android.gameengine.icadroids.input
@@ -9,3 +10,7 @@ android.gameengine.icadroids.persistence
 android.gameengine.icadroids.renderer
 android.gameengine.icadroids.sound
 android.gameengine.icadroids.tiles
+com.android.vissenspel
+game
+testGames
+testGames.gameEngineTest

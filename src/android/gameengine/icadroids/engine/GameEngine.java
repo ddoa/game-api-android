@@ -137,10 +137,11 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	 * The game dashboard. It's an Android LinearLayout (see:
 	 * http://developer.android.com/reference/android/widget/LinearLayout.html)
 	 * 
-	 * You can add new dashboard widgets and views to the dashboard by
-	 * calling its addView method.
-	 * If you want to manipulate it or one of its child views while
-	 * the game is running you need to create a runnable and run
+	 * You can add new dashboard widgets and views to a dashboard by
+	 * calling the addChild method with the widget to add as a parameter.
+	 * To manipulate a dashboard widget, either call its run method
+	 * if it's one of the widgets in android.gameengine.icadroids.dashboard
+	 * or, if it's something you created yourself, create a runnable and run
 	 * it on the UI thread using the runOnUiThread method of the
 	 * GameEngine object (see:
 	 * http://developer.android.com/reference/android/app/Activity.html#runOnUiThread(java.lang.Runnable)
@@ -150,7 +151,8 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	
 	/**
 	 * It is possible to have multiple dashboards, stacked
-	 * on top of each other.
+	 * on top of each other. this.dashboard always holds the top
+	 * level dashboard.
 	 */
 	public ArrayList<LinearLayout> dashboards = new ArrayList<LinearLayout>();
 
@@ -945,4 +947,33 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 		dashboard = newDashboard;
 	}
 	
+	/**
+	 * Add an item to the dashboard that's currently on top.
+	 * @param v the view to add to the dashboard.
+	 */
+	public void addToDashboard(View v) {
+		LinearLayout dashboard = this.dashboard;
+		addToDashboard(dashboard, v);
+	}
+
+	/**
+	 * Add an item to a specific dashboard.
+	 * @param dashboard
+	 * @param v
+	 */
+	public void addToDashboard(LinearLayout dashboard, View v) {
+		final LinearLayout dashboardToUse = dashboard;
+		final View viewToUse = v;
+		runOnUiThread(new Runnable(){
+			public void run() {
+				dashboardToUse.addView(viewToUse);
+			}
+		});
+	}
+	
+	/*
+	public void addToDashboard(DashboardTextView dashboardTextView) {
+		View v = (View) dashboardTextView
+	}
+	*/
 }
