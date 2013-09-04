@@ -57,7 +57,7 @@ public class Strawberry extends GameObject {
 	age++;
 	if (age > maxAge) {
 	    mygame.deleteGameObject(this);
-	    Log.d("Aard", "aardbei dood " + age);
+	    //Log.d("Aard", "aardbei dood " + age);
 	}
     }
 

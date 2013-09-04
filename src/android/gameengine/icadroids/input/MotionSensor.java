@@ -1,7 +1,5 @@
 package android.gameengine.icadroids.input;
 
-import android.content.Context;
-import android.gameengine.icadroids.engine.GameEngine;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -19,8 +17,10 @@ import android.hardware.SensorManager;
  * @author Roel
  * @see http://developer.android.com/reference/android/hardware/SensorEvent.html
  */
-public class MotionSensor implements SensorEventListener {
+public class MotionSensor {
 
+	
+	
 	/** Set this to TRUE if you want to use the MotionSensor and be able to ask for input. 
 	 * Note that this variable should be set to TRUE in the constructor of your game, and not in initialize.*/
 	public static boolean use;
@@ -48,56 +48,61 @@ public class MotionSensor implements SensorEventListener {
 	/** this var is TRUE when the phone has been tilted Right*/
 	public static boolean tiltRight;
 
-	/** this holds the sensorManager */
-	private SensorManager sensorManager;
-	/** this holds the accelMeter */
-	private Sensor accelMeter;
-	/** this holds the magneticMeter */
-	private Sensor magneticMeter;
-
-	final float toDegr = (float) (180.0f / Math.PI);
-
 	/** vars for calculation */
-	private float[] mGData = new float[3];
-	private float[] mMData = new float[3];
-	private float[] mR = new float[16];
-	private float[] mI = new float[16];
-	private float[] orientation = new float[3];
+	// Raw accelerometer data.
+	private static float[] mGData = new float[3];
+	// Raw magnetic field data.
+	private static float[] mMData = new float[3];
+	// Rotation matrix.
+	private static float[] mR = new float[16];
+	// Inclination matrix.
+	private static float[] mI = new float[16];
+	// Processed orientation data.
+	private static float[] orientation = new float[3];
 
-	/**
-	 * DO NOT CALL THIS CONSTRUCTOR YOURSELF!
-	 * use the static variables to ask any information from the motion Sensor.
-	 */
-	public MotionSensor() {}
+	private static SensorManager sensorManager;
+	
+	public static void initialize(SensorManager newSensorManager) {
+		sensorManager = newSensorManager;
+	}
+	
 	
 	/**
-	 * initialize the sensors, this is called by the engine. Do not call this.
+	 * <b>DO NOT CALL THIS METHOD.</b>
+	 * <p>This method is called by the game engine to handle
+	 * listening to sensor events.</p>
+	 * @param listener
 	 */
-	public void initializeSensors()
-	{
-		sensorManager = (SensorManager) GameEngine.getAppContext()
-				.getSystemService(Context.SENSOR_SERVICE);
-		accelMeter = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-		magneticMeter = sensorManager
-				.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+	public static void handleOnResume(SensorEventListener listener) {
+		sensorManager.registerListener(listener, 
+				sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
+				SensorManager.SENSOR_DELAY_GAME);
+		sensorManager.registerListener(listener, 
+				sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+				SensorManager.SENSOR_DELAY_GAME);
+	}
+	/**
+	 * <b>DO NOT CALL THIS METHOD.</b>
+	 * <p>This method is called by the game engine to handle
+	 * listening to sensor events.</p>
+	 * @param listener
+	 */
+	public static void handleOnPause(SensorEventListener listener) {
+		sensorManager.unregisterListener(listener);
 	}
 	
 	/**
-	 * default function that comes with the sensorEventListener interface.
-	 * This function does nothing.
+	 * <b>DO NOT CALL THIS METHOD.</b>
+	 * <p>This method is called by the game engine to handle
+	 * sensor events.</p>
+	 * @param event
 	 */
-	public void onAccuracyChanged(Sensor arg0, int arg1) {
-
-	}
-
-	/**
-	 * default function that comes with the sensorEventListener interface.
-	 * this function analyses the output of the sensorEvent and translates this to the easy to use variables
-	 * It all modifies the z axis to ignore the constant gravity the phone endures.
-	 */
-	public void onSensorChanged(SensorEvent event) {
-
-		float data[];
+	public static void handleSensorChange(SensorEvent event) {
+		if(use == false) {
+			return;
+		}
+		//Log.d(this.getClass().toString(), "Received sensor event " + String.valueOf(Sensor))
+		float data[] = new float[3];
 		if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 			data = mGData;
 			setAxis(event.values);
@@ -120,7 +125,7 @@ public class MotionSensor implements SensorEventListener {
 	}
 
 	/** sets the axis */
-	private void setAxis(float[] f) {
+	private static void setAxis(float[] f) {
 		xAcceleration = f[0];
 		yAcceleration = f[1];
 		zAcceleration = f[2] - SensorManager.GRAVITY_EARTH;
@@ -129,40 +134,23 @@ public class MotionSensor implements SensorEventListener {
 	/**
 	 * sets the rotation vars and the handy flags
 	 */
-	private void setRotation(float[] f) {
-		yaw = f[0] * toDegr;
-		pitch = f[1] * toDegr + 180;
-		roll = f[2] * toDegr + 90;
+	private static void setRotation(float[] f) {
+		yaw = (float) Math.toDegrees(f[0]);
+		pitch = (float) Math.toDegrees(f[1]) + 180;
+		roll = (float) Math.toDegrees(f[2]) + 90;
 		setTilting();
 	}
 
 	/**
 	 * Sets the tild variables to describe the current rotation the phone is in.
 	 */
-	private void setTilting() {
-		tiltUp = pitch > 0 && pitch < 70 ? true : false;
+	private static void setTilting() {
+		
+		tiltUp = pitch > 180 && pitch < 270 ? true : false;
 		tiltDown = pitch > 110 && pitch < 180 ? true : false;
 
 		tiltLeft = roll > 0 && roll < 70 ? true : false;
 		tiltRight = roll > 110 && roll < 180 ? true : false;
-	}
-
-	/** 
-	 * Register this listener so it will listen for events from the device.
-	 * This function is used by engine and should not be used by the student.
-	 */
-	public void registerListener() {
-		sensorManager.registerListener(this, accelMeter,
-				SensorManager.SENSOR_DELAY_GAME);
-		sensorManager.registerListener(this, magneticMeter,
-				SensorManager.SENSOR_DELAY_GAME);
-	}
-
-	/**
-	 * Unregister the listener so the device should no longer check for the output of the sensors.
-	 */
-	public void unregisterListener() {
-		sensorManager.unregisterListener(this);
 	}
 
 }
