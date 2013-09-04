@@ -101,7 +101,7 @@ public class AnimatedSprite extends Sprite {
 			//}
 			calculateFrameWidth();
 			calculateFramePosition(currentFrameNumber);
-			GameEngine.printDebugInfo("AnimatedSprite", "animated sprite loaded");
+			//GameEngine.printDebugInfo("AnimatedSprite", "animated sprite loaded");
 		}
 	}
 
