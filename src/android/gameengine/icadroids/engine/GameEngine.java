@@ -1,5 +1,6 @@
 package android.gameengine.icadroids.engine;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Vector;
@@ -63,6 +64,10 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	 */
 	private static GameView gameView;
 	
+	/**
+	 * The frame layout that contains both the game view and one
+	 * or more dashboards.
+	 */
 	private static FrameLayout mainView;
 	/**
 	 * The width and height of the device
@@ -132,14 +137,29 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	 * The game dashboard. It's an Android LinearLayout (see:
 	 * http://developer.android.com/reference/android/widget/LinearLayout.html)
 	 * 
-	 * If you want to manipulate it or one of its child views while
-	 * the game is running you need to create a runnable and run
+	 * You can add new dashboard widgets and views to a dashboard by
+	 * calling the addChild method with the widget to add as a parameter.
+	 * To manipulate a dashboard widget, either call its run method
+	 * if it's one of the widgets in android.gameengine.icadroids.dashboard
+	 * or, if it's something you created yourself, create a runnable and run
 	 * it on the UI thread using the runOnUiThread method of the
 	 * GameEngine object (see:
 	 * http://developer.android.com/reference/android/app/Activity.html#runOnUiThread(java.lang.Runnable)
 	 * )
 	 */
 	public LinearLayout dashboard;
+	
+	/**
+	 * It is possible to have multiple dashboards, stacked
+	 * on top of each other. this.dashboard always holds the top
+	 * level dashboard.
+	 */
+	public ArrayList<LinearLayout> dashboards = new ArrayList<LinearLayout>();
+
+	/**
+	 * The frame layout that contains both the game view and one
+	 * or more dashboards.
+	 */
 
 	/**
 	 * The GameEngine forms the core of the game by controlling the gameloop and
@@ -187,14 +207,11 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 		gameView = new GameView(this, gameThread);
 		mainView = new FrameLayout(this);
 		mainView.addView(gameView);
+		addDashboard();
 		
 		gameloop.setView(gameView);
 		
-		dashboard = new LinearLayout(this);
-		dashboard.setLayoutParams(
-				new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-		dashboard.setOrientation(LinearLayout.HORIZONTAL);
-		mainView.addView(dashboard);
+
 
 		touch = new TouchInput(gameView);
 		screenButtons = new OnScreenButtons();
@@ -927,4 +944,49 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 		return null;
 	}
 	
+	/**
+	 * Add a new dashboard. The new dashboard will be placed in
+	 * front of all other items on the screen.
+	 */
+	public void addDashboard() {
+		
+		LinearLayout newDashboard = new LinearLayout(this);
+		newDashboard.setLayoutParams(
+				new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+		newDashboard.setOrientation(LinearLayout.HORIZONTAL);
+		
+		mainView.addView(newDashboard);
+		dashboards.add(newDashboard);
+		dashboard = newDashboard;
+	}
+	
+	/**
+	 * Add an item to the dashboard that's currently on top.
+	 * @param v the view to add to the dashboard.
+	 */
+	public void addToDashboard(View v) {
+		LinearLayout dashboard = this.dashboard;
+		addToDashboard(dashboard, v);
+	}
+
+	/**
+	 * Add an item to a specific dashboard.
+	 * @param dashboard
+	 * @param v
+	 */
+	public void addToDashboard(LinearLayout dashboard, View v) {
+		final LinearLayout dashboardToUse = dashboard;
+		final View viewToUse = v;
+		runOnUiThread(new Runnable(){
+			public void run() {
+				dashboardToUse.addView(viewToUse);
+			}
+		});
+	}
+	
+	/*
+	public void addToDashboard(DashboardTextView dashboardTextView) {
+		View v = (View) dashboardTextView
+	}
+	*/
 }

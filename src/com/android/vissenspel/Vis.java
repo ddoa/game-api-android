@@ -22,7 +22,7 @@ public class Vis extends MoveableGameObject implements ICollision {
     /**
      * Total score from strawberries eaten
      */
-    private int score;
+    public int score;
 
     /**
      * Constructor of Vis
