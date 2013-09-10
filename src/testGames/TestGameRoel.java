@@ -20,12 +20,13 @@ public class TestGameRoel extends GameEngine {
 	public TestGameRoel() {
 		super();
 		player = new MoveableGameObject();
-		addPlayer(player, 0, 0);
+		addGameObject(player, 0, 0);
+		setPlayer(player);
 
 	}
 
 	@Override
-	public void initialize() {
+	protected void initialize() {
 		super.initialize();
 
 		// Must be set before calling start game

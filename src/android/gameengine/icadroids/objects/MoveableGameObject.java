@@ -63,6 +63,7 @@ public class MoveableGameObject extends GameObject {
 		move();
 		speed = calculateSpeed(xSpeed, ySpeed);
 	}
+	
 
 	/**
 	 * Sets the objects direction to move towards target point.
@@ -301,7 +302,7 @@ public class MoveableGameObject extends GameObject {
 		if ( friction > 0 && friction < 1 ) {
 			this.friction = friction;
 		} else {
-			this.friction = 1;
+			this.friction = 0;
 		}
 	}
 
@@ -437,6 +438,15 @@ public class MoveableGameObject extends GameObject {
 	public final void undoMove() {
 		setPosition(this.getPrevX(), this.getPrevY());
 		updatePlayerFramePosition();
+	}
+
+	/**
+	 * Triggered when the MoveableGameObject moves outside of the world.
+	 * Override this method to take action when this happens!
+	 * 
+	 */
+	public void outsideWorld() {
+		// Override to use this method
 	}
 
 	// Collision methods

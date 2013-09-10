@@ -1,11 +1,11 @@
 package testGames;
 
 import android.gameengine.icadroids.engine.GameEngine;
+import android.gameengine.icadroids.engine.GameView;
+import android.gameengine.icadroids.engine.Viewport;
 import android.gameengine.icadroids.input.OnScreenButtons;
 import android.gameengine.icadroids.objects.GameObject;
 import android.gameengine.icadroids.objects.MoveableGameObject;
-import android.gameengine.icadroids.renderer.GameView;
-import android.gameengine.icadroids.renderer.Viewport;
 import android.gameengine.icadroids.sound.GameSound;
 import android.gameengine.icadroids.sound.MusicPlayer;
 
@@ -23,21 +23,21 @@ public class TestGameLex extends GameEngine {
 
 	public TestGameLex() {
 
-		addPlayer(testObj, 100, 100, .9f);
+		addGameObject(testObj, 100, 100, .9f);
+		setPlayer(testObj);
 		testObj.setSprite("kat_01");
 		addGameObject(testObject2, 200, 200, 0.2f);
 		testObject2.setSprite("kat_01");
 	}
 
 	@Override
-	public void initialize() {
+	protected void initialize() {
 		super.initialize();
 		OnScreenButtons.use = true;
 		OnScreenButtons.feedback = true;
 		setBackground("kat_01");
 		setZoomFactor(.2f);
-		GameView.MAP_HEIGHT = 3000;
-		GameView.MAP_WIDTH = 4000;
+		setMapDimensions(4000, 3000);
 		GameSound.addSound(0, "lucas");
 		GameSound.addSound(1, "ding");
 	}
@@ -90,7 +90,7 @@ public class TestGameLex extends GameEngine {
 
 		if (OnScreenButtons.button4) {
 			GameSound.stopSounds();
-			view.setPlayerPositionTolerance(.5f, .5f);
+			setPlayerPositionTolerance(.5f, .5f);
 		}
 	}
 }

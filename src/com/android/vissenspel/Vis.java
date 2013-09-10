@@ -3,6 +3,7 @@ package com.android.vissenspel;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.gameengine.icadroids.alarms.IAlarm;
 import android.gameengine.icadroids.input.OnScreenButtons;
 import android.gameengine.icadroids.input.TouchInput;
 import android.gameengine.icadroids.objects.GameObject;
@@ -18,7 +19,7 @@ import android.util.Log;
  * 
  * @author Paul Bergervoet
  */
-public class Vis extends MoveableGameObject implements ICollision {
+public class Vis extends MoveableGameObject implements ICollision, IAlarm {
 
     /**
      * Total score from strawberries eaten
@@ -56,7 +57,7 @@ public class Vis extends MoveableGameObject implements ICollision {
 		if (g instanceof Strawberry) {
 		    score = score + ((Strawberry) g).getPoints();
 		    Log.d("hapje!!!", "score is nu " + score);
-		    //g.deleteThisGameObject();
+		    g.deleteThisGameObject();
 		} else if (g instanceof Monster) {
 		    Log.d("Gepakt", "Ai, wat nu...");
 		}
@@ -96,6 +97,12 @@ public class Vis extends MoveableGameObject implements ICollision {
 		return; 		// might be considered ugly by some colleagues...
 	    }
 	}
+    }
+
+    @Override
+    public void triggerAlarm(int alarmID) {
+	// TODO Auto-generated method stub
+	
     }
 
 }

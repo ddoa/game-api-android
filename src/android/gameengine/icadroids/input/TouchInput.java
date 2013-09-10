@@ -3,7 +3,7 @@
  */
 package android.gameengine.icadroids.input;
 
-import android.gameengine.icadroids.renderer.GameView;
+import android.gameengine.icadroids.engine.GameView;
 import android.graphics.Point;
 import android.util.FloatMath;
 import android.view.MotionEvent;

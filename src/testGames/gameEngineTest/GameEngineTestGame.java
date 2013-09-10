@@ -25,14 +25,15 @@ public class GameEngineTestGame extends DebugEngine implements IAlarm,
 	public GameEngineTestGame() {
 		System.out.println("Hello tests!");
 
-		addPlayer(testObject, 10, 10);
+		addGameObject(testObject, 10, 10);
+		setPlayer(testObject);
 		addGameObject(ro, 10, 10);
 		TouchInput.use = true;
 
 	}
 
 	@Override
-	protected void initialize() {
+	public void initialize() {
 		super.initialize();
 		triggerAlarm(12345); //custom call of (system) alarm to test alarms
 	}

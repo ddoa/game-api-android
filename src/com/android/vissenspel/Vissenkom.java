@@ -1,6 +1,7 @@
 package com.android.vissenspel;
 
 import android.gameengine.icadroids.engine.GameEngine;
+import android.gameengine.icadroids.engine.Viewport;
 import android.gameengine.icadroids.tiles.GameTiles;
 import android.util.Log;
 
@@ -25,10 +26,17 @@ public class Vissenkom extends GameEngine {
     protected void initialize() {
 	super.initialize();
 
+	setMapDimensions(600,400);
 	createTileEnvironment();
+	
+	Viewport.useViewport = true;
+	setZoomFactor(2f);
 
 	vis = new Vis();
 	addGameObject(vis, 120, 240, 0.5f);
+	setPlayer(vis);
+	setPlayerPositionOnScreen(Viewport.PLAYER_CENTER, Viewport.PLAYER_CENTER);
+	setPlayerPositionTolerance(0.8, 0.5);
 
 	Monster engerd = new Monster(vis);
 	addGameObject(engerd, 480, 240, 1.0f);

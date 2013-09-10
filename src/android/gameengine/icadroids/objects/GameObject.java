@@ -1,8 +1,8 @@
 package android.gameengine.icadroids.objects;
 
 import android.gameengine.icadroids.engine.GameEngine;
+import android.gameengine.icadroids.engine.Viewport;
 import android.gameengine.icadroids.objects.graphics.AnimatedSprite;
-import android.gameengine.icadroids.renderer.Viewport;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
@@ -118,7 +118,6 @@ public class GameObject {
 	public void update() {
 		sprite.updateToNextFrame();
 		updatePlayerFramePosition();
-		calculateOutsideWorld();
 	}
 
 	/**
@@ -347,41 +346,6 @@ public class GameObject {
 	 */
 	public final int getFrameHeight() {
 		return sprite.getFrameHeight();
-	}
-
-	/**
-	 * Calculates if the object is outside the world or not.
-	 */
-	private void calculateOutsideWorld() {
-		Viewport vp = Viewport.getInstance();
-		if (Viewport.useViewport) {
-			if (xlocation > vp.getMaxX() || xlocation < 0 - getFrameWidth()) {
-				outsideWorld(true);
-			} else if (ylocation > vp.getMaxY()
-					|| ylocation < 0 - getFrameHeight()) {
-				outsideWorld(false);
-			}
-		} else {
-			if (xlocation > GameEngine.getScreenWidth()
-					|| xlocation < 0 - getFrameWidth()) {
-				outsideWorld(true);
-			} else if (ylocation > GameEngine.getScreenHeight()
-					|| ylocation < 0 - getFrameHeight()) {
-				outsideWorld(false);
-			}
-		}
-	}
-
-	/**
-	 * Triggered when the GameObject moves outside of the world.
-	 * Override this method to take action when this happens!
-	 * 
-	 * @param horizontal
-	 *            is true when the object moves outside the left or right edge.
-	 *            False when it moves outside the top or bottom edge.
-	 */
-	public void outsideWorld(boolean horizontal) {
-		// Override to use this method
 	}
 
 	/**
