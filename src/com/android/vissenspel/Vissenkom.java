@@ -1,6 +1,5 @@
 package com.android.vissenspel;
 
-import android.gameengine.icadroids.dashboard.DashboardImageView;
 import android.gameengine.icadroids.dashboard.DashboardTextView;
 import android.gameengine.icadroids.engine.GameEngine;
 import android.gameengine.icadroids.input.MotionSensor;
