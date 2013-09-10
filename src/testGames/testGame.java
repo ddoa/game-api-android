@@ -2,13 +2,13 @@ package testGames;
 
 import testGames.gameEngineTest.DebugEngine;
 import android.gameengine.icadroids.engine.GameEngine;
+import android.gameengine.icadroids.engine.GameView;
+import android.gameengine.icadroids.engine.Viewport;
 import android.gameengine.icadroids.input.OnScreenButtons;
 import android.gameengine.icadroids.input.TouchInput;
 import android.gameengine.icadroids.objects.GameObject;
 import android.gameengine.icadroids.objects.MoveableGameObject;
 import android.gameengine.icadroids.objects.graphics.Sprite;
-import android.gameengine.icadroids.renderer.GameView;
-import android.gameengine.icadroids.renderer.Viewport;
 import android.gameengine.icadroids.tiles.GameTiles;
 import android.graphics.Color;
 import android.util.Log;
@@ -45,7 +45,8 @@ public class testGame extends DebugEngine {
 		//Viewport.useViewport = true;
 		//hoi.setDirection(46);
 		//;p;
-		addPlayer(testObject2, 256, 256);
+		addGameObject(testObject2, 256, 256);
+		setPlayer(testObject2);
 		testObject2.setY(236);
 		testObject2.setX(456);
 		testObject2.setSprite("fishframes");
@@ -54,7 +55,7 @@ public class testGame extends DebugEngine {
 	}
 
 	@Override
-	public void initialize() {
+	protected void initialize() {
 		super.initialize();
 		setBackground("bg");
 		OnScreenButtons.use = true;

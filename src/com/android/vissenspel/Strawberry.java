@@ -14,7 +14,7 @@ public class Strawberry extends GameObject {
     /**
      * Life span of strawberry. Right now is set at 250, may be randomized by controler
      */
-    private int maxAge = 250;
+    private static int maxAge = 250;
 
     /**
      * Points of strawberry. Right now is set at 50, may be randomized by controler

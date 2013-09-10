@@ -64,7 +64,7 @@ public class TestGameBas extends GameEngine implements IAlarm, IFormInput {
 	
 
 	@Override
-	public void initialize() {
+	protected void initialize() {
 		
 
 		

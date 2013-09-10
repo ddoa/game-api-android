@@ -2,12 +2,12 @@ package testGames;
 
 import android.gameengine.icadroids.engine.GameEngine;
 import android.gameengine.icadroids.engine.GameFPSCounter;
-import android.gameengine.icadroids.engine.GameLoop;
+import android.gameengine.icadroids.engine.GameThread;
+import android.gameengine.icadroids.engine.GameView;
+import android.gameengine.icadroids.engine.Viewport;
 import android.gameengine.icadroids.input.OnScreenButtons;
 import android.gameengine.icadroids.input.TouchInput;
 import android.gameengine.icadroids.objects.MoveableGameObject;
-import android.gameengine.icadroids.renderer.GameView;
-import android.gameengine.icadroids.renderer.Viewport;
 import android.gameengine.icadroids.tiles.GameTiles;
 import android.graphics.Color;
 
@@ -24,12 +24,13 @@ public class AndroidCraft_demo extends GameEngine {
 	public AndroidCraft_demo() {
 		super();
 		player = new Player();
-		addPlayer(player, 150, 150);
+		addGameObject(player, 150, 150);
+		setPlayer(player);
 		player.setSprite("blokframe");
 		Viewport.useViewport = true;
 		GameFPSCounter.USE_FPS_COUNTER = true;
 		//setBackground("tonk");
-		GameLoop.MAX_FPS = 5000;
+		GameThread.MAX_FPS = 5000;
 		player.startAnimate();
 	}
 
