@@ -211,7 +211,7 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 		// create GameThread in one place: the startThread method
 
 		touch = new TouchInput(gameView);
-		screenButtons = new OnScreenButtons();
+		
 
 		GameSound.initSounds(getAppContext());
 
@@ -228,6 +228,7 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 
 		setContentView(mainView);
 		gameView.setKeepScreenOn(true);
+		screenButtons = new OnScreenButtons(this);
 
 	}
 
@@ -271,9 +272,6 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	public void intializeTouch() {
 		if (TouchInput.use) {
 			gameView.setOnTouchListener(touch);
-		} else if (OnScreenButtons.use) {
-			Log.d("ButtonEnabled", "USING ON SCREEN BUTTONS");
-			gameView.setOnTouchListener(screenButtons);
 		}
 	}
 
@@ -668,17 +666,7 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 		vibrator.vibrate(milliseconds);
 	}
 
-	/**
-	 * draws the interface if the screen buttons are enabled.
-	 * 
-	 * @param canvas
-	 *            the canvas to draw on
-	 */
-	public final void drawInterface(Canvas canvas) {
-		if (OnScreenButtons.use) {
-			screenButtons.drawButtons(canvas);
-		}
-	}
+	
 
 	/**
 	 * <b> DO NOT CALL THIS METHOD </b><br>
