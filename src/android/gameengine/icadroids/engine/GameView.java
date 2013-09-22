@@ -224,7 +224,6 @@ public class GameView extends SurfaceView implements Callback {
 	    item.drawCustomObjects(canvas);
 	}
 
-	gameEngine.drawInterface(canvas);
     }
 
     public Point getViewportLocation() {
