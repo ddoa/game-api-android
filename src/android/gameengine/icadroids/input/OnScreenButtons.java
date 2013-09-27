@@ -70,10 +70,10 @@ public class OnScreenButtons{
 	/** This static var is TRUE when input has been detected on the down key of the dpad. */ dPadDown, 
 	/** This static var is TRUE when input has been detected on the left key of the dpad. */ dPadLeft, 
 	/** This static var is TRUE when input has been detected on the right key of the dpad. */ dPadRight, 
-	/** This static var is TRUE when input has been detected on button 1. default sprite is button A. */ button1,
-	/** This static var is TRUE when input has been detected on button 2. default sprite is button B. */ button2, 
-	/** This static var is TRUE when input has been detected on button 3. default sprite is button C. */ button3, 
-	/** This static var is TRUE when input has been detected on button 4. default sprite is button D. */ button4, 
+	/** This static var is TRUE when input has been detected on button 1. default sprite is button A. */ buttonA,
+	/** This static var is TRUE when input has been detected on button 2. default sprite is button B. */ buttonB, 
+	/** This static var is TRUE when input has been detected on button 3. default sprite is button C. */ buttonX, 
+	/** This static var is TRUE when input has been detected on button 4. default sprite is button D. */ buttonY, 
 	/** This static var is TRUE when input has been detected on start. */ start, 
 	/** This static var is TRUE when input has been detected on select. */ select, 
 	/** This static var is TRUE when input has been detected on the right shoulder button */ shoulderR, 
@@ -128,6 +128,31 @@ public class OnScreenButtons{
 		confStart();
 		confShoulders();*/
 
+	}
+	
+	protected static void buttonPressed(int buttonId){
+		setButtonState(buttonId, true);
+	}
+	
+	protected static void buttonReleased(int buttonId){
+		setButtonState(buttonId, false);
+	}
+	
+	private static void setButtonState(int buttonId, boolean state){
+		switch (buttonId) {
+		case R.id.buttonA:
+			buttonA = state;
+			break;
+		case R.id.buttonB:
+			buttonB = state;
+			break;
+		case R.id.buttonX:
+			buttonX = state;
+			break;
+		case R.id.buttonY:
+			buttonY = state;
+			break;
+		}
 	}
 
 

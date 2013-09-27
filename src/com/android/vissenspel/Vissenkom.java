@@ -24,8 +24,6 @@ public class Vissenkom extends GameEngine {
 	
 	private DashboardTextView scoreDisplay;
 	
-	
-
 	/**
 	 * Initialize the game, create objects and level
 	 * 
@@ -92,7 +90,7 @@ public class Vissenkom extends GameEngine {
 
 		// Set up control mechanisms to use
 		TouchInput.use = false;
-		MotionSensor.use = true;
+		MotionSensor.use = false;
 		OnScreenButtons.use = true;
 	}
 
@@ -119,6 +117,19 @@ public class Vissenkom extends GameEngine {
 				scoreDisplay.setPadding(10, 10, 10, 10);
 			}
 		});
+		
+		if(OnScreenButtons.buttonA){
+			System.out.println("Heej, A gedrukt");
+		}
+		if(OnScreenButtons.buttonB){
+			System.out.println("Heej, B gedrukt");
+		}
+		if(OnScreenButtons.buttonX){
+			System.out.println("Heej, X gedrukt");
+		}
+		if(OnScreenButtons.buttonY){
+			System.out.println("Heej, Y gedrukt");
+		}
 		
 	}
 }

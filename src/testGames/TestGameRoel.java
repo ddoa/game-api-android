@@ -53,9 +53,9 @@ public class TestGameRoel extends GameEngine {
 			Log.d(TAG, "SHOULDER1 has been pressed");
 		if (OnScreenButtons.shoulderL)
 			Log.d(TAG, "SHOULDER2 has been pressed");
-		if (OnScreenButtons.button1)
+		if (OnScreenButtons.buttonA)
 			Log.d(TAG, "BUTTON1 has been pressed");
-		if (OnScreenButtons.button2)
+		if (OnScreenButtons.buttonB)
 			Log.d(TAG, "BUTTON2 has been pressed");
 	}
 

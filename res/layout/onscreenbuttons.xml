@@ -1,54 +1,91 @@
-<?xml version="1.0" encoding="utf-8"?><RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" 
+    android:splitMotionEvents="true"
     >
 
-    <ImageButton
-        android:id="@+id/imageButton2"
+    <android.gameengine.icadroids.input.OnScreenButton
+        android:id="@+id/buttonB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@null"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_marginBottom="62dp"
         android:src="@drawable/buttonb" />
 
-    <ImageButton
-        android:id="@+id/imageButton4"
+    <android.gameengine.icadroids.input.OnScreenButton
+        android:id="@+id/buttonY"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/imageButton2"
-        android:layout_alignTop="@+id/imageButton3"
-        android:background="@null"
+        android:layout_alignLeft="@+id/buttonB"
+        android:layout_alignTop="@+id/buttonX"
         android:src="@drawable/buttony" />
 
-    <ImageButton
-        android:id="@+id/imageButton1"
+    <android.gameengine.icadroids.input.OnScreenButton
+        android:id="@+id/buttonA"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/imageButton3"
-        android:layout_alignTop="@+id/imageButton2"
+        android:layout_alignLeft="@+id/buttonX"
+        android:layout_alignTop="@+id/buttonB"
         android:color="#66FF0000"
-        android:background="@null"
         android:src="@drawable/buttona" />
 
-    <ImageButton
-        android:id="@+id/imageButton3"
+    <android.gameengine.icadroids.input.OnScreenButton
+        android:id="@+id/buttonX"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/imageButton1"
-        android:layout_marginRight="18dp"
-        android:layout_marginTop="21dp"
-        android:layout_toLeftOf="@+id/imageButton4"
-        android:background="@null"
+        android:layout_below="@+id/buttonA"
+        android:layout_toLeftOf="@+id/buttonY"
         android:src="@drawable/buttonx" />
 
-    <android.gameengine.icadroids.input.OnScreenButton
-        android:id="@+id/onScreenButton1"
+
+    <!-- DPAD placement  -->
+    
+        <android.gameengine.icadroids.input.OnScreenButton
+        android:id="@+id/dpadCenter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+		android:layout_toRightOf="@+id/dpadLeft"
+		android:layout_above="@+id/dpadDown"
+        android:src="@drawable/dpad_center" />
+
+    <android.gameengine.icadroids.input.OnScreenButton
+        android:id="@+id/dpadLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:src="@drawable/dpad" />
+        android:layout_alignTop="@+id/dpadCenter"
+        android:src="@drawable/dpad_left"
+        android:layout_marginLeft="10dp"
+         />
+
+
+
+    <android.gameengine.icadroids.input.OnScreenButton
+        android:id="@+id/dpadDown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/dpadCenter"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/dpad_down"
+        android:layout_marginBottom="10dp"
+         />
+
+    <android.gameengine.icadroids.input.OnScreenButton
+        android:id="@+id/dpadRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/dpadCenter"
+        android:layout_toRightOf="@+id/dpadCenter"
+        android:src="@drawable/dpad_right" />
+
+    <android.gameengine.icadroids.input.OnScreenButton
+        android:id="@+id/dpadUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/dpadCenter"
+        android:layout_alignLeft="@+id/dpadCenter"
+        android:src="@drawable/dpad_up" />
 
 </RelativeLayout>
