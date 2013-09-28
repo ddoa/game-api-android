@@ -117,19 +117,5 @@ public class Vissenkom extends GameEngine {
 				scoreDisplay.setPadding(10, 10, 10, 10);
 			}
 		});
-		
-		if(OnScreenButtons.buttonA){
-			System.out.println("Heej, A gedrukt");
-		}
-		if(OnScreenButtons.buttonB){
-			System.out.println("Heej, B gedrukt");
-		}
-		if(OnScreenButtons.buttonX){
-			System.out.println("Heej, X gedrukt");
-		}
-		if(OnScreenButtons.buttonY){
-			System.out.println("Heej, Y gedrukt");
-		}
-		
 	}
 }

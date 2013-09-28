@@ -10,8 +10,6 @@ import android.widget.ImageButton;
 
 public class OnScreenButton extends ImageButton {
 
-	
-	
 	public OnScreenButton(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		intializeButton();
@@ -24,8 +22,6 @@ public class OnScreenButton extends ImageButton {
 		super(context);
 		intializeButton();
 	}
-
-
 
 	@SuppressWarnings("deprecation") //New implementations are only supported
 									// by android 4.0+
@@ -42,12 +38,6 @@ public class OnScreenButton extends ImageButton {
 		} else {
 			OnScreenButtons.buttonReleased(getId());
 		}
-		return true;
+		return super.onTouchEvent(event);
 	}
-	
-	
-	
-	
-	
-
 }

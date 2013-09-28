@@ -20,7 +20,6 @@ import android.gameengine.icadroids.objects.graphics.Sprite;
 import android.gameengine.icadroids.sound.GameSound;
 import android.gameengine.icadroids.sound.MusicPlayer;
 import android.gameengine.icadroids.tiles.GameTiles;
-import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -228,8 +227,34 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 
 		setContentView(mainView);
 		gameView.setKeepScreenOn(true);
-		screenButtons = new OnScreenButtons(this);
 
+
+	}
+	
+	/**
+	 * <b> Don't override this method, use initialize() instead</b>
+	 * This method is called by the GameView to notify
+	 * the gameEngine to start initializing. It will
+	 * call the initialize, beforeInitialize and afterInitialize
+	 * method.
+	 */
+	protected void initializeGameEngine(){
+		beforeInitialize();
+		initialize();
+		afterInitialize();
+	}
+
+
+	/**
+	 * Method called direct before the initialization
+	 */
+	private void beforeInitialize() {
+		if (Sprite.loadDelayedSprites != null) {
+			for (Sprite sprite : Sprite.loadDelayedSprites) {
+				sprite.initialize();
+			}
+		}
+		Sprite.loadDelayedSprites = null;
 	}
 
 	/**
@@ -254,25 +279,30 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	protected void initialize() {
 		printDebugInfo("GameEngine", "Intializing...");
 
-		if (Sprite.loadDelayedSprites != null) {
-			for (Sprite sprite : Sprite.loadDelayedSprites) {
-				sprite.initialize();
-			}
-		}
-		Sprite.loadDelayedSprites = null;
-
 		for (GameObject item : items) {
 			item.intializeGameObject();
 		}
+				
+
+	}
+	
+	/**
+	 * Method called direct after intialization.
+	 */
+	private void afterInitialize() {
+		intializeInput();		
 	}
 
 	/**
-	 * Initialize the Listener for the screen (general touch OR screenButtons)
+	 * Initialize the touch and/or the onScreenButtons 
 	 */
-	public void intializeTouch() {
+	public void intializeInput() {
 		if (TouchInput.use) {
 			gameView.setOnTouchListener(touch);
 		}
+		if(OnScreenButtons.use){
+			screenButtons = new OnScreenButtons(this);
+		}		
 	}
 
 	void startThread() {

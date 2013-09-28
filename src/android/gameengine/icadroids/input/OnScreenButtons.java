@@ -1,24 +1,12 @@
 package android.gameengine.icadroids.input;
 
-import java.util.ArrayList;
-
 import android.GameAPI.ICA_DROID.R;
 import android.app.Activity;
-import android.content.Context;
 import android.gameengine.icadroids.engine.GameEngine;
-import android.gameengine.icadroids.objects.graphics.Sprite;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.RectF;
 import android.util.Log;
-import android.view.Display;
-import android.view.HapticFeedbackConstants;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
-import android.view.WindowManager;
 
 /**
  * This class provides statics and a few function to easily make use of the
@@ -29,27 +17,9 @@ import android.view.WindowManager;
  * 
  * Do not make an instance of this class yourself. If you want to use the OnScreenButtons
  * in your game, set the static variable <i>use</i> to true.
- * @author Roel
+ * @author Roel & Bas
  */
 public class OnScreenButtons{
-
-	/** var needed to calculate the screenBlock */
-	private int[] screenBlock = new int[2];
-
-	/** the paint required for the opacity **/
-	private Paint alphaPaint;
-
-	/**
-	 * sprites
-	 */
-	private Sprite startSprite, selectSprite, dpadSprite, button1Sprite,
-			button2Sprite, button3Sprite, button4Sprite, shoulder1Sprite,
-			shoulder2Sprite;
-
-	/** lists for sprites and for the buttons */
-	private ArrayList<Sprite> drawList = new ArrayList<Sprite>();
-
-	private RectF dPadHitRect;
 
 	// general settings
 	/** use : wether or not to actually use these buttons */
@@ -73,20 +43,7 @@ public class OnScreenButtons{
 	/** This static var is TRUE when input has been detected on button 1. default sprite is button A. */ buttonA,
 	/** This static var is TRUE when input has been detected on button 2. default sprite is button B. */ buttonB, 
 	/** This static var is TRUE when input has been detected on button 3. default sprite is button C. */ buttonX, 
-	/** This static var is TRUE when input has been detected on button 4. default sprite is button D. */ buttonY, 
-	/** This static var is TRUE when input has been detected on start. */ start, 
-	/** This static var is TRUE when input has been detected on select. */ select, 
-	/** This static var is TRUE when input has been detected on the right shoulder button */ shoulderR, 
-	/** This static var is TRUE when input has been detected on the left shoulder button */ shoulderL;
-
-	/**
-	 * wether or not to disable these buttons.
-	 */
-	public static boolean 
-	/** setting this on TRUE will disable button 1. by default the A button! */ disableButton1, 
-	/** setting this on TRUE will disable button 2. by default the B button! */ disableButton2, 
-	/** setting this on TRUE will disable button 3. by default the C button! */ disableButton3,
-	/** setting this on TRUE will disable button 4. by default the D button! */	disableButton4;
+	/** This static var is TRUE when input has been detected on button 4. default sprite is button D. */ buttonY;
 
 	/**
 	 * Do not call the constructor yourself this is for the GameEngine
@@ -113,22 +70,6 @@ public class OnScreenButtons{
 		GameEngine.getAppView().setHapticFeedbackEnabled(true);
 	}
 
-	/**
-	 * configures all the onScreenButtons
-	 * you can remove certain configure functions to disable buttons.
-	 */
-	private void buttonConfig() {
-
-/*		confDpad();
-		confButton1();
-		confButton2();
-		confButton3();
-		confButton4();
-		confSelect();
-		confStart();
-		confShoulders();*/
-
-	}
 	
 	protected static void buttonPressed(int buttonId){
 		setButtonState(buttonId, true);
@@ -152,9 +93,19 @@ public class OnScreenButtons{
 		case R.id.buttonY:
 			buttonY = state;
 			break;
+		case R.id.dpadUp:
+			dPadUp = state;
+			break;
+		case R.id.dpadDown:
+			dPadDown = state;
+			break;
+		case R.id.dpadLeft:
+			dPadLeft = state;
+			break;
+		case R.id.dpadRight:
+			dPadRight = state;
+			break;
+			
 		}
 	}
-
-
-	
 }
