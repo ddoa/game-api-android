@@ -28,7 +28,6 @@ public class OnScreenButtons{
 	public static boolean feedback;
 	/** opacity: sets the opacity of all the buttons in a range from 0 to 255 */
 	public static int opacity = 100;
-	private int oldOpacity;
 
 
 	/**
@@ -40,46 +39,74 @@ public class OnScreenButtons{
 	/** This static var is TRUE when input has been detected on the down key of the dpad. */ dPadDown, 
 	/** This static var is TRUE when input has been detected on the left key of the dpad. */ dPadLeft, 
 	/** This static var is TRUE when input has been detected on the right key of the dpad. */ dPadRight, 
-	/** This static var is TRUE when input has been detected on button 1. default sprite is button A. */ buttonA,
-	/** This static var is TRUE when input has been detected on button 2. default sprite is button B. */ buttonB, 
-	/** This static var is TRUE when input has been detected on button 3. default sprite is button C. */ buttonX, 
-	/** This static var is TRUE when input has been detected on button 4. default sprite is button D. */ buttonY;
+	/** This static var is TRUE when input has been detected on button A.  */ buttonA,
+	/** This static var is TRUE when input has been detected on button B.  */ buttonB, 
+	/** This static var is TRUE when input has been detected on button X.  */ buttonX, 
+	/** This static var is TRUE when input has been detected on button Y. */ buttonY,
+	/** This static var is TRUE when input has been detected on button 'start'. */ start,
+	/** This static var is TRUE when input has been detected on button 'select'. */ select;
+
+
+	private static View onScreenButtonsView;
 
 	/**
-	 * Do not call the constructor yourself this is for the GameEngine
+	 * Do not call the constructor yourself this is for the GameEngine.
+	 * 
+	 * The constructor will load the onScreenButtons.xml view and places it on
+	 * top of the canvas.
 	 * 
 	 * @param context
 	 *            : The context is required by this class so it can receive the
 	 *            screen width and height.
 	 */
 	public OnScreenButtons(Activity gameEngine) {
-		
-		View onScreenButtonsView = gameEngine.getLayoutInflater().inflate(R.layout.onscreenbuttons, null);	
-		
-		if(onScreenButtonsView != null){
+
+		onScreenButtonsView = gameEngine.getLayoutInflater().inflate(
+				R.layout.onscreenbuttons, null);
+
+		if (onScreenButtonsView != null) {
 			LayoutParams lp = new ViewGroup.LayoutParams(
 					ViewGroup.LayoutParams.MATCH_PARENT,
 					ViewGroup.LayoutParams.MATCH_PARENT);
-			
-			
+
 			gameEngine.addContentView(onScreenButtonsView, lp);
 		} else {
 			Log.wtf("onScreenButtons", "Cannot find onscreenbutton layout!");
 		}
-		
+
 		GameEngine.getAppView().setHapticFeedbackEnabled(true);
 	}
 
-	
-	protected static void buttonPressed(int buttonId){
+	/**
+	 * Method that will be called by the OnScreenButton to notify the
+	 * onscreenbuttons an button has been pressed
+	 * 
+	 * @param buttonId
+	 *            The layout id of the button
+	 */
+	protected static void buttonPressed(int buttonId) {
 		setButtonState(buttonId, true);
 	}
-	
-	protected static void buttonReleased(int buttonId){
+
+	/**
+	 * Method that will be called by the OnScreenButton to notify the
+	 * onscreenbuttons an button has been pressed
+	 * 
+	 * @param buttonId
+	 */
+	protected static void buttonReleased(int buttonId) {
 		setButtonState(buttonId, false);
 	}
-	
-	private static void setButtonState(int buttonId, boolean state){
+
+	/**
+	 * Set the correct static boolean state for the button.
+	 * 
+	 * @param buttonId
+	 *            The id of the button that has been pressed
+	 * @param state
+	 *            The state to set it to
+	 */
+	private static void setButtonState(int buttonId, boolean state) {
 		switch (buttonId) {
 		case R.id.buttonA:
 			buttonA = state;
@@ -105,7 +132,40 @@ public class OnScreenButtons{
 		case R.id.dpadRight:
 			dPadRight = state;
 			break;
-			
+		case R.id.buttonSelect:
+			select = state;
+			break;
+		case R.id.buttonStart:
+			start = state;
+			break;
+
 		}
 	}
+
+	/**
+	 * Disable a onscreenbutton
+	 * 
+	 * @param buttonId
+	 *            The id of the button that needs to be dissabled. you can get
+	 *            the button id by using R.id.(button name). <br />
+	 *            <b> For example: </b> disableButton(R.id.dpadCenter); <br />
+	 *            You also have:
+	 *            <p />
+	 *            <i> buttonA, buttonB, buttonX, buttonY, dpadUp, dpadDown,
+	 *            dpadLeft, dpadRight, buttonSelect and buttonStart </i>
+	 * 
+	 * 
+	 */
+	public static void disableButton(int buttonId) {
+		OnScreenButton button = (OnScreenButton) onScreenButtonsView
+				.findViewById(buttonId);
+
+		if (button != null) {
+			button.setVisibility(View.INVISIBLE);
+		} else {
+			Log.wtf("OnscreenButtons",
+					"Cannot find or disable the button with id: " + buttonId);
+		}
+	}
+
 }

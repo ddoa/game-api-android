@@ -91,4 +91,20 @@
         android:src="@drawable/buttonx"
         android:color="#66FF0000" />
 
+    <android.gameengine.icadroids.input.OnScreenButton
+        android:id="@+id/buttonSelect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/buttonStart"
+        android:layout_toLeftOf="@+id/buttonStart"
+        android:src="@drawable/select" />
+
+    <android.gameengine.icadroids.input.OnScreenButton
+        android:id="@+id/buttonStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buttonB"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/start" />
+
 </RelativeLayout>

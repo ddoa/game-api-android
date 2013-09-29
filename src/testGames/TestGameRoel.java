@@ -49,10 +49,6 @@ public class TestGameRoel extends GameEngine {
 			vibrate(pattern);
 		if (OnScreenButtons.select)
 			Log.d(TAG, "SELECT has been pressed");
-		if (OnScreenButtons.shoulderR)
-			Log.d(TAG, "SHOULDER1 has been pressed");
-		if (OnScreenButtons.shoulderL)
-			Log.d(TAG, "SHOULDER2 has been pressed");
 		if (OnScreenButtons.buttonA)
 			Log.d(TAG, "BUTTON1 has been pressed");
 		if (OnScreenButtons.buttonB)
