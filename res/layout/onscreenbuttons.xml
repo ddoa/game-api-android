@@ -103,8 +103,9 @@
         android:id="@+id/buttonStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/buttonB"
+        android:layout_alignBottom="@+id/buttonB"
         android:layout_centerHorizontal="true"
+        android:layout_marginLeft="20dp"
         android:src="@drawable/start" />
 
 </RelativeLayout>
