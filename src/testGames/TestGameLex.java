@@ -32,7 +32,6 @@ public class TestGameLex extends GameEngine {
 
 	@Override
 	protected void initialize() {
-		super.initialize();
 		OnScreenButtons.use = true;
 		OnScreenButtons.feedback = true;
 		setBackground("kat_01");

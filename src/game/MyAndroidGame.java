@@ -20,7 +20,6 @@ public class MyAndroidGame extends GameEngine {
 	
 @Override
 protected void initialize() {
-	super.initialize();
 	//put your initialization code here
 	
 	

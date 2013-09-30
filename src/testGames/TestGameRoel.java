@@ -27,8 +27,6 @@ public class TestGameRoel extends GameEngine {
 
 	@Override
 	protected void initialize() {
-		super.initialize();
-
 		// Must be set before calling start game
 		OnScreenButtons.use = true;
 		OnScreenButtons.feedback = true;

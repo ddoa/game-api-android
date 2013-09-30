@@ -47,7 +47,7 @@ public class AndroidCraft_demo extends GameEngine {
 
 	@Override
 	public void initialize() {
-		super.initialize();
+		
 
 
 		setBackground("bg");

@@ -31,7 +31,7 @@ public class Vissenkom extends GameEngine {
 	 */
 	@Override
 	protected void initialize() {
-		super.initialize();
+
 
 		createTileEnvironment();
 

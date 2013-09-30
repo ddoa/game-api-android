@@ -276,20 +276,16 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	 * Override this method inside your game class that extends GameEngine. 
 	 * Call super.initialize() at the very start.
 	 */
-	protected void initialize() {
-		printDebugInfo("GameEngine", "Intializing...");
-
-		for (GameObject item : items) {
-			item.intializeGameObject();
-		}
-				
-
-	}
+	protected abstract void initialize();
 	
 	/**
 	 * Method called direct after intialization.
 	 */
 	private void afterInitialize() {
+	
+		for (GameObject item : items) {
+			item.intializeGameObject();
+		}
 		intializeInput();		
 	}
 
