@@ -24,8 +24,6 @@ public class Vissenkom extends GameEngine {
 	
 	private DashboardTextView scoreDisplay;
 	
-	
-
 	/**
 	 * Initialize the game, create objects and level
 	 * 
@@ -33,7 +31,7 @@ public class Vissenkom extends GameEngine {
 	 */
 	@Override
 	protected void initialize() {
-		super.initialize();
+
 
 		createTileEnvironment();
 
@@ -92,7 +90,7 @@ public class Vissenkom extends GameEngine {
 
 		// Set up control mechanisms to use
 		TouchInput.use = false;
-		MotionSensor.use = true;
+		MotionSensor.use = false;
 		OnScreenButtons.use = true;
 	}
 
@@ -119,6 +117,5 @@ public class Vissenkom extends GameEngine {
 				scoreDisplay.setPadding(10, 10, 10, 10);
 			}
 		});
-		
 	}
 }

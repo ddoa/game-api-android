@@ -56,7 +56,6 @@ public class testGame extends DebugEngine {
 
 	@Override
 	protected void initialize() {
-		super.initialize();
 		setBackground("bg");
 		OnScreenButtons.use = true;
 		OnScreenButtons.feedback = true;

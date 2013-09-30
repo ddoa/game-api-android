@@ -19,8 +19,6 @@ public class FormTest extends GameEngine implements IFormInput {
 		gf = new GameForm(this);
 		gf.showView("testformpje", this);
 		// TODO Auto-generated method stub
-		super.initialize();
-;
 		
 	}
 

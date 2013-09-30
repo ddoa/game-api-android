@@ -32,7 +32,6 @@ public class TestGameLex extends GameEngine {
 
 	@Override
 	protected void initialize() {
-		super.initialize();
 		OnScreenButtons.use = true;
 		OnScreenButtons.feedback = true;
 		setBackground("kat_01");
@@ -72,23 +71,23 @@ public class TestGameLex extends GameEngine {
 			GameSound.stopSound(1);
 		}
 
-		if (OnScreenButtons.button1) {
+		if (OnScreenButtons.buttonA) {
 			// GameSound.resumeSounds();
 			GameSound.playSound(1, 5);
 			MusicPlayer.play("lucas", true);
 		}
 
-		if (OnScreenButtons.button2) {
+		if (OnScreenButtons.buttonB) {
 			GameSound.pauseSounds();
 			setZoomFactor(.5f);
 		}
 
-		if (OnScreenButtons.button3) {
+		if (OnScreenButtons.buttonX) {
 			GameSound.resumeSounds();
 			setZoomFactor(1f);
 		}
 
-		if (OnScreenButtons.button4) {
+		if (OnScreenButtons.buttonY) {
 			GameSound.stopSounds();
 			setPlayerPositionTolerance(.5f, .5f);
 		}

@@ -27,8 +27,6 @@ public class TestGameRoel extends GameEngine {
 
 	@Override
 	protected void initialize() {
-		super.initialize();
-
 		// Must be set before calling start game
 		OnScreenButtons.use = true;
 		OnScreenButtons.feedback = true;
@@ -49,13 +47,9 @@ public class TestGameRoel extends GameEngine {
 			vibrate(pattern);
 		if (OnScreenButtons.select)
 			Log.d(TAG, "SELECT has been pressed");
-		if (OnScreenButtons.shoulderR)
-			Log.d(TAG, "SHOULDER1 has been pressed");
-		if (OnScreenButtons.shoulderL)
-			Log.d(TAG, "SHOULDER2 has been pressed");
-		if (OnScreenButtons.button1)
+		if (OnScreenButtons.buttonA)
 			Log.d(TAG, "BUTTON1 has been pressed");
-		if (OnScreenButtons.button2)
+		if (OnScreenButtons.buttonB)
 			Log.d(TAG, "BUTTON2 has been pressed");
 	}
 

@@ -20,7 +20,6 @@ import android.gameengine.icadroids.objects.graphics.Sprite;
 import android.gameengine.icadroids.sound.GameSound;
 import android.gameengine.icadroids.sound.MusicPlayer;
 import android.gameengine.icadroids.tiles.GameTiles;
-import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.hardware.Sensor;
@@ -212,7 +211,7 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 		// create GameThread in one place: the startThread method
 
 		touch = new TouchInput();
-		screenButtons = new OnScreenButtons();
+		
 
 		GameSound.initSounds(getAppContext());
 
@@ -230,6 +229,33 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 		setContentView(mainView);
 		gameView.setKeepScreenOn(true);
 
+
+	}
+	
+	/**
+	 * <b> Don't override this method, use initialize() instead</b>
+	 * This method is called by the GameView to notify
+	 * the gameEngine to start initializing. It will
+	 * call the initialize, beforeInitialize and afterInitialize
+	 * method.
+	 */
+	protected void initializeGameEngine(){
+		beforeInitialize();
+		initialize();
+		afterInitialize();
+	}
+
+
+	/**
+	 * Method called direct before the initialization
+	 */
+	private void beforeInitialize() {
+		if (Sprite.loadDelayedSprites != null) {
+			for (Sprite sprite : Sprite.loadDelayedSprites) {
+				sprite.initialize();
+			}
+		}
+		Sprite.loadDelayedSprites = null;
 	}
 
 	/**
@@ -251,31 +277,29 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	 * Override this method inside your game class that extends GameEngine. 
 	 * Call super.initialize() at the very start.
 	 */
-	protected void initialize() {
-		printDebugInfo("GameEngine", "Intializing...");
-
-		if (Sprite.loadDelayedSprites != null) {
-			for (Sprite sprite : Sprite.loadDelayedSprites) {
-				sprite.initialize();
-			}
-		}
-		Sprite.loadDelayedSprites = null;
-
+	protected abstract void initialize();
+	
+	/**
+	 * Method called direct after intialization.
+	 */
+	private void afterInitialize() {
+	
 		for (GameObject item : items) {
 			item.intializeGameObject();
 		}
+		intializeInput();		
 	}
 
 	/**
-	 * Initialize the Listener for the screen (general touch OR screenButtons)
+	 * Initialize the touch and/or the onScreenButtons 
 	 */
-	public void intializeTouch() {
+	public void intializeInput() {
 		if (TouchInput.use) {
 			gameView.setOnTouchListener(touch);
-		} else if (OnScreenButtons.use) {
-			Log.d("ButtonEnabled", "USING ON SCREEN BUTTONS");
-			gameView.setOnTouchListener(screenButtons);
 		}
+		if(OnScreenButtons.use){
+			screenButtons = new OnScreenButtons(this);
+		}		
 	}
 
 	void startThread() {
@@ -669,17 +693,7 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 		vibrator.vibrate(milliseconds);
 	}
 
-	/**
-	 * draws the interface if the screen buttons are enabled.
-	 * 
-	 * @param canvas
-	 *            the canvas to draw on
-	 */
-	public final void drawInterface(Canvas canvas) {
-		if (OnScreenButtons.use) {
-			screenButtons.drawButtons(canvas);
-		}
-	}
+	
 
 	/**
 	 * <b> DO NOT CALL THIS METHOD </b><br>

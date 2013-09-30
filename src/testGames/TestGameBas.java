@@ -65,10 +65,6 @@ public class TestGameBas extends GameEngine implements IAlarm, IFormInput {
 
 	@Override
 	protected void initialize() {
-		
-
-		
-		super.initialize();
 
 		
 	}
@@ -93,7 +89,7 @@ public class TestGameBas extends GameEngine implements IAlarm, IFormInput {
 		if (OnScreenButtons.dPadLeft) {
 			testObject.movePlayer(-5, 0);
 		}
-		if (OnScreenButtons.button1) {
+		if (OnScreenButtons.buttonA) {
 			testObject.jumpToStartPosition();
 		}
 

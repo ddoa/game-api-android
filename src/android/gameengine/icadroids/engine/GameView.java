@@ -84,8 +84,7 @@ public class GameView extends SurfaceView implements Callback {
 	rectanglePaint.setColor(Color.RED);
 	rectanglePaint.setStyle(Style.STROKE);
 	// initialize the game
-	gameEngine.initialize();
-	gameEngine.intializeTouch();
+	gameEngine.initializeGameEngine();
 
 	if (Viewport.useViewport) {
 	    viewport = Viewport.getInstance();
@@ -224,7 +223,6 @@ public class GameView extends SurfaceView implements Callback {
 	    item.drawCustomObjects(canvas);
 	}
 
-	gameEngine.drawInterface(canvas);
     }
 
     public Point getViewportLocation() {
