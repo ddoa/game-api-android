@@ -848,12 +848,12 @@ public abstract class GameEngine extends Activity implements SensorEventListener
      * @param y the screen y
      * @return Point, containing the x,y-position in the game world
      */
-    public Point translateToGamePosition(int x, int y) {
+    public Point translateToGamePosition(float x, float y) {
     	if ( Viewport.useViewport ) {
     		Viewport vp = Viewport.getInstance();
     		return vp.translateToGamePosition(x, y);
     	} else {
-    		return new Point(x, y);
+    		return new Point((int)x, (int)y);
     	}
 	}
 

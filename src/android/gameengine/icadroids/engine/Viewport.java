@@ -533,7 +533,7 @@ public class Viewport {
      * @param y the screen y
      * @return Point, containing the x,y-position in the game world
      */
-    Point translateToGamePosition(int x, int y)
+    Point translateToGamePosition(float x, float y)
     {
     	return new Point(viewportX+(int)(x/zoomFactor), viewportY+(int)(y/zoomFactor));
     }

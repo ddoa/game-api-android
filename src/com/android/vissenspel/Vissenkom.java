@@ -32,6 +32,10 @@ public class Vissenkom extends GameEngine {
 	@Override
 	protected void initialize() {
 
+		// Set up control mechanisms to use
+		TouchInput.use = false;
+		MotionSensor.use = false;
+		OnScreenButtons.use = true;
 
 		createTileEnvironment();
 
@@ -88,10 +92,6 @@ public class Vissenkom extends GameEngine {
 		setTileMap(myTiles);
 		Log.d("Vissenkom", "GameTiles created");
 
-		// Set up control mechanisms to use
-		TouchInput.use = false;
-		MotionSensor.use = false;
-		OnScreenButtons.use = true;
 	}
 
 	/**
