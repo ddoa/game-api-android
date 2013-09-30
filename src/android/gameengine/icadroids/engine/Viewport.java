@@ -95,12 +95,12 @@ public class Viewport {
     /**
      * x-position of the top left corner of the viewport in the game world.
      */
-    private int viewportX;
+    private int viewportX = 0;
 
     /**
      * y-position of the top left corner of the viewport in the game world.
      */
-    private int viewportY;
+    private int viewportY = 0;
 
     /**
      * Width of the viewport, taking zooming into account. The width will
@@ -218,7 +218,7 @@ public class Viewport {
      * @return An instance of the Viewport class
      */
     public static Viewport getInstance() {
-	return instance;
+    	return instance;
     }
 
     /**
@@ -524,6 +524,19 @@ public class Viewport {
     public Point getViewportLocation() {
 	return new Point(viewportX, viewportY);
     }
+    
+    /**
+     * Translates a give screen position to a position in the game world, taking into
+     * consideration the viewport location and the zoom factor.
+     * 
+     * @param x the screen x
+     * @param y the screen y
+     * @return Point, containing the x,y-position in the game world
+     */
+    Point translateToGamePosition(int x, int y)
+    {
+    	return new Point(viewportX+(int)(x/zoomFactor), viewportY+(int)(y/zoomFactor));
+    }
 
     /**
      * Gets the zoomfactor for zooming in.
@@ -531,7 +544,7 @@ public class Viewport {
      * @return the value of the zoomfactor
      */
     public float getZoomFactor() {
-	return zoomFactor;
+    	return zoomFactor;
     }
 
 }

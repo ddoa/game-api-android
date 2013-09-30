@@ -21,6 +21,7 @@ import android.gameengine.icadroids.sound.GameSound;
 import android.gameengine.icadroids.sound.MusicPlayer;
 import android.gameengine.icadroids.tiles.GameTiles;
 import android.graphics.Canvas;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -210,7 +211,7 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 
 		// create GameThread in one place: the startThread method
 
-		touch = new TouchInput(gameView);
+		touch = new TouchInput();
 		screenButtons = new OnScreenButtons();
 
 		GameSound.initSounds(getAppContext());
@@ -824,6 +825,24 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 			vp.setPlayerPositionTolerance(ht, vt);
 		}
 	}
+	
+    /**
+     * Translates a given screen position to a position in the game world, taking into
+     * consideration the viewport location and the zoom factor.
+     * 
+     * @param x the screen x
+     * @param y the screen y
+     * @return Point, containing the x,y-position in the game world
+     */
+    public Point translateToGamePosition(int x, int y) {
+    	if ( Viewport.useViewport ) {
+    		Viewport vp = Viewport.getInstance();
+    		return vp.translateToGamePosition(x, y);
+    	} else {
+    		return new Point(x, y);
+    	}
+	}
+
 
 	/**
 	 * Clears the background Image so only the background color will show

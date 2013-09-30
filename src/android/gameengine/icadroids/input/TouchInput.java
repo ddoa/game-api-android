@@ -39,14 +39,24 @@ public class TouchInput implements OnTouchListener {
 	 * TRUE when device has no input/or loses input(ex: user removes his finger)
 	 */
 	public static boolean onRelease = true;
-	/** The relative X position of where the user touches on the screen and NOT the actual game. */
+	/** The X position of the point where the user touches the screen.
+	 * 
+	 * This position may be different from the position in the game world 
+	 * when using a viewport and zooming. Use GameEngine.translateToGamePosition to
+	 * calculate the game position from the screen position.
+	 * 
+	 * @see android.gameengine.icadroids.engine.GameEngine#translateToGamePosition(int, int)
+	 */
 	public static float xPos = 0;
-	/** The relative Y position of where the user touches on the screen and NOT the actual game. */
+	/** The Y position of the point where the user touches the screen. 
+	 * 
+	 * This position may be different from the position in the game world 
+	 * when using a viewport and zooming. Use GameEngine.translateToGamePosition to
+	 * calculate the game position from the screen position.
+	 * 
+	 * @see android.gameengine.icadroids.engine.GameEngine#translateToGamePosition(int, int)
+	 */
 	public static float yPos = 0;
-	/** The X position in the game Taking the viewport into account */
-	public static float xPosGame = 0;
-	/** The X position in the game Taking the viewport into account. */
-	public static float yPosGame = 0;
 
 	// multi touch flags start from here.
 	/** TRUE when space between two fingers increase. */
@@ -56,23 +66,22 @@ public class TouchInput implements OnTouchListener {
 	/** gets the scaling factor that applies on zoom and pinch actions */
 	public static float scale = 1f;
 	/**
-	 * Use this when you want to check the location of multipletouches so
-	 * POINTER_X[0] is the first finger, 1 is the second etc..
+	 * Use this when you want to check the locations of multiple touches.
+	 * xPointer[0] is the first finger, xPointer[1] is the second etc.
 	 */
 	public static float[] xPointer = new float[maxFingers];
 	/** the Y value of multiple touches. */
 	public static float[] yPointer = new float[maxFingers];
+	/** the number of touches in this multiple touch event */
+	public static int fingerCount;
 
 	private float oldDistance = 0f;
 	private float newDistance = 0f;
 	private boolean zoomCheck;
 	
-	private GameView theview;
-
-	public TouchInput(GameView v)
+	public TouchInput()
 	{
 		super();
-		theview = v;
 	}
 	
 	/**
@@ -176,7 +185,7 @@ public class TouchInput implements OnTouchListener {
 	 * @param event
 	 *            the event to pass to this function
 	 * 
-	 * @return a float that specifys the amount of distance between two fingers
+	 * @return a float that specifies the amount of distance between two fingers
 	 */
 	private float spacing(MotionEvent event) {
 		float x = event.getX(0) - event.getX(1);
@@ -192,13 +201,12 @@ public class TouchInput implements OnTouchListener {
 	 */
 	private void setPositions(MotionEvent e) {
 		// Starting or end location of the touch event.
+		fingerCount = 1;			// DEFAULT: set number of touches to 1 
+										// (so the number of touches in earlier multi-touch events will be cleared)
 		xPos = (int) e.getX();
 		yPos = (int) e.getY();
-		Point p = theview.getViewportLocation();
-		// ??? Need correction for zooming???
-		xPosGame = p.x + xPos;
-		yPosGame = p.y + yPos;
 		if (e.getPointerCount() > 1) {
+			fingerCount = e.getPointerCount();
 			for (int i = 0; i < e.getPointerCount(); i++) {
 				xPointer[i] = e.getX(i);
 				yPointer[i] = e.getY(i);

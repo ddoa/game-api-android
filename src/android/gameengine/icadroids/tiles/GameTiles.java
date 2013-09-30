@@ -103,8 +103,7 @@ public class GameTiles {
 				int tileIndex = map[i][j];
 				if (tileIndex > -1) {
 					tileArray[i][j] = new Tile(tileIndex, this);
-					tileArray[i][j].tileNumberX = j;
-					tileArray[i][j].tileNumberY = i;
+					tileArray[i][j].setTileIndex(i, j);
 				}
 
 			}
@@ -136,12 +135,14 @@ public class GameTiles {
 	}
 
 	/***
-	 * Change a tile in the game world.
+	 * Change a tile in the game world, add or remove a tile.
 	 * <p/>
 	 * Notes:
 	 * <p/>
 	 * The x and y positions are the indices in the tile array. <br/>
-	 * A negative value for the tilenumber makes the tile invisible. <br/>
+	 * The value -1 for the tileType removes the tile at the given position.<br /> 
+	 * If you specify a position that was previously empty,
+	 * a new Tile will be created.<br/>
 	 * 
 	 * @param yTile
 	 *            the y-pos of the tile in the tile array

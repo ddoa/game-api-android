@@ -16,11 +16,11 @@ public class Tile {
 	 * The position of the tiles in the tilemap. This is NOT the x and y
 	 * position in the game world!
 	 */
-	protected int tileNumberX, tileNumberY;
+	private int tileNumberX, tileNumberY;
 	/**
 	 * This tile object is instance of this gameTiles object
 	 */
-	protected GameTiles gameTiles;
+	private GameTiles gameTiles;
 
 	/**
 	 * Every tile has a tiletype and is a instance of an gameTiles object.
@@ -36,10 +36,14 @@ public class Tile {
 	}
 
 	/**
-	 * Change the tile type
+	 * Change the tile type<br />
+	 * <em>Important!</em> Use this method only when you want to change a tile
+	 * into another tile. If you want to remove tiles or add tiles at certain positions,
+	 * use the GameTiles.changeTile method.
 	 * 
 	 * @param tileType
 	 *            the new tiletype
+	 * @see android.gameengine.icadroids.tiles.GameTiles#changeTile(int, int, int)
 	 */
 	public void setTileType(int tileType) {
 		this.tileType = tileType;
@@ -70,6 +74,18 @@ public class Tile {
 	 */
 	public int getTileNumberY() {
 		return tileNumberY;
+	}
+	
+	/**
+	 * Set the position of the tile in the tilemap, as index, not real world coordinates
+	 * 
+	 * @param i the first index in the double array of the tilemap, that is Y-index
+	 * @param j the second index in the double array of the tilemap, that is X-index
+	 */
+	void setTileIndex(int i, int j)
+	{
+		tileNumberX = j;
+		tileNumberY = i;
 	}
 
 	/**

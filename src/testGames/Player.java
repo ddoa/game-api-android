@@ -54,7 +54,8 @@ public class Player extends MoveableGameObject implements ICollision{
 		}*/
 		if(TouchInput.onPress){
 			setSpeed(12);
-			moveTowardsAPoint(TouchInput.xPosGame, TouchInput.yPosGame);
+			// no correction for translate to game Pos
+			moveTowardsAPoint(TouchInput.xPos, TouchInput.yPos);
 		}
 	}
 
