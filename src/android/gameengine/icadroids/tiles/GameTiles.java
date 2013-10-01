@@ -77,11 +77,6 @@ public class GameTiles {
 	 * Add / replace the current tile map. This method will also convert the
 	 * given int[][] map to a Tile[][] map.
 	 * 
-	 * @param tileResources
-	 *            a list of string with the names of the images you want to use
-	 *            in the tilemap. This images have only the name of the images
-	 *            without the extension! For example: new String[] = {"tile1",
-	 *            "tile2", "tile3"};
 	 * @param map
 	 *            An 2d Array of the overlay map. The numbers are the position
 	 *            of the tileResources, starting at 0. -1 means invisible Tile.
@@ -242,7 +237,6 @@ public class GameTiles {
 	 *            x position of the tile
 	 * @param yPosition
 	 *            y position of the tile
-	 * @param gameTiles
 	 * @return The Tile object at the given x and y position
 	 */
 	public Tile getTileOnPosition(int xPosition, int yPosition) {

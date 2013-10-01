@@ -53,8 +53,6 @@ public class GameObject {
 	/**
 	 * Initialize resources.
 	 * 
-	 * @param ge
-	 *            the GameEngine which the object is running on
 	 */
 	public final void intializeGameObject() {
 		intialize();
@@ -143,7 +141,9 @@ public class GameObject {
 	/**
 	 * Override this method to draw your own text, rectangle and
 	 * other objects on the screen (like a game dashboard). The objects
-	 * will be rendered on the absolute x,y position.
+	 * will be rendered on the absolute x,y position.<br />
+	 * <b>Note:</b> This method was used to paint things on the screen. In the
+	 * cuurent version you can use the Dashboard instead.
 	 * 
 	 * @param canvas The Android canvas. Use this provided object to
 	 * draw for example text, rectangles and colors. For the api see:
@@ -196,8 +196,8 @@ public class GameObject {
 	 *            without extension </b>, so when your picture in the
 	 *            /res/drawable is named 'picture.jpg', this parameter should be
 	 *            "picture" .
-	 * @param frameWidth
-	 *            The width of each frame in an animated sprite (film strip)
+	 * @param numberOfFrames
+	 *            The number of frames in the strip
 	 */
 	public final void setSprite(String resourceName, int numberOfFrames) {
 		sprite.loadAnimatedSprite(resourceName, numberOfFrames);
@@ -494,7 +494,7 @@ public class GameObject {
 	 * in GameEngine
 	 * 
 	 * @param depth the depth, a float
-	 * @see GameEngine.addGameObject(GameObject gameObject, float layerposition)
+	 * @see android.gameengine.icadroids.engine.GameEngine#addGameObject(GameObject gameObject, float layerposition)
 	 */
 	public void setDepth(float depth) {
 	    this.depth = depth;

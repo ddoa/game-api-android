@@ -15,14 +15,14 @@ import android.hardware.SensorManager;
  * between game engine and android device.
  *         
  * @author Roel
- * @see http://developer.android.com/reference/android/hardware/SensorEvent.html
+ * See http://developer.android.com/reference/android/hardware/SensorEvent.html
  */
 public class MotionSensor {
 
 	
 	
 	/** Set this to TRUE if you want to use the MotionSensor and be able to ask for input. 
-	 * Note that this variable should be set to TRUE in the constructor of your game, and not in initialize.*/
+	 */
 	public static boolean use;
 
 	/** This variable contains the x Acceleration of the phone. */
@@ -62,6 +62,12 @@ public class MotionSensor {
 
 	private static SensorManager sensorManager;
 	
+	/**
+	 * Start the MotionSensor. This will be done by the GameEngine, game programmers
+	 * do NOT have to this themselves!
+	 * 
+	 * @param newSensorManager
+	 */
 	public static void initialize(SensorManager newSensorManager) {
 		sensorManager = newSensorManager;
 	}

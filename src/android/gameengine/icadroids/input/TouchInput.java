@@ -45,7 +45,7 @@ public class TouchInput implements OnTouchListener {
 	 * when using a viewport and zooming. Use GameEngine.translateToGamePosition to
 	 * calculate the game position from the screen position.
 	 * 
-	 * @see android.gameengine.icadroids.engine.GameEngine#translateToGamePosition(int, int)
+	 * @see android.gameengine.icadroids.engine.GameEngine#translateToGamePosition(float, float)
 	 */
 	public static float xPos = 0;
 	/** The Y position of the point where the user touches the screen. 
@@ -54,7 +54,7 @@ public class TouchInput implements OnTouchListener {
 	 * when using a viewport and zooming. Use GameEngine.translateToGamePosition to
 	 * calculate the game position from the screen position.
 	 * 
-	 * @see android.gameengine.icadroids.engine.GameEngine#translateToGamePosition(int, int)
+	 * @see android.gameengine.icadroids.engine.GameEngine#translateToGamePosition(float, float)
 	 */
 	public static float yPos = 0;
 
@@ -85,7 +85,7 @@ public class TouchInput implements OnTouchListener {
 	}
 	
 	/**
-	 * DO NOT CALL THIS FUNCTION.
+	 * DO NOT CALL THIS FUNCTION.<br />
 	 * 
 	 * This is the standard function android provides for touch events.
 	 * That is, Android calls this function to inform the game about the status

@@ -52,7 +52,7 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	public static boolean printDebugInfo = true;
 
 	/**
-	 * The player that the viewport follows //
+	 * The player that the viewport follows
 	 */
 	private MoveableGameObject player;
 
@@ -153,7 +153,7 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	public ArrayList<LinearLayout> dashboards = new ArrayList<LinearLayout>();
 
 	/**
-	 * To be deleted, random positions should go to GameEngine
+	 * Random generator, used for generating random positions in the game world
 	 */
 	private Random random = new Random();
 
@@ -247,7 +247,7 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 
 
 	/**
-	 * Method called direct before the initialization
+	 * Method called directly before the initialization
 	 */
 	private void beforeInitialize() {
 		if (Sprite.loadDelayedSprites != null) {
@@ -262,6 +262,7 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	 * This method is like a 'postponed constructor'. It is called automatically by the 
 	 * GameEngine when all necessary Android resources are ready. At that point
 	 * you can set up your game.<br />
+	 * You must override this method inside your game class that extends GameEngine.<br /> 
 	 * Don't call this method yourself (or everything will be done twice!)<br />
 	 * You can perform any initialization the game needs to before starting
 	 * to run, like:
@@ -274,8 +275,6 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	 * <li>etc.</li>
 	 * </ul>
 	 * <p />
-	 * Override this method inside your game class that extends GameEngine. 
-	 * Call super.initialize() at the very start.
 	 */
 	protected abstract void initialize();
 	
@@ -302,6 +301,9 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 		}		
 	}
 
+	/**
+	 * Start the game loop.
+	 */
 	void startThread() {
 		if ( gameThread != null ) {
 			if ( gameThread.isRunning() ) {
@@ -370,7 +372,7 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 
 	/**
 	 * This method will do the actual removing and adding of GameObjects at the
-	 * end of a gameloop pass.
+	 * end of a game loop pass.
 	 */
 	private void cleanupObjectlists() {
 		Iterator<GameObject> it = items.iterator();
@@ -408,7 +410,7 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	 * and playing audio.
 	 * <p>
 	 * Override this method inside your game base class that extends from
-	 * GameEngine. Every gameloop this method is called once.
+	 * GameEngine. Every pass of the game loop this method is called once.
 	 * <p>
 	 * GameObjects that were added to the game (by either addPlayer or
 	 * addGameObject) should NOT be updated here. Classes that extend from
@@ -444,6 +446,12 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 		gameAlarms.remove(a);
 	}
 
+	/**
+	 * Remove all Alarms for the specified GameObject, this will be called
+	 * when the GameObject is removed from the Game
+	 * 
+	 * @param go the GameObject for which Alarms are deleted
+	 */
 	private void deleteObjectAlarms(GameObject go) {
 		if (go instanceof IAlarm) {
 			Iterator<Alarm> it = gameAlarms.iterator();
@@ -623,8 +631,8 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	 * Add a GameObject to the game. New GameObjects will become active in the
 	 * next pass of the gameloop. <br />
 	 * 
-	 * @param gameObjectThe
-	 *            GameObject that will be added to the game. Should have either
+	 * @param gameObject
+	 *            The GameObject that will be added to the game. Should have either
 	 *            GameObject or MovableGameObject as it's parent.
 	 */
 	public final void addGameObject(GameObject gameObject) {
@@ -650,7 +658,7 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	 * Set the world dimensions yourself, to values that will make all of your
 	 * tilemaps fit.
 	 * 
-	 * @param set
+	 * @param gameTiles
 	 *            the current gameTiles object.
 	 */
 	protected void setTileMap(GameTiles gameTiles) {
@@ -707,7 +715,7 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	/**
 	 * Return the player instance.
 	 * 
-	 * @return
+	 * @return the GameObject that has been set to be the playerobject
 	 */
 	public final MoveableGameObject getPlayer() {
 		return player;
@@ -776,7 +784,7 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	 * <br />
 	 * Zooming only works when the viewport is being used.
 	 * 
-	 * @param zoomFactor, a float, the factor by which the view must be enlarged.
+	 * @param zoomFactor a float, the factor by which the view must be enlarged.
 	 */
 	public final void setZoomFactor(float zoomFactor) {
 		// this method will pass through GameView (adjustment of the Matrix of the Canvas)
@@ -842,18 +850,20 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	
     /**
      * Translates a given screen position to a position in the game world, taking into
-     * consideration the viewport location and the zoom factor.
+     * consideration the viewport location and the zoom factor.<br />
+     * Note: The x and y values are returned in a Point object, therefore they are
+     * returned as ints. You can access the individual values using .x and .y.
      * 
      * @param x the screen x
      * @param y the screen y
      * @return Point, containing the x,y-position in the game world
      */
-    public Point translateToGamePosition(int x, int y) {
+    public Point translateToGamePosition(float x, float y) {
     	if ( Viewport.useViewport ) {
     		Viewport vp = Viewport.getInstance();
     		return vp.translateToGamePosition(x, y);
     	} else {
-    		return new Point(x, y);
+    		return new Point((int)x, (int)y);
     	}
 	}
 
@@ -926,8 +936,8 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	 * a larger game world, you can set the dimensions calleing this method in initialize().<br />
 	 * <b>Note</b>: You also need to set the world dimensions when you use a tile map.
 	 * 
-	 * @param mapWidth, an int specifying the width of the game world
-	 * @param mapHeight, an int specifying the height of the game world
+	 * @param mapWidth an int specifying the width of the game world
+	 * @param mapHeight an int specifying the height of the game world
 	 */
 	public void setMapDimensions(int mapWidth, int mapHeight) {
 		this.mapHeight = mapHeight;
@@ -999,7 +1009,7 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	/**
 	 * <b> DO NOT CALL THIS METHOD </b>
 	 * 
-	 * @return
+	 * @return The GameView object
 	 */
 	public static View getAppView() {
 		return gameView;

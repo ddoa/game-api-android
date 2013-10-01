@@ -70,8 +70,8 @@ public class AnimatedSprite extends Sprite {
 	 *            without extension </b>, so when your picture in the
 	 *            /res/drawable is named 'picture.jpg', this parameter should be
 	 *            "picture" .
-	 * @param frameWidth
-	 *            The width of each frame in an animated sprite (film strip)
+	 * @param numberOfFrames
+	 *            The number of frames in the strip
 	 */
 	public AnimatedSprite(String resourceName, int numberOfFrames)
 	{
@@ -85,9 +85,15 @@ public class AnimatedSprite extends Sprite {
 	 * the 'nodpi' folder. If you have various versions (hi-res and lo-res) for
 	 * rendering on devices of varying screen sizes, use the lo- & hi-dpi folders.
 	 * 
-	 * @see
-	 * android.gameengine.icadroids.objects.graphics.Sprite#loadSprite(java.
-	 * lang.String)
+	 * @param resourceName
+	 *            The name of the resource in the /res/drawable folder <b>
+	 *            without extension </b>, so when your picture in the
+	 *            /res/drawable is named 'picture.jpg', this parameter should be
+	 *            "picture" .
+	 * @param numberOfFrames
+	 *            The number of frames in the strip
+	 *            
+	 * @see android.gameengine.icadroids.objects.graphics.Sprite#loadSprite(java.lang.String)
 	 */
 	public final void loadAnimatedSprite(String resourceName, int numberOfFrames) {
 		super.loadSprite(resourceName);
@@ -213,8 +219,6 @@ public class AnimatedSprite extends Sprite {
 	/**
 	 * Start animating the sprite
 	 * 
-	 * @param frameWidth
-	 *            The width of each frame. Sprite width must be a multiple of frame width.
 	 */
 	public final void startAnimate() {
 		animate = true;

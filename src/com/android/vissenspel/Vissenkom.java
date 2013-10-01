@@ -22,6 +22,9 @@ public class Vissenkom extends GameEngine {
 	 */
 	private Vis vis;
 	
+	/**
+	 * Dashboard for displaying the score
+	 */
 	private DashboardTextView scoreDisplay;
 	
 	/**
@@ -32,10 +35,14 @@ public class Vissenkom extends GameEngine {
 	@Override
 	protected void initialize() {
 
+		// Set up control mechanisms to use
+		TouchInput.use = false;
+		MotionSensor.use = false;
+		OnScreenButtons.use = true;
 
 		createTileEnvironment();
 
-		vis = new Vis();
+		vis = new Vis(this);
 		addGameObject(vis, 120, 240);
 
 		Monster engerd = new Monster(vis);
@@ -44,6 +51,21 @@ public class Vissenkom extends GameEngine {
 		@SuppressWarnings("unused")
 		StrawberryControler sc = new StrawberryControler(this);
 		
+		// Example of how to use the Viewport, properties and zooming
+		/*
+			// Switch it on
+			Viewport.useViewport = true;
+			// Zoom in, 2x
+			setZoomFactor(2f);
+			// Make viewport follow the Vis
+			setPlayer(vis);
+			// Vis will be center screen
+			setPlayerPositionOnScreen(Viewport.PLAYER_CENTER, Viewport.PLAYER_CENTER);
+			// Determines how quickly viewport moves (see API for details)
+			setPlayerPositionTolerance(0.8, 0.5);
+		 */
+		
+		// Example of how to add a Dashboard to a game
 		scoreDisplay = new DashboardTextView(this);
 		scoreDisplay.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 24);
 		scoreDisplay.setTextColor(Color.BLACK);
@@ -51,8 +73,8 @@ public class Vissenkom extends GameEngine {
 		
 		// Example of how to add an image to the dashboard.
 		/*
-		DashboardImageView imageDisplay = new DashboardImageView(this, "bg");
-		addToDashboard(imageDisplay);
+			DashboardImageView imageDisplay = new DashboardImageView(this, "bg");
+			addToDashboard(imageDisplay);
 		*/
 		
 		createDashboard();
@@ -107,15 +129,11 @@ public class Vissenkom extends GameEngine {
 		setTileMap(myTiles);
 		Log.d("Vissenkom", "GameTiles created");
 
-		// Set up control mechanisms to use
-		TouchInput.use = false;
-		MotionSensor.use = false;
-		OnScreenButtons.use = true;
 	}
 
 	/**
-	 * Update the game. As yet, no extra actions, so this override might as well
-	 * be left out. Left for future additions
+	 * Update the game. At this moment, we only need to update the Dashboard.
+	 * Note: the Dashboard settings will be adjusted!!!
 	 * 
 	 * @see android.gameengine.icadroids.engine.GameEngine#update()
 	 */
@@ -123,6 +141,6 @@ public class Vissenkom extends GameEngine {
 	public void update() {
 		super.update();
 		this.scoreDisplay.setTextString(
-				"Score: " + String.valueOf(this.vis.score));
+				"Score: " + String.valueOf(this.vis.getScore()));
 	}
 }
