@@ -1,5 +1,6 @@
 package android.gameengine.icadroids.engine;
 
+import android.annotation.SuppressLint;
 import android.graphics.Canvas;
 import android.util.Log;
 
@@ -107,6 +108,7 @@ public class GameThread extends Thread
 	/**
 	 * Request the device to draw
 	 */
+	@SuppressLint("WrongCall")
 	private void updateEngine()
 	{
 		try
