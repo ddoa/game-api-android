@@ -53,8 +53,9 @@ public class OnScreenButton extends ImageButton {
 		setPadding(0, 0, 0, 0);
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * DO NOT CALL THIS FUNCTION.<br />
+	 * Called by Android device to notify the Game of an user action.
 	 * 
 	 * @see android.view.View#onTouchEvent(android.view.MotionEvent)
 	 */

@@ -52,7 +52,7 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	public static boolean printDebugInfo = true;
 
 	/**
-	 * The player that the viewport follows //
+	 * The player that the viewport follows
 	 */
 	private MoveableGameObject player;
 
@@ -153,7 +153,7 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	public ArrayList<LinearLayout> dashboards = new ArrayList<LinearLayout>();
 
 	/**
-	 * To be deleted, random positions should go to GameEngine
+	 * Random generator, used for generating random positions in the game world
 	 */
 	private Random random = new Random();
 
@@ -247,7 +247,7 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 
 
 	/**
-	 * Method called direct before the initialization
+	 * Method called directly before the initialization
 	 */
 	private void beforeInitialize() {
 		if (Sprite.loadDelayedSprites != null) {
@@ -262,6 +262,7 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	 * This method is like a 'postponed constructor'. It is called automatically by the 
 	 * GameEngine when all necessary Android resources are ready. At that point
 	 * you can set up your game.<br />
+	 * You must override this method inside your game class that extends GameEngine.<br /> 
 	 * Don't call this method yourself (or everything will be done twice!)<br />
 	 * You can perform any initialization the game needs to before starting
 	 * to run, like:
@@ -274,8 +275,6 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	 * <li>etc.</li>
 	 * </ul>
 	 * <p />
-	 * Override this method inside your game class that extends GameEngine. 
-	 * Call super.initialize() at the very start.
 	 */
 	protected abstract void initialize();
 	
@@ -302,6 +301,9 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 		}		
 	}
 
+	/**
+	 * Start the game loop.
+	 */
 	void startThread() {
 		if ( gameThread != null ) {
 			if ( gameThread.isRunning() ) {
@@ -370,7 +372,7 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 
 	/**
 	 * This method will do the actual removing and adding of GameObjects at the
-	 * end of a gameloop pass.
+	 * end of a game loop pass.
 	 */
 	private void cleanupObjectlists() {
 		Iterator<GameObject> it = items.iterator();
@@ -408,7 +410,7 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	 * and playing audio.
 	 * <p>
 	 * Override this method inside your game base class that extends from
-	 * GameEngine. Every gameloop this method is called once.
+	 * GameEngine. Every pass of the game loop this method is called once.
 	 * <p>
 	 * GameObjects that were added to the game (by either addPlayer or
 	 * addGameObject) should NOT be updated here. Classes that extend from
@@ -444,6 +446,12 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 		gameAlarms.remove(a);
 	}
 
+	/**
+	 * Remove all Alarms for the specified GameObject, this will be called
+	 * when the GameObject is removed from the Game
+	 * 
+	 * @param go the GameObject for which Alarms are deleted
+	 */
 	private void deleteObjectAlarms(GameObject go) {
 		if (go instanceof IAlarm) {
 			Iterator<Alarm> it = gameAlarms.iterator();
@@ -842,7 +850,9 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	
     /**
      * Translates a given screen position to a position in the game world, taking into
-     * consideration the viewport location and the zoom factor.
+     * consideration the viewport location and the zoom factor.<br />
+     * Note: The x and y values are returned in a Point object, therefore they are
+     * returned as ints. You can access the individual values using .x and .y.
      * 
      * @param x the screen x
      * @param y the screen y

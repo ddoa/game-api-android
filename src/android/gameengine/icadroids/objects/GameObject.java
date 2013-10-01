@@ -143,7 +143,9 @@ public class GameObject {
 	/**
 	 * Override this method to draw your own text, rectangle and
 	 * other objects on the screen (like a game dashboard). The objects
-	 * will be rendered on the absolute x,y position.
+	 * will be rendered on the absolute x,y position.<br />
+	 * <b>Note:</b> This method was used to paint things on the screen. In the
+	 * cuurent version you can use the Dashboard instead.
 	 * 
 	 * @param canvas The Android canvas. Use this provided object to
 	 * draw for example text, rectangles and colors. For the api see:
