@@ -15,7 +15,7 @@ import android.hardware.SensorManager;
  * between game engine and android device.
  *         
  * @author Roel
- * @see http://developer.android.com/reference/android/hardware/SensorEvent.html
+ * See http://developer.android.com/reference/android/hardware/SensorEvent.html
  */
 public class MotionSensor {
 

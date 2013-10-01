@@ -49,7 +49,7 @@ public interface ICollision {
 	 * 
 	 * @param collidedTiles List of TileCollision holding all tile collisions in this move.
 	 * 
-	 * @see android.gameengine.icadroids.objects.collision.TileCollision
+	 * @see android.gameengine.icadroids.objects.collisions.TileCollision
 	 * @see android.gameengine.icadroids.objects.MoveableGameObject#undoMove()
 	 * @see android.gameengine.icadroids.objects.MoveableGameObject#bounce(TileCollision)
 	 * @see android.gameengine.icadroids.objects.MoveableGameObject#moveUpToTileSide(TileCollision)

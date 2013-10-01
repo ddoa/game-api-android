@@ -631,8 +631,8 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	 * Add a GameObject to the game. New GameObjects will become active in the
 	 * next pass of the gameloop. <br />
 	 * 
-	 * @param gameObjectThe
-	 *            GameObject that will be added to the game. Should have either
+	 * @param gameObject
+	 *            The GameObject that will be added to the game. Should have either
 	 *            GameObject or MovableGameObject as it's parent.
 	 */
 	public final void addGameObject(GameObject gameObject) {
@@ -658,7 +658,7 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	 * Set the world dimensions yourself, to values that will make all of your
 	 * tilemaps fit.
 	 * 
-	 * @param set
+	 * @param gameTiles
 	 *            the current gameTiles object.
 	 */
 	protected void setTileMap(GameTiles gameTiles) {
@@ -715,7 +715,7 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	/**
 	 * Return the player instance.
 	 * 
-	 * @return
+	 * @return the GameObject that has been set to be the playerobject
 	 */
 	public final MoveableGameObject getPlayer() {
 		return player;
@@ -784,7 +784,7 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	 * <br />
 	 * Zooming only works when the viewport is being used.
 	 * 
-	 * @param zoomFactor, a float, the factor by which the view must be enlarged.
+	 * @param zoomFactor a float, the factor by which the view must be enlarged.
 	 */
 	public final void setZoomFactor(float zoomFactor) {
 		// this method will pass through GameView (adjustment of the Matrix of the Canvas)
@@ -936,8 +936,8 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	 * a larger game world, you can set the dimensions calleing this method in initialize().<br />
 	 * <b>Note</b>: You also need to set the world dimensions when you use a tile map.
 	 * 
-	 * @param mapWidth, an int specifying the width of the game world
-	 * @param mapHeight, an int specifying the height of the game world
+	 * @param mapWidth an int specifying the width of the game world
+	 * @param mapHeight an int specifying the height of the game world
 	 */
 	public void setMapDimensions(int mapWidth, int mapHeight) {
 		this.mapHeight = mapHeight;
@@ -1009,7 +1009,7 @@ public abstract class GameEngine extends Activity implements SensorEventListener
 	/**
 	 * <b> DO NOT CALL THIS METHOD </b>
 	 * 
-	 * @return
+	 * @return The GameView object
 	 */
 	public static View getAppView() {
 		return gameView;

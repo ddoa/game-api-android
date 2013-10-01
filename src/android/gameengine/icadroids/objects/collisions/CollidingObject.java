@@ -54,7 +54,7 @@ public class CollidingObject {
 	 *            An ICollision object that needs to be called when a collision
 	 *            has occurred
 	 *     
-	 * @see android.gameengine.icadroids.objects.collision.ICollision
+	 * @see android.gameengine.icadroids.objects.collisions.ICollision#collisionOccurred(List)
 	 */
 	public void calculateCollision(double endX, double endY, 
 			double startX, double startY, Sprite sprite, GameTiles gameTiles,

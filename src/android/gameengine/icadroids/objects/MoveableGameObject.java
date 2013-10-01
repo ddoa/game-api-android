@@ -294,7 +294,7 @@ public class MoveableGameObject extends GameObject {
 	 * The decrease in speed is measured as a fraction, if you want a 5% decrease
 	 * in speed per cycle of the game loop, use 0.05.
 	 * 
-	 * @param friction, 
+	 * @param friction 
 	 * 			the fraction of decrease in speed per cycle of the game loop.
 	 * 			Must be a number between 0 and 1
 	 */
@@ -521,7 +521,7 @@ public class MoveableGameObject extends GameObject {
 	 * If there wasn't any collision in the first place, this may be somewhere not very close
 	 * to the tile!
 	 * 
-	 * @param tc, the TileCollision (usually provided by the the 'collisionOccurred' call )
+	 * @param tc the TileCollision (usually provided by the the 'collisionOccurred' call )
 	 */
 	public void moveUpToTileSide(TileCollision tc)
 	{

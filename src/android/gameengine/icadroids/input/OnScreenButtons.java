@@ -55,7 +55,7 @@ public class OnScreenButtons{
 	 * The constructor will load the onScreenButtons.xml view and places it on
 	 * top of the canvas.
 	 * 
-	 * @param context
+	 * @param gameEngine
 	 *            : The context is required by this class so it can receive the
 	 *            screen width and height.
 	 */

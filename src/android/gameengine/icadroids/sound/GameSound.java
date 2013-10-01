@@ -57,9 +57,9 @@ public final class GameSound {
 	 * can then retrieve the sound from the SoundPool with the playSound
 	 * function.
 	 * 
-	 * @param Index
+	 * @param index
 	 *            The sound index where the sound will be stored.
-	 * @param SoundID
+	 * @param soundID
 	 *            The name of the sound that needs to be stored.
 	 */
 	public static final void addSound(int index, String soundID) {
