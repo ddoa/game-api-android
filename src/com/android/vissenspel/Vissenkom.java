@@ -54,6 +54,25 @@ public class Vissenkom extends GameEngine {
 		DashboardImageView imageDisplay = new DashboardImageView(this, "bg");
 		addToDashboard(imageDisplay);
 		*/
+		
+		createDashboard();
+	}
+	
+	
+	private void createDashboard(){
+		
+		//this.scoreDisplay.setWidgetWidth(20);
+		this.scoreDisplay.setWidgetHeight(60);
+		this.scoreDisplay.setWidgetBackgroundColor(Color.WHITE);
+		this.scoreDisplay.setWidgetX(10);
+		this.scoreDisplay.setWidgetY(10);
+		// If you want to modify the layout of a dashboard widget,
+		// you need to so so using its run method.
+		this.scoreDisplay.run(new Runnable(){
+			public void run() {
+				scoreDisplay.setPadding(10, 10, 10, 10);
+			}
+		});
 	}
 
 	/**
@@ -105,17 +124,5 @@ public class Vissenkom extends GameEngine {
 		super.update();
 		this.scoreDisplay.setTextString(
 				"Score: " + String.valueOf(this.vis.score));
-		//this.scoreDisplay.setWidgetWidth(20);
-		this.scoreDisplay.setWidgetHeight(60);
-		this.scoreDisplay.setWidgetBackgroundColor(Color.WHITE);
-		this.scoreDisplay.setWidgetX(10);
-		this.scoreDisplay.setWidgetY(10);
-		// If you want to modify the layout of a dashboard widget,
-		// you need to so so using its run method.
-		this.scoreDisplay.run(new Runnable(){
-			public void run() {
-				scoreDisplay.setPadding(10, 10, 10, 10);
-			}
-		});
 	}
 }
