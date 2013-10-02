@@ -67,7 +67,7 @@ public class OnScreenButton extends ImageButton {
 			OnScreenButtons.buttonReleased(getId());
 		}
 
-		if (OnScreenButtons.feedback) {
+		if (OnScreenButtons.feedback && (event.getAction() == MotionEvent.ACTION_DOWN)) {
 			performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
 		}
 

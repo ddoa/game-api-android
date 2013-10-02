@@ -1,6 +1,5 @@
 package android.gameengine.icadroids.objects.graphics;
 
-import android.gameengine.icadroids.engine.GameEngine;
 import android.gameengine.icadroids.engine.GameView;
 import android.graphics.Rect;
 

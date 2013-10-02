@@ -17,24 +17,24 @@ import android.gameengine.icadroids.sound.MusicPlayer;
  */
 public class TestGameLex extends GameEngine {
 
-	private MoveableGameObject testObj = new MoveableGameObject();
-	private GameObject testObject2 = new GameObject();
+	//private MoveableGameObject testObj = new MoveableGameObject();
+	//private GameObject testObject2 = new GameObject();
 	Viewport view = Viewport.getInstance();
 
 	public TestGameLex() {
 
-		addGameObject(testObj, 100, 100, .9f);
-		setPlayer(testObj);
-		testObj.setSprite("kat_01");
-		addGameObject(testObject2, 200, 200, 0.2f);
-		testObject2.setSprite("kat_01");
+	//	addGameObject(testObj, 100, 100, .9f);
+		//setPlayer(testObj);
+		//testObj.setSprite("kat_01");
+		//addGameObject(testObject2, 200, 200, 0.2f);
+		//testObject2.setSprite("kat_01");
 	}
 
 	@Override
 	protected void initialize() {
 		OnScreenButtons.use = true;
 		OnScreenButtons.feedback = true;
-		setBackground("kat_01");
+		//setBackground("kat_01");
 		setZoomFactor(.2f);
 		setMapDimensions(4000, 3000);
 		GameSound.addSound(0, "lucas");
@@ -45,18 +45,18 @@ public class TestGameLex extends GameEngine {
 	public void update() {
 
 		if (OnScreenButtons.dPadUp) {
-			testObj.setSpeed(0);
-			testObj.movePlayer(0, -5);
+			//testObj.setSpeed(0);
+			//testObj.movePlayer(0, -5);
 		}
 		if (OnScreenButtons.dPadDown) {
-			testObj.setSpeed(0);
-			testObj.movePlayer(0, 5);
+			//testObj.setSpeed(0);
+			//testObj.movePlayer(0, 5);
 		}
 		if (OnScreenButtons.dPadRight) {
-			testObj.movePlayer(5, 0);
+			//testObj.movePlayer(5, 0);
 		}
 		if (OnScreenButtons.dPadLeft) {
-			testObj.movePlayer(-5, 0);
+			//testObj.movePlayer(-5, 0);
 		}
 		if (OnScreenButtons.select) {
 			// GameSound.stopSound(1);

@@ -1,7 +1,5 @@
 package android.gameengine.icadroids.objects;
 
-import android.gameengine.icadroids.engine.GameEngine;
-import android.gameengine.icadroids.engine.Viewport;
 import android.gameengine.icadroids.objects.graphics.AnimatedSprite;
 import android.graphics.Canvas;
 import android.graphics.Rect;

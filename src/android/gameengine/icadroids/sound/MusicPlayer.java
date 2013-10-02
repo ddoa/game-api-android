@@ -29,31 +29,27 @@ public final class MusicPlayer {
 	 *            The name of the music that needs to played.
 	 */
 	public static void play(String resId, boolean loop) {
-		try {
-			MediaPlayer mp = new MediaPlayer();
-			int resID = GameEngine.getAppContext().getResources()
-					.getIdentifier(resId, "raw",
-							GameEngine.getAppContext().getPackageName());
-			mp.setDataSource(GameEngine.getAppContext(),
-					Uri.parse("android.resource://android.GameAPI.ICA_DROID/"	+ resID));
-			mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
-			if (loop) {
-				mp.setLooping(true);
-			} else {
-				mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-					public void onCompletion(MediaPlayer mp) {
-						mpSet.remove(mp);
-						mp.stop();
-						mp.release();
-					}
-				});
-			}
-			mp.prepare();
-			mpSet.add(mp);
-			mp.start();
-		} catch (IOException e) {
-			Log.wtf("MusicPlayer", e);
+		int resID = GameEngine.getAppContext().getResources()
+				.getIdentifier(resId, "raw",
+						GameEngine.getAppContext().getPackageName());
+		
+		MediaPlayer mp = MediaPlayer.create(GameEngine.getAppContext(), resID);
+
+		mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+		if (loop) {
+			mp.setLooping(true);
+		} else {
+			mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+				public void onCompletion(MediaPlayer mp) {
+					mpSet.remove(mp);
+					mp.stop();
+					mp.release();
+				}
+			});
 		}
+
+		mpSet.add(mp);
+		mp.start();
 	}
 
 	/**

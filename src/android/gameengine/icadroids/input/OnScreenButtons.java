@@ -25,7 +25,7 @@ public class OnScreenButtons{
 	/** use : wether or not to actually use these buttons */
 	public static boolean use;
 	/** feedback: wether or not to allow feedback */
-	public static boolean feedback;
+	public static boolean feedback = true;
 	/** opacity: sets the opacity of all the buttons in a range from 0 to 255 */
 	public static int opacity = 100;
 
