@@ -17,17 +17,17 @@ import android.gameengine.icadroids.sound.MusicPlayer;
  */
 public class TestGameLex extends GameEngine {
 
-	//private MoveableGameObject testObj = new MoveableGameObject();
-	//private GameObject testObject2 = new GameObject();
+	private MoveableGameObject testObj = new MoveableGameObject();
+	private GameObject testObject2 = new GameObject();
 	Viewport view = Viewport.getInstance();
 
 	public TestGameLex() {
 
-	//	addGameObject(testObj, 100, 100, .9f);
-		//setPlayer(testObj);
-		//testObj.setSprite("kat_01");
-		//addGameObject(testObject2, 200, 200, 0.2f);
-		//testObject2.setSprite("kat_01");
+		addGameObject(testObj, 100, 100, .9f);
+		setPlayer(testObj);
+		testObj.setSprite("kat_01");
+		addGameObject(testObject2, 200, 200, 0.2f);
+		testObject2.setSprite("kat_01");
 	}
 
 	@Override

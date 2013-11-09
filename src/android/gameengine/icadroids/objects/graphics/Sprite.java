@@ -85,6 +85,13 @@ public class Sprite {
 
 			spriteBitmap = BitmapFactory.decodeResource(GameEngine
 					.getAppContext().getResources(), resID);
+			if(spriteBitmap == null){
+				throw new NullPointerException("Cannot load image " + resourceName + " . Check if" +
+						"image exists and that you have entered the name of the image correctly (without " +
+						"path and extension)");
+			}
+			
+			
 			calculateSize(spriteBitmap);
 
 		} else {
